@@ -217,7 +217,7 @@ ComponentTracker::ComponentTracker ()
   //## end ComponentTracker::ComponentTracker%924021883.initialization
 {
   //## begin ComponentTracker::ComponentTracker%924021883.body preserve=yes
-	// Register(new DefaultMarkerIntegrator());
+	Register(new DefaultMarkerIntegrator());
   //## end ComponentTracker::ComponentTracker%924021883.body
 }
 
