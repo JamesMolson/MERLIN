@@ -165,6 +165,9 @@ Bunch& TrackingSimulation::Run (bool genNewBunch)
 		bunch = ibunchCtor->ConstructBunch();
 	}
 
+	if(simOp)
+		simOp->RecordInitialBunch(bunch);
+
 	try {
 		stepper.Initialise(*bunch);
 		if(type==beamline)
@@ -178,6 +181,9 @@ Bunch& TrackingSimulation::Run (bool genNewBunch)
 		else
 			throw;
 	}
+
+	if(simOp)
+		simOp->RecordFinalBunch(bunch);
 
 	return *bunch;
   //## end TrackingSimulation::Run%396B6C450398.body

@@ -73,6 +73,8 @@ class SimulationOutput {
 public:
 	virtual ~SimulationOutput() {}
 	virtual void Record(const ComponentFrame* frame, const Bunch* bunch) =0;
+	virtual void RecordInitialBunch(const Bunch* bunch) =0;
+	virtual void RecordFinalBunch(const Bunch* bunch) =0;
 };
 
 //## Class: TrackingSimulation%396B6B6A017C
