@@ -32,7 +32,11 @@ void StableOrbits::SelectStable(ParticleBunch& bunch, list<size_t>* index)
 
     for(int turn_count=1; turn_count<=nturns; turn_count++)
     {
-        tracker.Run(false);
+        if(turn_count==1)
+            tracker.Run();
+        else
+            tracker.Continue();
+
         ParticleBunch& tracked_bunch = tracker.GetTrackedBunch();
         cout<<"Tracked turn "<<turn_count<<": ";
         cout<<tracked_bunch.size()<<" particles remaining.    "<<char(13);

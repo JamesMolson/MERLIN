@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.4 $
+// $Date: 2004-12-14 13:52:16 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -53,8 +53,11 @@ void BetatronTunes::FindTunes(PSvector& particle, int ntrack, bool diffusion)
     int trackn = diffusion ? ntrack*2 : ntrack;
     for(int nturn=0; nturn<trackn; nturn++)
     {
-        tracker.Run(false);
-
+        if(nturn==0)
+            tracker.Run();
+        else
+            tracker.Continue();
+        
         ParticleBunch& tracked_bunch = tracker.GetTrackedBunch();
         ParticleBunch::iterator pp = tracked_bunch.begin();
         Particle& p1 = *pp;

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.4 $
+// $Date: 2004-12-14 13:52:16 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -96,12 +96,15 @@ public:
     void SetBeamline(const AcceleratorModel::Beamline& bline);
     void SetRing(const AcceleratorModel::RingIterator& aRing);
 
-    //	Run the simulation. If genNewBunch is true (default),
-    //	then a new bunch is constructed to be tracked. If false,
-    //	then the current bunch is tracked. The latter behaviour
-    //	can be used to model multiple turns of a circular
-    //	machine.
-    virtual Bunch& Run (bool genNewBunch = true);
+    //	Run the simulation. A new bunch is constructed using
+    //  the current BunchConstructor object, and all the 
+    //  processes are initialised.
+    virtual Bunch& Run();
+
+    //  Run the simulation again without constructing a new bunch
+    //  or (re-)initialising the BunchProcesses. This function can
+    //  only be called after an initial Run() method is called.
+    virtual Bunch& Continue();
 
     //	Add a BunchProcess to the simulation.
     void AddProcess (BunchProcess* proc);
@@ -196,6 +199,8 @@ private:
     AcceleratorModel::Beamline theBeamline;
     Stepper* cstepper;
     SimulationOutput* simOp;
+
+    Bunch& DoRun(bool);
 };
 
 //	A template class which is used to implement a bunch

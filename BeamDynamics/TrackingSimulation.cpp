@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.4 $
+// $Date: 2004-12-14 13:52:16 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -85,10 +85,12 @@ TrackingSimulation::~TrackingSimulation ()
         delete ibunchCtor;
 }
 
-Bunch& TrackingSimulation::Run (bool genNewBunch)
+Bunch& TrackingSimulation::DoRun (bool do_init)
 {
+    // force initialisation if there is no bunch
+    do_init = do_init || (bunch==0);
 
-    if(genNewBunch || bunch==0) {
+    if(do_init) {
         assert(ibunchCtor!=0);
         if(bunch!=0)
             delete bunch;
@@ -99,7 +101,9 @@ Bunch& TrackingSimulation::Run (bool genNewBunch)
         simOp->RecordInitialBunch(bunch);
 
     try {
-        stepper.Initialise(*bunch);
+        if(do_init)
+            stepper.Initialise(*bunch);
+
         if(type==beamline)
             PerformTracking(stepper,*bunch,incX,simOp,theBeamline.begin(),theBeamline.end());
         else
@@ -117,6 +121,17 @@ Bunch& TrackingSimulation::Run (bool genNewBunch)
 
     return *bunch;
 }
+
+Bunch& TrackingSimulation::Run()
+{
+    return DoRun(true);
+}
+
+Bunch& TrackingSimulation::Continue()
+{
+    return DoRun(false);
+}
+
 
 void TrackingSimulation::AddProcess (BunchProcess* proc)
 {

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.4 $
+// $Date: 2004-12-14 13:52:16 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -152,7 +152,7 @@ void ClosedOrbit::FindClosedOrbit(PSvector& particle, int ncpt)
         cout<<particle;
 #endif
 
-        theTracker->Run(true);
+        theTracker->Run();
 
         ip = theTracker->GetTrackedBunch().begin();
         const Particle& p_ref = *ip++; // reference particle
