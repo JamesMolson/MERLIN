@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.9 $
+// $Date: 2005-03-18 22:07:52 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -64,12 +64,12 @@ void Log(const string& tag, int depth, ostream& os)
 
 void StripHeader(istream& is)
 {
-    char buffer[256];
+    char buffer[512];
     char c;
     while(true && is) {
         is.get(c);
         if(c=='*'||c=='$'||c=='@')
-            is.getline(buffer,256);
+            is.getline(buffer,512);
         else {
             is.putback(c);
             break;
@@ -132,7 +132,7 @@ MADInterface::MADInterface (const std::string& madFileName, double P0)
 {
     if(ifs) {
         if(!(*ifs)) {
-            MERLIN_ERR<<"ERROR openning file "<<madFileName<<endl;
+            MERLIN_ERR<<"ERROR opening file "<<madFileName<<endl;
             abort();
         }
         Initialise();
@@ -166,7 +166,7 @@ void MADInterface::AppendModel (const string& fname, double Pref)
 
     ifs =  new ifstream(fname.c_str());
     if(!(*ifs)) {
-        MERLIN_ERR<<"ERROR openning file "<<fname<<endl;
+        MERLIN_ERR<<"ERROR opening file "<<fname<<endl;
         delete ifs;
         abort();
     }
@@ -308,7 +308,7 @@ double MADInterface::ReadComponent ()
 #define  _READ(value) if(!((*ifs)>>value)) return 0;
 
     string name,type,aptype;
-    double len,angle,k1,k2,k3,h,tilt;
+    double len,angle,e1,e2,k1,k2,k3,h,tilt;
 
     _READ(name);
     _READ(type);
@@ -386,6 +386,19 @@ double MADInterface::ReadComponent ()
             SectorBend* bend = new SectorBend(name,len,h,brho*h);
             if(k1!=0)  // mixed function dipole
                 bend->SetB1(brho*k1/len);
+
+			e1   =prmMap->GetParameter("E1");
+			e2   =prmMap->GetParameter("E2");
+
+			if(e1!=0 || e2!=0) {
+				if(e1==e2)
+					bend->SetPoleFaceInfo(new SectorBend::PoleFace(e1));
+				else {
+					SectorBend::PoleFace* pf1 = e1!=0 ? new SectorBend::PoleFace(e1) : 0;
+					SectorBend::PoleFace* pf2 = e2!=0 ? new SectorBend::PoleFace(e2) : 0;
+					bend->SetPoleFaceInfo(pf1,pf2);
+				}
+			}
 
             if(tilt!=0)
                 (*bend).GetGeometry().SetTilt(tilt);
