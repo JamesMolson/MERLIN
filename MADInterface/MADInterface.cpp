@@ -158,41 +158,98 @@ namespace {
 //## Operation: MADInterface%39576D8603D4
 MADInterface::MADInterface (const std::string& madFileName, double P0)
   //## begin MADInterface::MADInterface%39576D8603D4.initialization preserve=yes
-: energy(P0),ifs(madFileName.c_str()),log(MerlinIO::std_out),
-logFlag(false),flatLattice(false),honMadStructs(false),incApertures(false),
-inc_sr(false)
+  : energy(P0),ifs(madFileName.empty() ? 0 : new ifstream(madFileName.c_str())),
+  log(MerlinIO::std_out),logFlag(false),flatLattice(false),honMadStructs(false),
+  incApertures(false),inc_sr(false),ctor(0),prmMap(0)
   //## end MADInterface::MADInterface%39576D8603D4.initialization
 {
   //## begin MADInterface::MADInterface%39576D8603D4.body preserve=yes
-	if(!ifs) {
-		MERLIN_ERR<<"ERROR openning file "<<madFileName<<endl;
-		abort();
+		
+	if(ifs) {
+		if(!(*ifs)) {
+			MERLIN_ERR<<"ERROR openning file "<<madFileName<<endl;
+			abort();
+		}
+		Initialise();
 	}
 	
-	check_column_heading(ifs,"*");
-	check_column_heading(ifs,"NAME");
-	check_column_heading(ifs,"KEYWORD");
-	
-	string s;
-	getline(ifs,s);
-	prmMap = new MADKeyMap(s);
-
 	// By default, we currently treat the following MAD
 	// types as drifts
 	TreatTypeAsDrift("MARKER"); // merlin bug!
 	TreatTypeAsDrift("RCOLLIMATOR"); 
 	TreatTypeAsDrift("ECOLLIMATOR"); 
-
   //## end MADInterface::MADInterface%39576D8603D4.body
 }
 
+void MADInterface::Initialise()
+{	
+	check_column_heading((*ifs),"*");
+	check_column_heading((*ifs),"NAME");
+	check_column_heading((*ifs),"KEYWORD");
+	
+	if(prmMap!=0)
+		delete prmMap;
 
+	string s;
+	getline((*ifs),s);
+	prmMap = new MADKeyMap(s);
+}
+
+void MADInterface::AppendModel (const string& fname, double Pref)
+{
+	if(ifs)
+		delete ifs;
+
+	ifs =  new ifstream(fname.c_str());
+	if(!(*ifs)) {
+		MERLIN_ERR<<"ERROR openning file "<<fname<<endl;
+		delete ifs;
+		abort();
+	}
+	Initialise();
+
+	if(ctor==0) {// first file
+		ctor = new AcceleratorModelConstructor();
+		ctor->NewModel();
+	}
+	
+	StripHeader((*ifs));
+	
+	energy = Pref;
+	while((*ifs))
+		ReadComponent();	
+}
+
+AcceleratorModel* MADInterface::GetModel()
+{
+	assert(ctor);
+
+	if(logFlag && log) {
+		*log<<endl;
+		ctor->ReportStatistics(*log);
+		if(inc_sr)
+			*log<<"\n\n final energy = "<<energy<<" GeV"<<endl;
+	}
+
+	AcceleratorModel* theModel = ctor->GetModel();
+	delete ctor;
+	ctor=0;
+	return theModel;
+}
 
 //## Other Operations (implementation)
 //## Operation: ConstructModel%39576D9D0226
 AcceleratorModel* MADInterface::ConstructModel ()
 {
   //## begin MADInterface::ConstructModel%39576D9D0226.body preserve=yes
+	if(!ifs) {
+		MerlinIO::error()<<"MADInterface :: No model file defined!"<<endl;
+		abort();
+	}
+
+	if(ctor!=0)
+		delete ctor;
+
 	ctor = new AcceleratorModelConstructor();
 	double z=0.0;
 	
@@ -200,9 +257,9 @@ AcceleratorModel* MADInterface::ConstructModel ()
 	
 	// reset the stream pointer
 	// ifs.seekg(0);
-	StripHeader(ifs);
+	StripHeader((*ifs));
 	
-	while(ifs)
+	while(*ifs)
 		z+=ReadComponent();
 	
 	if(logFlag && log) {
@@ -302,7 +359,7 @@ void MADInterface::EndFrame (const string& name)
 double MADInterface::ReadComponent ()
 {
   //## begin MADInterface::ReadComponent%3965BACD01F6.body preserve=yes
-#define  _READ(value) if(!(ifs>>value)) return 0;
+#define  _READ(value) if(!((*ifs)>>value)) return 0;
 	
 	string name,type,aptype;
 	double len,angle,k1,k2,k3,h,tilt;
@@ -310,7 +367,7 @@ double MADInterface::ReadComponent ()
 	_READ(name);
 	_READ(type);
 	
-	prmMap->ReadRow(ifs);
+	prmMap->ReadRow((*ifs));
 	
 	name=StripQuotes(name);
 	type=StripQuotes(type);

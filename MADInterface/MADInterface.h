@@ -93,7 +93,7 @@ class MADInterface
       //## Operation: MADInterface%39576D8603D4
       //	Constructor taking the name of the MAD optics file, and
       //	the momentum in GeV/c.
-      MADInterface (const std::string& madFileName, double P0);
+      MADInterface (const std::string& madFileName="", double P0=0);
 
 
     //## Other Operations (specified)
@@ -144,6 +144,13 @@ class MADInterface
       //	Treats the mad type typestr as a drift.
       void TreatTypeAsDrift (const std::string& typestr);
 
+	  // Functions for constructing a model from several files.
+	  // Repeated calls to AppendModel(fname,p) constructs a single
+	  // model (beamline) from the respective files. The final
+	  // model is returned using GetModel().
+	  void AppendModel(const std::string& fname, double pref);
+	  AcceleratorModel* GetModel();
+
   protected:
   private:
     // Data Members for Class Attributes
@@ -155,7 +162,7 @@ class MADInterface
 
       //## Attribute: ifs%39576D79038E
       //## begin MADInterface::ifs%39576D79038E.attr preserve=no  private: ifstream {UA} 
-      ifstream ifs;
+      ifstream *ifs;
       //## end MADInterface::ifs%39576D79038E.attr
 
       //## Attribute: log%39577AB001EA
@@ -209,6 +216,8 @@ class MADInterface
 
       //## Operation: ReadComponent%3965BACD01F6
       double ReadComponent ();
+
+	  void Initialise();
 
     // Data Members for Associations
 
