@@ -1,33 +1,16 @@
-//   Read the documentation to learn more about C++ code generator
-//   versioning.
-
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 3.0 (2003)
- * 
- * file Merlin\MADInterface\MADInterface.cpp
- * last modified 04/12/01 10:41:01
- */
-
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- * Copyright (c) 2003 by The Merlin Collaboration.
- * - ALL RIGHTS RESERVED - 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:54 $
+// $Revision: 1.9 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #include <cstdlib>
 #include "AcceleratorModel/Components.h"
@@ -57,86 +40,86 @@ using namespace PhysicalUnits;
 
 namespace {
 
-    // stack used to match MAD LINE pairs
-    // Note: we need this because we no longer preserve the complete MAD beamline
-    // structure.
-    stack<string> frameStack;
+// stack used to match MAD LINE pairs
+// Note: we need this because we no longer preserve the complete MAD beamline
+// structure.
+stack<string> frameStack;
 
-    // function to calculate energy loss in dipole
-    // due to SR (returns dE in GeV)
-    inline double SRdE(double h, double len, double E)
-    {
-        static const double Cg = 8.85e-05/twoPi;
-        return Cg*pow(E,4)*h*h*len;
-    }
+// function to calculate energy loss in dipole
+// due to SR (returns dE in GeV)
+inline double SRdE(double h, double len, double E)
+{
+    static const double Cg = 8.85e-05/twoPi;
+    return Cg*pow(E,4)*h*h*len;
+}
 
-    // utility routines for reading in MAD optics file
+// utility routines for reading in MAD optics file
 
-    void Log(const string& tag, int depth, ostream& os)
-    {
-        static const char* tab = "----|";
-        while(depth--) os<<tab;
-        os<<' '<<tag<<endl;
-    }
+void Log(const string& tag, int depth, ostream& os)
+{
+    static const char* tab = "----|";
+    while(depth--) os<<tab;
+    os<<' '<<tag<<endl;
+}
 
-    void StripHeader(istream& is)
-    {
-        char buffer[256];
-        char c;
-        while(true && is) {
-            is.get(c);
-            if(c=='*'||c=='$'||c=='@')
-                is.getline(buffer,256);
-            else {
-                is.putback(c);
-                break;
-            }
+void StripHeader(istream& is)
+{
+    char buffer[256];
+    char c;
+    while(true && is) {
+        is.get(c);
+        if(c=='*'||c=='$'||c=='@')
+            is.getline(buffer,256);
+        else {
+            is.putback(c);
+            break;
         }
     }
+}
 
-    inline string StripQuotes(const string& text)
-    {
-        return text.substr(1,text.length()-2);
+inline string StripQuotes(const string& text)
+{
+    return text.substr(1,text.length()-2);
+}
+
+Aperture* ConstructAperture(const string& apstr)
+{
+    Aperture* ap;
+    double w,h,d;
+    string::size_type n;
+
+    switch(apstr[0]) {
+    case 'D':
+        d = atof(apstr.substr(1).c_str())*millimeter;
+        ap = new CircularAperture(d/2);
+        break;
+    case 'X':
+        n = apstr.find_first_of('Y',1);
+        assert(n!=string::npos);
+        w = atof(apstr.substr(1,n-1).c_str())*millimeter;
+        h = atof(apstr.substr(n+1).c_str())*millimeter;
+        ap = new RectangularAperture(w,h);
+        break;
+    case '~':
+        ap = 0;
+        break;
+    default:
+        MERLIN_ERR<<"ERROR: bad aperture definition: "<<apstr<<endl;
+        abort();
+    };
+
+    return ap;
+}
+
+void check_column_heading(istream& is, const string& hd)
+{
+    string s;
+    is>>s;
+    if(s!=hd) {
+        MerlinIO::error()<<"Bad file format: expected "<<hd<<" found "<<s<<endl;
+        abort();
     }
-
-    Aperture* ConstructAperture(const string& apstr)
-    {
-        Aperture* ap;
-        double w,h,d;
-        string::size_type n;
-
-        switch(apstr[0]) {
-        case 'D':
-            d = atof(apstr.substr(1).c_str())*millimeter;
-            ap = new CircularAperture(d/2);
-            break;
-        case 'X':
-            n = apstr.find_first_of('Y',1);
-            assert(n!=string::npos);
-            w = atof(apstr.substr(1,n-1).c_str())*millimeter;
-            h = atof(apstr.substr(n+1).c_str())*millimeter;
-            ap = new RectangularAperture(w,h);
-            break;
-        case '~':
-            ap = 0;
-            break;
-        default:
-            MERLIN_ERR<<"ERROR: bad aperture definition: "<<apstr<<endl;
-            abort();
-        };
-
-        return ap;
-    }
-
-    void check_column_heading(istream& is, const string& hd)
-    {
-        string s;
-        is>>s;
-        if(s!=hd) {
-            MerlinIO::error()<<"Bad file format: expected "<<hd<<" found "<<s<<endl;
-            abort();
-        }
-    }
+}
 
 };
 
@@ -322,7 +305,7 @@ void MADInterface::EndFrame (const string& name)
 
 double MADInterface::ReadComponent ()
 {
-#define  _READ(value) if( !(*ifs>>value) ) return 0;
+#define  _READ(value) if(!((*ifs)>>value)) return 0;
 
     string name,type,aptype;
     double len,angle,k1,k2,k3,h,tilt;
@@ -464,7 +447,9 @@ double MADInterface::ReadComponent ()
                 MerlinIO::error()<<'('<<len<<", "<<len1<<')'<<endl;
             }
 
-            component =  new SWRFStructure(name,ncells,freq,volts*MV/len,phase);
+            SWRFStructure* rfsctruct = new SWRFStructure(name,ncells,freq,volts*MV/len,phase);
+            ctor->AppendComponent(*rfsctruct);
+            component=rfsctruct;
         }
         else if(type=="MONITOR") {
             if(name.substr(0,4)=="BPM_") {

@@ -1,248 +1,156 @@
-//## begin module%37146AE90096.cm preserve=no
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 2.0 (2000)
- * 
- * file Merlin\AcceleratorModel\TrackingInterface\ComponentIntegrator.h
- * last modified 03/04/01 14:19:27
- */
-//## end module%37146AE90096.cm
-
-//## begin module%37146AE90096.cp preserve=no
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
-//## end module%37146AE90096.cp
-
-//## Module: ComponentIntegrator%37146AE90096; Package specification
-//## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-//## Source file: D:\dev\Merlin\AcceleratorModel\TrackingInterface\ComponentIntegrator.h
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:52 $
+// $Revision: 1.3 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #ifndef ComponentIntegrator_h
 #define ComponentIntegrator_h 1
 
-//## begin module%37146AE90096.additionalIncludes preserve=no
 #include "merlin_config.h"
-//## end module%37146AE90096.additionalIncludes
-
-//## begin module%37146AE90096.includes preserve=yes
 #include "NumericalUtils/utils.h"
 #include "NumericalUtils/Range.h"
-//## end module%37146AE90096.includes
-
-// AcceleratorComponent
 #include "AcceleratorModel/AcceleratorComponent.h"
-//## begin module%37146AE90096.declarations preserve=no
-//## end module%37146AE90096.declarations
 
-//## begin module%37146AE90096.additionalDeclarations preserve=yes
-//## end module%37146AE90096.additionalDeclarations
-
-
-//## Class: ComponentIntegrator%371372B70230; Abstract
-//	An integrator is used by Tracker to track through an
+//  Class ComponentIntegrator
+//
+//	Abstract class used by ComponentTracker to track through an
 //	AcceleratorComponent. Integrators encapsulate the
 //	various algorithms used for tracking.
-//## Category: Merlin::AcceleratorModel::TrackingInterface%3AC4815503CA
-//## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-//## Persistence: Transient
-//## Cardinality/Multiplicity: n
 
-class ComponentIntegrator 
+class ComponentIntegrator
 {
-  public:
-    //## Constructors (specified)
-      //## Operation: ComponentIntegrator%924021903
-      ComponentIntegrator ();
+public:
 
-    //## Destructor (specified)
-      //## Operation: ~ComponentIntegrator%924021904
-      virtual ~ComponentIntegrator ();
+    ComponentIntegrator ();
+    virtual ~ComponentIntegrator ();
 
+    //	Track the entire component.
+    void TrackAll ();
 
-    //## Other Operations (specified)
-      //## Operation: TrackAll%924021894
-      //	Track the entire component.
-      void TrackAll ();
+    //	Tracks a single step ds through the current component.
+    //  Returns the remaining length.
+    virtual double Track (double ds);
 
-      //## Operation: TrackStep%924021895
-      //	Tracks a single step ds through the current component.
-      virtual double TrackStep (double ds) = 0;
+    //	Returns the component index for this integrator.
+    virtual int GetComponentIndex () const = 0;
 
-      //## Operation: SetCurrentComponent%924021896
-      void SetCurrentComponent (AcceleratorComponent& aComponent);
+    //	Returns the total integrated length through the current
+    //	component.
+    double GetIntegratedLength () const;
 
-      //## Operation: GetCurrentComponent%924021897
-      AcceleratorComponent& GetCurrentComponent ();
+    //	Returns the remaining length to integrate.
+    double GetRemainingLength () const;
 
-      //## Operation: GetComponentIndex%924021898
-      //	Returns the component index for this integrator.
-      virtual int GetComponentIndex () const = 0;
+    //	Returns true if the step ds is valid (allowed)
+    bool IsValidStep (double ds) const;
 
-      //## Operation: GetIntegratedLength%924021899
-      //	Returns the total integrated length through the current
-      //	component.
-      double GetIntegratedLength () const;
+    //  Returns the remaining valid step range for this integrator.
+    //  Default behaviour returns [0,GetRemainingLength()]
+    virtual FloatRange GetValidStepRange() const;
 
-      //## Operation: GetRemainingLength%924021902
-      //	Returns the remaining length to integrate.
-      double GetRemainingLength () const;
+    //	Component boundary checks
+    //  Returns true if GetIntegratedLength()==0
+    bool AtEntrance() const;
 
-      //## Operation: IsValidStep%925486265
-      //	Returns true if the step ds is still within the geometry
-      //	extents of the current component being tracked.
-      bool IsValidStep (double ds) const;
+    //  Returns true if step == GetRemainingLength()
+    bool AtExit(double step=0) const;
 
-	  // Returns the range of allowed step sizes for this integrator.
-	  // Default returns [0,GetRemainingLength()]
-	  virtual FloatRange GetStepRange() const;
+protected:
 
-	  bool AtEntrance() const {
-		  return S_int==0;
-	  }
-	  bool AtExit() const {
-		  return GetRemainingLength()==0;
-	  }
+    friend class ComponentTracker;
 
-  protected:
+    //  Sets the current component to track
+    //  Can only be called by ComponentTracker via friendship
+    virtual void SetCurrentComponent (AcceleratorComponent& aComponent);
 
-    //## Other Operations (specified)
-      //## Operation: IncrStep%925486266
-      double IncrStep (double ds);
+    //  Perform the tracking for step ds. Concrete integrators
+    //  must supply this function.
+    virtual void TrackStep(double ds) =0;
 
-    // Data Members for Class Attributes
+    // functions for applying entrance and exit field maps.
+    virtual void TrackEntrance() {};
+    virtual void TrackExit() {};
 
-      //## Attribute: S_int%371373840366
-      //	The current total integrated length.
-      //## begin ComponentIntegrator::S_int%371373840366.attr preserve=no  protected: double {UA} 
-      double S_int;
-      //## end ComponentIntegrator::S_int%371373840366.attr
+private:
 
-    // Data Members for Associations
+    double cur_S; // current integrated length
+    double tot_S; // total length
 
-      //## Association: Merlin::AcceleratorModel::TrackingInterface::<unnamed>%371373140118
-      //## Role: ComponentIntegrator::component%37137316001E
-      //	The current component being tracked.
-      //## begin ComponentIntegrator::component%37137316001E.role preserve=no  protected: AcceleratorComponent { -> 0..1RHAN}
-      AcceleratorComponent* component;
-      //## end ComponentIntegrator::component%37137316001E.role
-
-  private:
-  private:  //## implementation
+    //  The current component
+    AcceleratorComponent* component;
 };
 
-// Class ComponentIntegrator 
-
-//## Operation: ComponentIntegrator%924021903
 inline ComponentIntegrator::ComponentIntegrator ()
-  //## begin ComponentIntegrator::ComponentIntegrator%924021903.initialization preserve=yes
-  : S_int(0),component(0)
-  //## end ComponentIntegrator::ComponentIntegrator%924021903.initialization
-{
-  //## begin ComponentIntegrator::ComponentIntegrator%924021903.body preserve=yes
-  //## end ComponentIntegrator::ComponentIntegrator%924021903.body
-}
+        : cur_S(0),component(0)
+{}
 
-
-//## Operation: ~ComponentIntegrator%924021904
 inline ComponentIntegrator::~ComponentIntegrator ()
-{
-  //## begin ComponentIntegrator::~ComponentIntegrator%924021904.body preserve=yes
-	// Nothing to do
-  //## end ComponentIntegrator::~ComponentIntegrator%924021904.body
-}
+{}
 
-
-
-//## Other Operations (inline)
-//## Operation: TrackAll%924021894
 inline void ComponentIntegrator::TrackAll ()
 {
-  //## begin ComponentIntegrator::TrackAll%924021894.body preserve=yes
-	TrackStep(component->GetLength());
-  //## end ComponentIntegrator::TrackAll%924021894.body
+    Track(component->GetLength());
 }
 
-//## Operation: SetCurrentComponent%924021896
 inline void ComponentIntegrator::SetCurrentComponent (AcceleratorComponent& aComponent)
 {
-  //## begin ComponentIntegrator::SetCurrentComponent%924021896.body preserve=yes
-	component = &aComponent;
-	S_int=0;
-  //## end ComponentIntegrator::SetCurrentComponent%924021896.body
+    component = &aComponent;
+    cur_S=0;
+    tot_S=component->GetLength();
 }
 
-//## Operation: GetCurrentComponent%924021897
-inline AcceleratorComponent& ComponentIntegrator::GetCurrentComponent ()
-{
-  //## begin ComponentIntegrator::GetCurrentComponent%924021897.body preserve=yes
-	return *component;
-  //## end ComponentIntegrator::GetCurrentComponent%924021897.body
-}
-
-//## Operation: GetIntegratedLength%924021899
 inline double ComponentIntegrator::GetIntegratedLength () const
 {
-  //## begin ComponentIntegrator::GetIntegratedLength%924021899.body preserve=yes
-	return S_int;
-  //## end ComponentIntegrator::GetIntegratedLength%924021899.body
+    return cur_S;
 }
 
-//## Operation: GetRemainingLength%924021902
 inline double ComponentIntegrator::GetRemainingLength () const
 {
-  //## begin ComponentIntegrator::GetRemainingLength%924021902.body preserve=yes
-	using namespace std;
-	const double z=(*component).GetLength()-S_int;
-	return fequal(z,0.0) ? 0 : z;
-  //## end ComponentIntegrator::GetRemainingLength%924021902.body
+    double s = tot_S-cur_S;
+    return fequal(s,0) ? 0 : s;
 }
 
-//## Operation: IsValidStep%925486265
 inline bool ComponentIntegrator::IsValidStep (double ds) const
 {
-  //## begin ComponentIntegrator::IsValidStep%925486265.body preserve=yes
-	return !((S_int+ds)>(*component).GetLength());
-  //## end ComponentIntegrator::IsValidStep%925486265.body
+    return GetValidStepRange()(ds);
 }
 
-//## Operation: IncrStep%925486266
-inline double ComponentIntegrator::IncrStep (double ds)
+inline double ComponentIntegrator::Track(double ds)
 {
-  //## begin ComponentIntegrator::IncrStep%925486266.body preserve=yes
-	S_int+=ds;
-	return GetRemainingLength();
-  //## end ComponentIntegrator::IncrStep%925486266.body
+    if(AtEntrance())
+        TrackEntrance();
+
+    TrackStep(ds);
+    cur_S+=ds;
+
+    if(AtExit())
+        TrackExit();
+
+    return GetRemainingLength();
 }
 
-inline FloatRange ComponentIntegrator::GetStepRange() const
+inline bool ComponentIntegrator::AtEntrance() const
 {
-	return FloatRange(0,GetRemainingLength());
+    return cur_S==0;
 }
-// Class ComponentIntegrator 
 
+inline bool ComponentIntegrator::AtExit(double s) const
+{
+    return fequal(s+cur_S,tot_S);
+}
 
-
-
-//## begin module%37146AE90096.epilog preserve=yes
-//## end module%37146AE90096.epilog
-
+inline FloatRange ComponentIntegrator::GetValidStepRange() const
+{
+    return FloatRange(0,GetRemainingLength());
+}
 
 #endif

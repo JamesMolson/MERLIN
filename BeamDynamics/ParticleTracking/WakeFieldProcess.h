@@ -1,74 +1,86 @@
-// WakeFieldProcess.h
+/////////////////////////////////////////////////////////////////////////
 //
-// Modified by A.Wolski 12/2/2003
-// to include the derivative of the charge distribution
-// for handling CSR wake fields.
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:53 $
+// $Revision: 1.6 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #ifndef _h_WakeFieldProcess
 #define _h_WakeFieldProcess
 
 #include "BeamDynamics/ParticleTracking/ParticleBunchProcess.h"
 #include "utility/StringPattern.h"
-
 #include <vector>
 
 class WakePotentials;
 
-class WakeFieldProcess : public ParticleBunchProcess 
+namespace ParticleTracking {
+
+// class WakefieldProcess
+// Implements single-bunch wakefields.
+//
+// Modified by A.Wolski 12/2/2003
+// to include the derivative of the charge distribution
+// for handling CSR wake fields.
+
+class WakeFieldProcess : public ParticleBunchProcess
 {
 public:
-	
-	enum ImpulseLocation {atCentre,atExit};
 
-	WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0);
-	~WakeFieldProcess();
-	
-	virtual void InitialiseProcess (Bunch& bunch);
-	virtual void SetCurrentComponent (AcceleratorComponent& component);
-	virtual void DoProcess (double ds);
-	virtual double GetMaxAllowedStepSize () const;
-	
-	void ApplyImpulseAt(ImpulseLocation loc) { imploc=loc; }
+    enum ImpulseLocation {atCentre,atExit};
 
-	void IncludeTransverseWake(bool flg) { inc_tw = flg; }
+    WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0);
+    ~WakeFieldProcess();
 
-	void DumpSliceCentroids(ostream&) const;
+    virtual void InitialiseProcess (Bunch& bunch);
+    virtual void SetCurrentComponent (AcceleratorComponent& component);
+    virtual void DoProcess (double ds);
+    virtual double GetMaxAllowedStepSize () const;
 
-	void SetFilter(int n, int m, int d);
+    void ApplyImpulseAt(ImpulseLocation loc) { imploc=loc; }
+    void IncludeTransverseWake(bool flg) { inc_tw = flg; }
+    void DumpSliceCentroids(ostream&) const;
+    void SetFilter(int n, int m, int d);
 
 private:
 
-	void ApplyWakefield(double ds);
+    ImpulseLocation imploc;
+    double current_s;
+    double impulse_s;
+    double clen;
+    size_t nbins;
+    double nsig;
+    bool inc_tw;
 
-	ImpulseLocation imploc;
-	double current_s;
-	double impulse_s;
-	double clen;
+    void Init();
+    size_t CalculateQdist();
+    void CalculateWakeL();
+    void CalculateWakeT();
+    void ApplyWakefield(double ds);
 
-	size_t nbins;
-	double nsig;
-	bool inc_tw;
+    WakePotentials* currentWake;
 
-	void Init();
-	size_t CalculateQdist();
-	void CalculateWakeL();
-	void CalculateWakeT();
-	
-	WakePotentials* currentWake;
+    std::vector<ParticleBunch::iterator> bunchSlices;
+    std::vector<double> Qd;
+    std::vector<double> Qdp;
+    std::vector<double>* filter;
+    std::vector<double> wake_z;
+    std::vector<double> wake_x;
+    std::vector<double> wake_y;
 
-	std::vector<ParticleBunch::iterator> bunchSlices;
-	std::vector<double> Qd;
-	std::vector<double> Qdp;
-	std::vector<double>* filter;
-	std::vector<double> wake_z;
-	std::vector<double> wake_x;
-	std::vector<double> wake_y;
-
-	double zmin,zmax,dz;
-	
-	bool recalc;
+    double zmin,zmax,dz;
+    bool recalc;
 };
 
 void savgol(vector<double>& c, int nl, int nr, int ld, int m);
+
+}; // end namespace ParticleTracking
 
 #endif

@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _Normal_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _Normal_h 
 
@@ -31,7 +30,7 @@ protected:
     double pMean;
     double pVariance;
     double pStdDev;
-    
+
 public:
     Normal(double xmean, double xvariance, RNG *gen);
     double mean();
@@ -43,24 +42,24 @@ public:
 
 
 inline Normal::Normal(double xmean, double xvariance, RNG *gen)
-: Random(gen) {
-  pMean = xmean;
-  pVariance = xvariance;
-  pStdDev = sqrt(pVariance);
-  haveCachedNormal = 0;
+        : Random(gen) {
+    pMean = xmean;
+    pVariance = xvariance;
+    pStdDev = sqrt(pVariance);
+    haveCachedNormal = 0;
 }
 
 inline double Normal::mean() { return pMean; };
 inline double Normal::mean(double x) {
-  double t=pMean; pMean = x;
-  return t;
+    double t=pMean; pMean = x;
+    return t;
 }
 
 inline double Normal::variance() { return pVariance; }
 inline double Normal::variance(double x) {
-  double t=pVariance; pVariance = x;
-  pStdDev = sqrt(pVariance);
-  return t;
+    double t=pVariance; pVariance = x;
+    pStdDev = sqrt(pVariance);
+    return t;
 };
 
 #endif

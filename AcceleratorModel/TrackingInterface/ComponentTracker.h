@@ -1,74 +1,37 @@
-//## begin module%371450080280.cm preserve=no
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 2.0 (2000)
- * 
- * file Merlin\AcceleratorModel\TrackingInterface\ComponentTracker.h
- * last modified 03/04/01 14:44:11
- */
-//## end module%371450080280.cm
-
-//## begin module%371450080280.cp preserve=no
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
-//## end module%371450080280.cp
-
-//## Module: ComponentTracker%371450080280; Package specification
-//## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-//## Source file: D:\dev\Merlin\AcceleratorModel\TrackingInterface\ComponentTracker.h
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:52 $
+// $Revision: 1.2 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #ifndef ComponentTracker_h
 #define ComponentTracker_h 1
 
-//## begin module%371450080280.additionalIncludes preserve=no
 #include "merlin_config.h"
-//## end module%371450080280.additionalIncludes
-
-//## begin module%371450080280.includes preserve=yes
-//## end module%371450080280.includes
-
-// ComponentIntegrator
 #include "AcceleratorModel/TrackingInterface/ComponentIntegrator.h"
-// AcceleratorComponent
 #include "AcceleratorModel/AcceleratorComponent.h"
+#include <map>
 
-class IntegratorTable;
-
-//## begin module%371450080280.declarations preserve=no
-//## end module%371450080280.declarations
-
-//## begin module%371450080280.additionalDeclarations preserve=yes
-//## end module%371450080280.additionalDeclarations
-
-
-//## Class: ComponentTracker%36EE2EA200FC; Abstract
-//	Tracker provides the primary interface for tracking
-//	operations through an accelerator model. An object of
-//	class Tracker can be thought of as a collection of
+//  class ComponentTracker
+//
+//	ComponentTracker provides the primary interface for tracking
+//	operations through a series of AcceleratorComponents. An object of
+//	class ComponentTracker can be thought of as a collection of
 //	Integrator objects, each of which is responsible for
 //	"tracking" some beam-like representation through a
 //	specific component. Selection of the correct Integrator
-//	is performed via the callback mechanism Select
-//	Integrator, which is called directly by Accelerator
-//	Component::PrepareTracker.  Concrete Tracker objects
+//	is performed via the callback mechanism SelectIntegrator(),
+//	which is called directly by Accelerator
+//	AcceleratorComponent::PrepareTracker.
+//  Concrete Tracker objects
 //	should supply the (concrete) Integrators, which when
 //	identified, are then passed back down to the concrete
 //	class via a call the virtual function SetCurrent
@@ -80,177 +43,225 @@ class IntegratorTable;
 //	which is normally associated with that pattern.  Thus
 //	the accelerator model representation can be easily
 //	extended without the need to add new visitor functions.
-//## Category: Merlin::AcceleratorModel::TrackingInterface%3AC4815503CA
-//## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-//## Persistence: Transient
-//## Cardinality/Multiplicity: n
 
-//## Uses: <unnamed>%36EE2FAA0296;AcceleratorComponent { -> }
-//## Uses: GetState%36EE3EB302A5;ComponentTracker::State { -> F}
-//## Uses: <unnamed>%37CA72B000BE;DefaultMarkerIntegrator { -> }
-
-class ComponentTracker 
+class ComponentTracker
 {
-  public:
-    //## Class: State%36EE3E6A0368
-    //	State of the Tracker.
-    //## Category: <Top Level>
-    //## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-    //## Persistence: Transient
-    //## Cardinality/Multiplicity: n
+public:
 
+    //	Tracker state
     typedef enum {undefined, initialised, tracking, finished} State;
 
-    //## Class: UnknownComponent%371363F80028
     //	Exception thrown when no valid integrator is identified.
-    //## Category: <Top Level>
-    //## Subsystem: Merlin::AcceleratorModel::TrackingInterface%3AC484140014
-    //## Persistence: Transient
-    //## Cardinality/Multiplicity: n
+    struct UnknownComponent {};
 
-    class UnknownComponent 
-    {
-      public:
-      protected:
-      private:
-      private:  //## implementation
+    //	Destructor
+    virtual ~ComponentTracker ();
+
+    //	Track the entire current accelerator component. Initial
+    //	tracker state must be initialised, and final state is
+    //	finished.
+    void Track ();
+
+    //	Track a step ds through the current component, and
+    //	return the remaining distance to the exit boundary.
+    //	Initial state must be either initialised or tracking.
+    //	Final state is either tracking or finished. If ds tracks
+    //	beyond the current AcceleratorComponent geometry, a
+    //	BeyondExtent exception is thrown.
+    double TrackStep (double ds);
+
+    //	Returns the current state of the Tracker.
+    ComponentTracker::State GetState () const;
+
+    //	Reset the Tracker. The state is automatically set to
+    //	undefined.
+    void Reset ();
+
+    //	Returns the remaining tracking distance. Current state
+    //	must be initialised, tracking or finished.
+    double GetRemainingLength () const;
+
+    //	Returns the total integrated length. State must be
+    //	initialised, tracking or finished.
+    double GetIntegratedLength () const;
+
+    //	Function called by AcceleratorComponent objects to
+    //	select the correct Integrator for component. Returns
+    //	true if an Integrator object is found for index,
+    //	otherwise false.
+    bool SelectIntegrator (int index, AcceleratorComponent& component);
+
+    //	Function operator overload. Tracks the specified
+    //	AcceleratorComponent in one step.
+    void operator () (AcceleratorComponent* component);
+
+    // IntegratorSet class
+    class IntegratorSet {
+    public:
+        typedef std::map< int,ComponentIntegrator* > IMap;
+        ~IntegratorSet ();
+
+        // Adds the specified integrator. Returns true
+        // if the the integrator replaces an existing one,
+        // otherwise false.
+        bool Add (ComponentIntegrator* intg);
+
+        // Return integrator n (or NULL if there is
+        // no associate integrator).
+        ComponentIntegrator* GetIntegrator (int n);
+
+    private:
+        IMap itsMap;
     };
 
-  public:
-    //## Destructor (specified)
-      //## Operation: ~ComponentTracker%924021884
-      //	Destructor
-      virtual ~ComponentTracker ();
+protected:
 
+    //	Constructor(s) made protected to prevent instantiation
+    ComponentTracker ();
+    explicit ComponentTracker (IntegratorSet* iset);
 
-    //## Other Operations (specified)
-      //## Operation: Track%924021885
-      //	Track the entire current accelerator component. Initial
-      //	tracker state must be initialised, and final state is
-      //	finished.
-      void Track ();
+    //	Protected virtual function called by SelectIntegrator()
+    //	when it has successfully located a valid integrator.
+    //	Concrete Tracker objects should override this function
+    //	to perform any initialisation appropriate on the
+    //	(concrete) integrator.
+    virtual void InitialiseIntegrator (ComponentIntegrator*);
 
-      //## Operation: TrackStep%924021886
-      //	Track a step ds through the current component, and
-      //	return the remaining distance to the exit boundary.
-      //	Initial state must be either initialised or tracking.
-      //	Final state is either tracking or finished. If ds tracks
-      //	beyond the current AcceleratorComponent geometry, a
-      //	BeyondExtent exception is thrown.
-      double TrackStep (double ds);
+    //	Used to register an integrator. Returns true if this
+    //	integrator overrides an existing one, otherwise false.
+    //	Register() should be called by the constructors of
+    //	concrete Tracker classes in order to setup the required
+    //	integrators.
+    bool Register (ComponentIntegrator* intg);
 
-      //## Operation: GetState%924021887
-      //	Returns the current state of the Tracker.
-      ComponentTracker::State GetState () const;
+private:
 
-      //## Operation: Reset%924021888
-      //	Reset the Tracker. The state is automatically set to
-      //	undefined.
-      void Reset ();
+    // Dissable copy construction
+    ComponentTracker(const ComponentTracker&);
 
-      //## Operation: GetRemainingTrackLength%924021889
-      //	Returns the remaining tracking distance. Current state
-      //	must be initialised, tracking or finished.
-      double GetRemainingTrackLength () const;
+    State itsState;
+    ComponentIntegrator* integrator; // current integrator
 
-      //## Operation: GetIntegratedLength%924021890
-      //	Returns the total integrated length. State must be
-      //	initialised, tracking or finished.
-      double GetIntegratedLength () const;
-
-      //## Operation: SelectIntegrator%924021891
-      //	Function called by AcceleratorComponent objects to
-      //	select the correct Integrator for component. Returns
-      //	true if an Integrator object is found for index,
-      //	otherwise false. This function is provided as part of
-      //	the Tracker-AcceleratorComponent framework.
-      bool SelectIntegrator (int index, AcceleratorComponent& component);
-
-      //## Operation: operator()%963340561
-      //	Function operator overload. Tracks the specified
-      //	AcceleratorComponent in one step.
-      void operator () (AcceleratorComponent* component);
-
-  protected:
-    //## Constructors (specified)
-      //## Operation: ComponentTracker%924021883
-      //	Constructor
-      ComponentTracker ();
-
-
-    //## Other Operations (specified)
-      //## Operation: InitialiseIntegrator%924021892
-      //	Protected virtual function called by SelectIntegrator()
-      //	when it has successfully located a valid integrator.
-      //	Concrete Tracker objects should override this function
-      //	to perform any initialisation appropriate on the
-      //	(concrete) integrator.
-      virtual void InitialiseIntegrator ();
-
-      //## Operation: Register%924021893
-      //	Used to register an integrator. Returns true if this
-      //	integrator overrides an existing one, otherwise false.
-      //	Register() should be called by the constructors of
-      //	concrete Tracker classes in order to setup the required
-      //	integrators.
-      bool Register (ComponentIntegrator* intg);
-
-    // Data Members for Associations
-
-      //## Association: Merlin::AcceleratorModel::TrackingInterface::<unnamed>%371375EA00AA
-      //## Role: ComponentTracker::integrator%371375EA02D0
-      //	The current selected integrator.
-      //## begin ComponentTracker::integrator%371375EA02D0.role preserve=no  protected: ComponentIntegrator { -> 0..1RFHAN}
-      ComponentIntegrator* integrator;
-      //## end ComponentTracker::integrator%371375EA02D0.role
-
-  private:
-    // Data Members for Class Attributes
-
-      //## Attribute: itsState%37137660032A
-      //## begin ComponentTracker::itsState%37137660032A.attr preserve=no  private: State {UA} 
-      State itsState;
-      //## end ComponentTracker::itsState%37137660032A.attr
-
-    // Data Members for Associations
-
-      //## Association: Merlin::AcceleratorModel::TrackingInterface::<unnamed>%371379D802A8
-      //## Role: ComponentTracker::itsTable%371379D900AA
-      //## begin ComponentTracker::itsTable%371379D900AA.role preserve=no  private: IntegratorTable { -> 0..1VFHAN}
-      IntegratorTable* itsTable;
-      //## end ComponentTracker::itsTable%371379D900AA.role
-
-  private:  //## implementation
+    IntegratorSet* iSet;
 };
 
-// Class ComponentTracker::UnknownComponent 
+// template class TBunchCMPTracker
+//
+// This template class can be used to instantiate concrete
+// ComponentTracker classes which are used to track a specific
+// Bunch object.
 
-// Class ComponentTracker 
+template<class _B>
+class TBunchCMPTracker : public ComponentTracker {
+public:
+
+    typedef _B bunch_type;
+
+    // Bunch specific integrators
+class B_Integrator : public ComponentIntegrator {
+    public:
+        void SetBunch(_B& aBunch) { currentBunch = &aBunch; }
+        virtual double Track(double ds) {
+            double s = ComponentIntegrator::Track(ds);
+            currentBunch->IncrReferenceTime(ds);
+            return s;
+        }
+    protected:
+        _B* currentBunch;
+    };
+
+    // Template for component-specific bunch integrator
+    // concrete BunchType integrators should inherit from
+    // an instantiation of this template.
+    template<class _C>
+class Integrator : public B_Integrator {
+    public:
+        typedef _C ComponentType;
+    protected:
+        // virtual function override
+        void SetCurrentComponent (AcceleratorComponent& c) {
+            ComponentIntegrator::SetCurrentComponent(c);
+            currentComponent=static_cast<_C*>(&c);
+        }
+
+        int GetComponentIndex () const {
+            return ComponentType::ID;
+        }
+
+        _C* currentComponent;
+    };
+
+    // Methods
+
+    // Registration of bunch integrators
+    bool Register(B_Integrator* ci) {
+        return ComponentTracker::Register(ci);
+    }
+
+    // Set the bunch to be tracked.
+    void SetBunch(_B& aBunch) {
+        currentBunch = &aBunch;
+    }
+
+    // Integrator set definition.
+    class ISetBase {
+    public:
+        virtual void Init(TBunchCMPTracker&) const =0;
+    };
+
+    // Default constructor (uses default integrator set)
+    TBunchCMPTracker() : ComponentTracker(), currentBunch(0) {
+        defIS->Init(*this);
+    }
+
+    // Constructor taking explicit integrator set
+    explicit TBunchCMPTracker(const ISetBase& iset)
+            : ComponentTracker(), currentBunch(0) {
+        iset.Init(*this);
+    }
+
+    static void SetDefaultIntegratorSet(ISetBase* iset) {
+        if(defIS!=0)
+            delete defIS;
+        defIS=iset;
+    }
+
+protected:
+
+    static ISetBase* defIS;
 
 
-//## Other Operations (inline)
-//## Operation: GetState%924021887
+    // virtual function override
+    void InitialiseIntegrator (ComponentIntegrator* ci) {
+        ComponentTracker::InitialiseIntegrator(ci);
+        static_cast<B_Integrator*>(ci)->SetBunch(*currentBunch);
+    }
+
+    _B* currentBunch;
+};
+
+// macros for constructing integrator sets
+#define DECL_INTG_SET(T,S) struct S : public T::ISetBase { void Init(T& ct) const; }; 
+#define DEF_INTG_SET(T,S) void S::Init(T& ct) const {
+#define ADD_INTG(iname) ct.Register(new iname ());
+#define END_INTG_SET };
+#define MAKE_DEF_INTG_SET(T,S) T::ISetBase* T::defIS = new S ();
+
+// implementations
+
 inline ComponentTracker::State ComponentTracker::GetState () const
 {
-  //## begin ComponentTracker::GetState%924021887.body preserve=yes
-	return itsState;
-  //## end ComponentTracker::GetState%924021887.body
+    return itsState;
 }
 
-//## Operation: operator()%963340561
 inline void ComponentTracker::operator () (AcceleratorComponent* component)
 {
-  //## begin ComponentTracker::operator()%963340561.body preserve=yes
-	component->PrepareTracker(*this);
-	Track();
-  //## end ComponentTracker::operator()%963340561.body
+    component->PrepareTracker(*this);
+    Track();
 }
 
-//## begin module%371450080280.epilog preserve=yes
 // Utility macros for tracker operations
-#define _PREPTRACK(trk,S) if(!trk.SelectIntegrator(ID,*this))\
-          S::PrepareTracker(trk); 
-//## end module%371450080280.epilog
+#define _PREPTRACK(trk,S) if(!trk.SelectIntegrator(ID,*this)) S::PrepareTracker(trk); 
 
 
 #endif

@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _Geometric_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _Geometric_h 
 
@@ -39,13 +38,13 @@ public:
 
 inline Geometric::Geometric(double mean, RNG *gen) : Random(gen)
 {
-  pMean = mean;
+    pMean = mean;
 }
 
 
 inline double Geometric::mean() { return pMean; }
 inline double Geometric::mean(double x) {
-  double tmp = pMean; pMean = x; return tmp;
+    double tmp = pMean; pMean = x; return tmp;
 }
 
 

@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -15,7 +15,6 @@ License along with this library; if not, write to the Free Software
 Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifdef __GNUG__
-#pragma implementation
 #endif
 // #include "Random/builtin.h"
 #include "Random/Random.h"
@@ -26,7 +25,7 @@ double Erlang::operator()()
     double prod = 1.0;
 
     for (int i = 0; i < k; i++) {
-	prod *= pGenerator -> asDouble();
+        prod *= pGenerator -> asDouble();
     }
     return(-log(prod)/a);
 }

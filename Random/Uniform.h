@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _Uniform_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _Uniform_h 1
 
@@ -25,7 +24,7 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 //
 //	The interval [lo..hi]
-// 
+//
 
 class Uniform: public Random {
     double pLow;
@@ -53,19 +52,19 @@ inline Uniform::Uniform(double low, double high, RNG *gen) : Random(gen)
 inline double Uniform::low() { return pLow; }
 
 inline double Uniform::low(double x) {
-  double tmp = pLow;
-  pLow = x;
-  delta = pHigh - pLow;
-  return tmp;
+    double tmp = pLow;
+    pLow = x;
+    delta = pHigh - pLow;
+    return tmp;
 }
 
 inline double Uniform::high() { return pHigh; }
 
 inline double Uniform::high(double x) {
-  double tmp = pHigh;
-  pHigh = x;
-  delta = pHigh - pLow;
-  return tmp;
+    double tmp = pHigh;
+    pHigh = x;
+    delta = pHigh - pLow;
+    return tmp;
 }
 
 #endif

@@ -35,45 +35,45 @@
 class ComponentTracker;
 
 // A spoiler represents a scattering element in the beamline. Spoiler objects
-// are optically drifts, but when associated with an Aperture, they have the 
+// are optically drifts, but when associated with an Aperture, they have the
 // material property of radiation length, which is used by specific scattering
 // process to approximate the interaction of particles with the spoiler material.
 
-class Spoiler : public Drift  
+class Spoiler : public Drift
 {
 public:
-	
-	Spoiler (const string& id, double len, double radLength);
-	
-	// Returns the length of the spoiler in units of its
-	// radiation length
-	double GetNumRadLengths() const {
-		return GetLength()/Xr;
-	}
 
-	//	Returns the type string for this component.
-	virtual const string& GetType () const;
-	
-	//	Returns the unique index for this class of accelerator
-	//	components.
-	virtual int GetIndex () const;
-	
-	//	Primary tracking interface. Prepares the specified
-	//	Tracker object for tracking this component.
-	virtual void PrepareTracker (ComponentTracker& aTracker);
-	
-	//	Rotates the component 180 degrees about its local Y axis.
-	virtual void RotateY180 ();
+    Spoiler (const string& id, double len, double radLength);
 
-	//	Virtual constructor.
-	virtual ModelElement* Copy () const;
-	
-	//	Unique index for an Accelerator component.	
-	static const int ID;
-		
+    // Returns the length of the spoiler in units of its
+    // radiation length
+    double GetNumRadLengths() const {
+        return GetLength()/Xr;
+    }
+
+    //	Returns the type string for this component.
+    virtual const string& GetType () const;
+
+    //	Returns the unique index for this class of accelerator
+    //	components.
+    virtual int GetIndex () const;
+
+    //	Primary tracking interface. Prepares the specified
+    //	Tracker object for tracking this component.
+    virtual void PrepareTracker (ComponentTracker& aTracker);
+
+    //	Rotates the component 180 degrees about its local Y axis.
+    virtual void RotateY180 ();
+
+    //	Virtual constructor.
+    virtual ModelElement* Copy () const;
+
+    //	Unique index for an Accelerator component.
+    static const int ID;
+
 private:
-	
-	double Xr;
+
+    double Xr;
 };
 
 #endif

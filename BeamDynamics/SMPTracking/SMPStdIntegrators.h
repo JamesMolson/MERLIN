@@ -55,56 +55,56 @@
 
 
 namespace SMPTracking {
-	
-	class DriftCI : public SMPComponentTracker::Integrator<Drift> {
-	protected:
-		void TrackStep (double ds);
-	};
-	
-	class TWRFStructureCI : public SMPComponentTracker::Integrator<TWRFStructure> {
-	protected:
-		void TrackStep (double ds);
-		void TrackEntrance();
-		void TrackExit();
-	private:
-		void ApplyEndField(double);
-	};
-	
-	class SectorBendCI : public SMPComponentTracker::Integrator<SectorBend> {
-	protected:
-		void TrackStep (double ds);
-		void TrackEntrance();
-		void TrackExit();
 
-		//	Used to apply a linear pole face rotation to the current
-		//	bunch.
-		void ApplyPoleFaceRotation (double h, const SectorBend::PoleFace& pf);
-	};
-	
-	class RectMultipoleCI : public SMPComponentTracker::Integrator<RectMultipole> {
-	protected:
-		void TrackStep (double ds);
-	};
-	
-	class MonitorCI : public SMPComponentTracker::Integrator<Monitor>  {
-	protected:
-		void TrackStep (double ds);
-	};
-	
-	class SWRFStructureCI : public SMPComponentTracker::Integrator<SWRFStructure> {
-	protected:
-		void TrackStep (double ds);
-	};
-	
-	class SolenoidCI : public SMPComponentTracker::Integrator<Solenoid> {
-	protected:
-		void TrackStep (double ds);
-	};
-	
-	class MarkerCI : public SMPComponentTracker::Integrator<Marker> {
-	protected:
-		void TrackStep (double ds) { return; }
-	};
+class DriftCI : public SMPComponentTracker::Integrator<Drift> {
+protected:
+    void TrackStep (double ds);
+};
+
+class TWRFStructureCI : public SMPComponentTracker::Integrator<TWRFStructure> {
+protected:
+    void TrackStep (double ds);
+    void TrackEntrance();
+    void TrackExit();
+private:
+    void ApplyEndField(double);
+};
+
+class SectorBendCI : public SMPComponentTracker::Integrator<SectorBend> {
+protected:
+    void TrackStep (double ds);
+    void TrackEntrance();
+    void TrackExit();
+
+    //	Used to apply a linear pole face rotation to the current
+    //	bunch.
+    void ApplyPoleFaceRotation (double h, const SectorBend::PoleFace& pf);
+};
+
+class RectMultipoleCI : public SMPComponentTracker::Integrator<RectMultipole> {
+protected:
+    void TrackStep (double ds);
+};
+
+class MonitorCI : public SMPComponentTracker::Integrator<Monitor>  {
+protected:
+    void TrackStep (double ds);
+};
+
+class SWRFStructureCI : public SMPComponentTracker::Integrator<SWRFStructure> {
+protected:
+    void TrackStep (double ds);
+};
+
+class SolenoidCI : public SMPComponentTracker::Integrator<Solenoid> {
+protected:
+    void TrackStep (double ds);
+};
+
+class MarkerCI : public SMPComponentTracker::Integrator<Marker> {
+protected:
+    void TrackStep (double ds) { return; }
+};
 };
 
 #endif

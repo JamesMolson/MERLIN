@@ -1,58 +1,54 @@
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:52 $
+// $Revision: 1.3 $
+// 
+/////////////////////////////////////////////////////////////////////////
+
 #include "BasicTransport/RTMap.h"
 #include "NumericalUtils/MatrixPrinter.h"
 #include "TLAS/LinearAlgebra.h"
 
-PSvector RTMap::TermBase::X(0);
-
 void RTMap::Print(std::ostream& os) const
 {
+    // Print linear matrix first
+    os<<"R:"<<endl;
+    RMap::MatrixForm(os);
 
-	OPFormat opf(6);
-	opf.scientific();
-
-	// First output the linear map
-	os<<"R:\n";
-	{
-		RealMatrix M(6,6,0.0);
-		for(RtermList::const_iterator t = rs.begin(); t!=rs.end(); t++)
-			M(t->i,t->j) = t->v;
-
-		MatrixForm(M,os);
-	}
-
-	os<<"\nT:\n";
-	for(int n=0;n<6;n++) {
-		RealMatrix M(6,6,0.0);
-		for(TtermList::const_iterator t = ts.begin(); t!=ts.end(); t++){
-			if((t->i)==n) {
-				if(t->j != t->k)
-					M(t->k,t->j) = M(t->j,t->k) = t->v/2;
-				else
-					M(t->j,t->k) = t->v;
-			}
-		}
-		MatrixForm(M,os,opf);
-		os<<endl;
-	}
+    os<<"\nT:\n";
+    for(int n=0;n<6;n++) {
+        RealMatrix M(6,6,0.0);
+        for(const_itor t = tterms.begin(); t!=tterms.end(); t++) {
+            if((t->i)==n) {
+                if(t->j != t->k)
+                    M(t->k,t->j) = M(t->j,t->k) = t->val/2;
+                else
+                    M(t->j,t->k) = t->val;
+            }
+        }
+        ::MatrixForm(M,os);
+        os<<endl;
+    }
 }
 
-void RTMap::Purge()
+PSvector& RTMap::Apply(PSvector& X) const
 {
-	RtermList::iterator i = rs.begin();
-	while(i!=rs.end()) {
-		if(i->v == 0)
-			i=rs.erase(i);
-		else
-			i++;
-	}
-	
-	TtermList::iterator j = ts.begin();
-	while(j!=ts.end()) {
-		if(j->v == 0)
-			j=ts.erase(j);
-		else
-			j++;
-	}
-}
+    PSvector Y(0);
 
-	
+    // linear map
+    RMap::Apply(X,Y);
+
+    // non-linear map
+    for(const_itor t = tterms.begin(); t!=tterms.end(); t++)
+        t->Apply(X,Y);
+
+    return X=Y;
+};
+

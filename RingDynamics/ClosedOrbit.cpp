@@ -1,164 +1,223 @@
-#include "BeamDynamics/ParticleTracking/ParticleTracker.h" // NEW! NJW
-#include "BeamDynamics/ParticleTracking/ParticleTransportProcess.h"
-#include "BeamDynamics/ParticleTracking/SynchRadParticleProcess.h"
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:54 $
+// $Revision: 1.4 $
+// 
+/////////////////////////////////////////////////////////////////////////
+
 #include "BeamDynamics/ParticleTracking/ParticleBunch.h"
+#include "BeamDynamics/ParticleTracking/SynchRadParticleProcess.h"
+#include "BeamDynamics/ParticleTracking/RingDeltaTProcess.h"
 #include "RingDynamics/ClosedOrbit.h"
-#include "RingDynamics/DoTrack.h"
-#include "TLAS/TLAS.h"
-#include "TLAS/TMatrixLib.h"
 #include "TLAS/TLASimp.h"
 
 using namespace std;
 using namespace TLAS;
+using namespace ParticleTracking;
 
-ClosedOrbit::ClosedOrbit(AcceleratorModel* aModel, double refMomentum, bool isTransverseOnly, bool isRadiation)
-	: theModel(aModel), p0(refMomentum), transverseOnly(isTransverseOnly), radiation(isRadiation), useFullAcc(false) {}
+ClosedOrbit::ClosedOrbit(AcceleratorModel* aModel, double refMomentum)
+        : theModel(aModel), p0(refMomentum), transverseOnly(false), radiation(false), useFullAcc(false),
+        delta(1.0e-7), tol(1.0e-26), max_iter(20), bendscale(0), theTracker(new ParticleTracker)
+{}
 
-void ClosedOrbit::FindClosedOrbit(PSvector& p, int ncpt)
+ClosedOrbit::~ClosedOrbit()
 {
-	const int cpt = transverseOnly ? 4 : 6;
-	const double dscale = 1.0e-6;
-
-	ParticleBunch particle(p0,1.0);
-	int k=0;
-	for(k=0; k<cpt+1; k++)
-		particle.push_back(p);
-
-	// Use high level ParticleTracker class for tracking.
-	// ParticleTracker knows how to track a ring for one-turn
-	// starting at any point (ncpt)
-	// AcceleratorModel::GetRing(int) returns a AcceleratorModel::RingIterator!
-
-	ParticleTracker tracker(theModel->GetRing(ncpt),&particle,false);
-	tracker.UseFullAcceleration(useFullAcc);
-
-	// We can still add additional processes
-	// (ParticleTransportProcess is now automatically added)
-	if(radiation) {
-		SynchRadParticleProcess* syncrad = new SynchRadParticleProcess(1,50); //Must split dipole with radiation A.Wolski 1/10/01
-		syncrad->AdjustBunchReferenceEnergy(useFullAcc);
-		tracker.AddProcess(syncrad);
-	}
-
-	RealVector g(cpt);
-	RealMatrix dg(cpt);
-	w = 1.0;
-	iter = 1;
-
-	while((w>1e-26) && (iter<20))  //1e-32 reduced to 1e-26 A.Wolski 1/10/01
-	{
-		// Note that 'particle' now always corresponds to
-		// the initial bunch (it is *not* the tracked bunch)
-
-		// Note that I have now also defined the *first* particle
-		// to be the reference ray
-
-		ParticleBunch::iterator pp;
-
-		k=0;
-		for(pp=particle.begin(); pp!=particle.end(); pp++,k++)
-		{
-			*pp = p;
-			if(k>0)
-				(*pp)[k-1] += dscale;
-		}
-
-		// Do the 1-turn tracking, and get the result
-		tracker.Run();
-
-		ParticleBunch& particle1 = tracker.GetTrackedBunch();
-
-		pp = particle1.begin();
-		const Particle& p1 = *pp++; // reference particle
-
-		for(k=0; k<cpt; k++,pp++)
-		{
-			for(int m=0; m<cpt; m++) dg(m,k) = ((*pp)[m] - p1[m]) / dscale;
-			dg(k,k) -= 1.;
-			g(k) = p1[k] - p[k];
-		}
-
-		SVDMatrix<double> invdg(dg);
-		g = invdg(g);
-		for(int row=0; row<cpt; row++) p[row] -= g(row);
-
-		w = g*g; // dot product!
-		iter++;
-
-//		cout<<"Distance from closed orbit..."<<w<<endl;
-//		cout<<"dp = "<<p[5]<<endl;
-	}
-
+    delete theTracker;
 }
 
-void ClosedOrbit::FindRMSOrbit(PSvector& p)
+void ClosedOrbit::AddProcess(ParticleBunchProcess* aProcess)
 {
-	ParticleTracker tracker(theModel->GetBeamline(),p,p0);
-	tracker.UseFullAcceleration(false);
-
-	double len = 0.0;
-	double dl = 0.0;
-	PSvector prev = p;
-	PSvector rms(0);
-
-	tracker.InitStepper();
-	bool loop=true;
-	do {
-		dl = tracker.GetCurrentComponent().GetLength();
-		loop = tracker.StepComponent();
-
-		PSvector pres = tracker.GetTrackedBunch().FirstParticle();
-
-		for(int m=0; m<6; m++)
-			rms[m] += dl * (pres[m] + prev[m]) * (pres[m] + prev[m]) / 4;
-
-		prev = pres;
-		len += dl;
-	} while(loop);
-
-	for(int m=0; m<6; m++)
-		p[m] = sqrt(rms[m]/len);
+    theTracker->AddProcess(aProcess);
 }
 
-
-/***********
-void ClosedOrbit::FindRMSOrbit(PSvector& p)
+void ClosedOrbit::TransverseOnly(bool flag)
 {
-	using RingDynamicsImpl::DoTrack;
-
-	AcceleratorModel::BeamlineIterator beginBL = (*theModel).GetBeamline().begin();
-	AcceleratorModel::BeamlineIterator endBL = (*theModel).GetBeamline().end();
-
-	ParticleBunch particle(p0,1.0);
-	particle.push_back(p);
-
-	ProcessStepManager myPSM;
-
-	myPSM.AddProcess(new ParticleTransportProcess());
-	if(radiation) myPSM.AddProcess(new SynchRadParticleProcess(1));
-	myPSM.Initialise(particle);
-
-	double len = 0.0;
-	double dl = 0.0;
-	PSvector prev = p;
-	PSvector rms(0);
-
-	int n=0;
-	for(AcceleratorModel::BeamlineIterator itrBL=beginBL; itrBL!=endBL; itrBL++)
-	{
-		dl = (*itrBL)->GetComponent().GetLength();
-
-		(*theModel).GetBeamline(n,n).Track(DoTrack(myPSM,particle));
-
-		PSvector pres = particle.FirstParticle();
-		for(int m=0; m<6; m++)
-			rms[m] += dl * (pres[m] + prev[m]) * (pres[m] + prev[m]) / 4;
-
-		prev = pres;
-		len += dl;
-		n++;
-	}
-
-	for(int m=0; m<6; m++) p[m] = sqrt(rms[m] / len);
+    transverseOnly = flag;
 }
-***************/
+
+void ClosedOrbit::Radiation(bool flag)
+{
+    radiation = flag;
+
+    if(radiation)
+        SetRadNumSteps(1);
+}
+
+void ClosedOrbit::FullAcceleration(bool flag)
+{
+    useFullAcc = flag;
+}
+
+void ClosedOrbit::SetDelta(double new_delta)
+{
+    delta = new_delta;
+}
+
+void ClosedOrbit::SetTolerance(double tolerance)
+{
+    tol = tolerance;
+}
+
+void ClosedOrbit::SetMaxIterations(int max_iterations)
+{
+    max_iter = max_iterations;
+}
+
+void ClosedOrbit::SetRadStepSize(double rad_stepsize)
+{
+    radstepsize = rad_stepsize;
+    radnumsteps = 0;
+}
+
+void ClosedOrbit::SetRadNumSteps(int rad_numsteps)
+{
+    radnumsteps = rad_numsteps;
+    radstepsize = 0;
+}
+
+void ClosedOrbit::ScaleBendPathLength(double scale)
+{
+    bendscale = scale;
+}
+
+void ClosedOrbit::FindClosedOrbit(PSvector& particle, int ncpt)
+{
+    const int cpt = transverseOnly ? 4 : 6;
+
+    ParticleBunch bunch(p0,1.0);
+    int k=0;
+    for(k=0; k<cpt+1; k++)
+        bunch.push_back(particle);
+
+    //	ParticleTracker tracker(theModel->GetRing(ncpt), &bunch, true);
+    theTracker->SetRing(theModel->GetRing(ncpt));
+    theTracker->SetInitialBunch(&bunch,false);
+
+    // move the declaration of these pointers
+    // outside respective if blocks so we
+    // can check them for non-null status
+    // at the end of the method
+    SynchRadParticleProcess* srproc =0;;
+    RingDeltaTProcess* ringdt =0;
+
+    if(radiation) {
+        srproc = new SynchRadParticleProcess(1);
+
+        if(radstepsize == 0)
+            srproc->SetNumComponentSteps(radnumsteps);
+        else
+            srproc->SetMaxComponentStepSize(radstepsize);
+
+        srproc->AdjustBunchReferenceEnergy(false);
+        theTracker->AddProcess(srproc);
+    }
+
+    if(bendscale!=0) {
+        ringdt = new RingDeltaTProcess(2);
+        ringdt->SetBendScale(bendscale);
+        theTracker->AddProcess(ringdt);
+    }
+
+    RealVector g(cpt);
+    RealMatrix dg(cpt);
+    w    = 1.0;
+    iter = 1;
+
+
+#ifdef DEBUG_CLOSED_ORBIT
+    cout<<"Finding closed orbit:"<<endl;
+#endif
+
+    while((w>tol) && (iter<max_iter)) {
+        // Note that 'bunch' always corresponds to the initial bunch
+        // (it is *not* the tracked bunch)
+        // Note that the *first* particle is the reference ray
+        ParticleBunch::iterator ip;
+
+        k  = 0;
+        for(ip = bunch.begin(); ip!=bunch.end(); ip++,k++) {
+            *ip = particle;
+            if(k>0)
+                (*ip)[k-1] += delta;
+        }
+
+#ifdef DEBUG_CLOSED_ORBIT
+        cout<<particle;
+#endif
+
+        theTracker->Run(true);
+
+        ip = theTracker->GetTrackedBunch().begin();
+        const Particle& p_ref = *ip++; // reference particle
+
+        for(k=0; k<cpt; k++,ip++)
+        {
+            for(int m=0; m<cpt; m++)
+                dg(m,k) = ((*ip)[m] - p_ref[m]) / delta;
+            dg(k,k) -= 1.;
+            g(k) = p_ref[k] - particle[k];
+        }
+
+        SVDMatrix<double> invdg(dg);
+        g = invdg(g);
+        for(int row=0; row<cpt; row++)
+            particle[row] -= g(row);
+
+        w = g*g; // dot product!
+        iter++;
+
+#ifdef DEBUG_CLOSED_ORBIT
+        cout<<p_ref<<endl;
+#endif
+
+    }
+
+    // clean-up
+    // To prevent multiple processes building up
+    // in theTracker, we remove the two processes
+    // created in this routine (if necessary)
+    if(srproc)
+        theTracker->RemoveProcess(srproc);
+    if(ringdt)
+        theTracker->RemoveProcess(ringdt);
+
+#ifdef DEBUG_CLOSED_ORBIT
+    cout<<"Found closed orbit: "<<w<<endl;
+    cout<<particle<<endl;
+#endif
+}
+
+void ClosedOrbit::FindRMSOrbit(PSvector& particle)
+{
+    ParticleTracker tracker(theModel->GetBeamline(),particle,p0);
+
+    double len = 0.0;
+    double dl = 0.0;
+    PSvector prev = particle;
+    PSvector rms(0);
+
+    tracker.InitStepper();
+    bool loop=true;
+    do {
+        dl = tracker.GetCurrentComponent().GetLength();
+        loop = tracker.StepComponent();
+
+        PSvector pres = tracker.GetTrackedBunch().FirstParticle();
+
+        for(int m=0; m<6; m++)
+            rms[m] += dl * (pres[m] + prev[m]) * (pres[m] + prev[m]) / 4;
+
+        prev = pres;
+        len += dl;
+    } while(loop);
+
+    for(int m=0; m<6; m++)
+        particle[m] = sqrt(rms[m]/len);
+}

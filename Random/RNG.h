@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -18,7 +18,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #ifndef _RNG_h
 #define _RNG_h 1
 #ifdef __GNUG__
-#pragma interface
 #endif
 
 #include <cassert>

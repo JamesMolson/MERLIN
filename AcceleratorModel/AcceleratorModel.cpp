@@ -1,50 +1,21 @@
-//## begin module%1.4%.codegen_version preserve=yes
-//   Read the documentation to learn more about C++ code generator
-//   versioning.
-//## end module%1.4%.codegen_version
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:51 $
+// $Revision: 1.7 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
-//## begin module%375C202C0276.cm preserve=no
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 2.0 (1999)
- * 
- * file Merlin\AcceleratorModel\AcceleratorModel.cpp
- * last modified 03/06/02 12:34:27
- */
-//## end module%375C202C0276.cm
-
-//## begin module%375C202C0276.cp preserve=no
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- * Copyright (c) 2001 by The Merlin Collaboration.
- * - ALL RIGHTS RESERVED - 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
-//## end module%375C202C0276.cp
-
-//## Module: AcceleratorModel%375C202C0276; Package body
-//## Subsystem: Merlin::AcceleratorModel%371355260226
-//## Source file: C:\C++\Merlin\AcceleratorModel\AcceleratorModel.cpp
-
-//## begin module%375C202C0276.includes preserve=yes
 #include <iomanip>
 #include <iterator>
 #include <cassert>
 #include "stdext/algorithm.h"
-//## end module%375C202C0276.includes
 
 // ComponentFrame
 #include "AcceleratorModel/Frames/ComponentFrame.h"
@@ -61,258 +32,195 @@
 // AcceleratorModel
 #include "AcceleratorModel/AcceleratorModel.h"
 
-
-//## begin module%375C202C0276.additionalDeclarations preserve=yes
 using namespace std;
 
 namespace {
 
-	struct MatchName {
-		StringPattern pattern;
-		MatchName(const string& pat) : pattern(pat) {}
-		bool operator()(const ComponentFrame* frm) {
-			return pattern((*frm).GetComponent().GetQualifiedName());
-		}
-	};
+struct MatchName {
+    StringPattern pattern;
+    MatchName(const string& pat) : pattern(pat) {}
+    bool operator()(const ComponentFrame* frm) {
+        return pattern((*frm).GetComponent().GetQualifiedName());
+    }
+};
 
-	struct ModelStats {
-		map<string,int>& s;
-		ModelStats(map<string,int>& stats) :s(stats) {}
-		void operator()(const ModelElement* element) {
-			s[element->GetType()]++;
-		}
-	};
+struct ModelStats {
+    map<string,int>& s;
+    ModelStats(map<string,int>& stats) :s(stats) {}
+    void operator()(const ModelElement* element) {
+        s[element->GetType()]++;
+    }
+};
 
-}
+} // end anonymous namespace
 
 extern ChannelServer* ConstructChannelServer();
 
-//## end module%375C202C0276.additionalDeclarations
-
-
-// Parameterized Class AcceleratorModel::Beamline::TRK 
-
-// Class AcceleratorModel::Beamline 
-
-// Class AcceleratorModel::BadRange 
-
-// Class AcceleratorModel 
-
-//## Operation: AcceleratorModel%39081B120388
 AcceleratorModel::AcceleratorModel ()
-  //## begin AcceleratorModel::AcceleratorModel%39081B120388.initialization preserve=yes
-  : globalFrame(0)
-  //## end AcceleratorModel::AcceleratorModel%39081B120388.initialization
+        : globalFrame(0)
 {
-  //## begin AcceleratorModel::AcceleratorModel%39081B120388.body preserve=yes
-	theElements = new ElementRepository();
-	chServer = ConstructChannelServer();
-	chServer->SetRepository(theElements);
-  //## end AcceleratorModel::AcceleratorModel%39081B120388.body
+    theElements = new ElementRepository();
+    chServer = ConstructChannelServer();
+    chServer->SetRepository(theElements);
 }
 
-
-//## Operation: ~AcceleratorModel%3908161802FA
 AcceleratorModel::~AcceleratorModel ()
 {
-  //## begin AcceleratorModel::~AcceleratorModel%3908161802FA.body preserve=yes
-	if(chServer)
-		delete chServer;
-	if(theElements)
-		delete theElements;
-  //## end AcceleratorModel::~AcceleratorModel%3908161802FA.body
+    if(chServer)
+        delete chServer;
+    if(theElements)
+        delete theElements;
 }
 
-
-
-//## Other Operations (implementation)
-//## Operation: GetBeamline%390807AE0222
 AcceleratorModel::Beamline AcceleratorModel::GetBeamline ()
 {
-  //## begin AcceleratorModel::GetBeamline%390807AE0222.body preserve=yes
-	BeamlineIterator i = lattice.end();
-	advance(i,-1);
-	return Beamline(lattice.begin(),i);
-  //## end AcceleratorModel::GetBeamline%390807AE0222.body
+    BeamlineIterator i = lattice.end();
+    advance(i,-1);
+    return Beamline(lattice.begin(),i,0,lattice.size()-1);
 }
 
-//## Operation: GetBeamline%3908076E00CB
-//## Exceptions: BadRange
 AcceleratorModel::Beamline AcceleratorModel::GetBeamline (AcceleratorModel::Index n1, AcceleratorModel::Index n2) throw (BadRange)
 {
-  //## begin AcceleratorModel::GetBeamline%3908076E00CB.body preserve=yes
-	if(n1<0 || n2>=lattice.size())
-		throw BadRange();
+    if(n1<0 || n2>=lattice.size())
+        throw BadRange();
 
-	BeamlineIterator i1 = lattice.begin();
-	BeamlineIterator i2 = lattice.begin();
-	advance(i1,n1);
-	advance(i2,n2);
-	return Beamline(i1,i2);
-  //## end AcceleratorModel::GetBeamline%3908076E00CB.body
+    BeamlineIterator i1 = lattice.begin();
+    BeamlineIterator i2 = lattice.begin();
+    advance(i1,n1);
+    advance(i2,n2);
+    return Beamline(i1,i2,n1,n2);
 }
 
-//## Operation: GetBeamline%3908081B039B
-//## Exceptions: BadRange
 AcceleratorModel::Beamline AcceleratorModel::GetBeamline (const string& pat1, const string& pat2, int n1, int n2) throw (BadRange)
 {
-  //## begin AcceleratorModel::GetBeamline%3908081B039B.body preserve=yes
-	assert(n1>=1 && n2>=1);
-		
-	StringPattern p1(pat1),p2(pat2);
-	BeamlineIterator i1=lattice.end();
-	BeamlineIterator i2=lattice.end();
-	int nn1(0),nn2(0);
+    assert(n1>=1 && n2>=1);
 
-	for(BeamlineIterator i = lattice.begin(); i!=lattice.end() && (nn1!=n1 || nn2!=n2); i++) {
-		string id = ((*i)->GetComponent()).GetQualifiedName();
-		if(nn1<n1 && p1(id) && ++nn1 == n1)
-			i1=i;
-		if(nn2<n2 && p2(id) && ++nn2 == n2)
-			i2=i;
-	}
+    StringPattern p1(pat1),p2(pat2);
+    BeamlineIterator i1=lattice.end();
+    BeamlineIterator i2=lattice.end();
+    int nn1(0),nn2(0);
+    int ni=0, ni1, ni2;
 
-	if(i1==lattice.end() || i2==lattice.end())
-		throw BadRange();
+    for(BeamlineIterator i = lattice.begin(); i!=lattice.end() && (nn1!=n1 || nn2!=n2); i++,ni++) {
+        string id = ((*i)->GetComponent()).GetQualifiedName();
+        if(nn1<n1 && p1(id) && ++nn1 == n1) {
+            i1=i;
+            ni1=ni;
+        }
+        if(nn2<n2 && p2(id) && ++nn2 == n2) {
+            i2=i;
+            ni2=ni;
+        }
+    }
 
-	return Beamline(i1,i2);
-  //## end AcceleratorModel::GetBeamline%3908081B039B.body
+    if(i1==lattice.end() || i2==lattice.end())
+        throw BadRange();
+
+    return Beamline(i1,i2,ni1,ni2);
 }
 
-//## Operation: GetRing%3B66952A00B7
 AcceleratorModel::RingIterator AcceleratorModel::GetRing (int n)
 {
-  //## begin AcceleratorModel::GetRing%3B66952A00B7.body preserve=yes
-	BeamlineIterator i = lattice.begin();
-	advance(i,n);
-	return RingIterator(lattice,i);
-  //## end AcceleratorModel::GetRing%3B66952A00B7.body
+    BeamlineIterator i = lattice.begin();
+    advance(i,n);
+    return RingIterator(lattice,i);
 }
 
-//## Operation: GetReversedBeamline%39080C26012C
 AcceleratorModel::Beamline AcceleratorModel::GetReversedBeamline ()
 {
-  //## begin AcceleratorModel::GetReversedBeamline%39080C26012C.body preserve=yes
-	BeamlineIterator i = lattice.end();
-	advance(i,-1);
-	return Beamline(i,lattice.begin());
-  //## end AcceleratorModel::GetReversedBeamline%39080C26012C.body
+    BeamlineIterator i = lattice.end();
+    advance(i,-1);
+    return Beamline(i,lattice.begin(),lattice.size()-1,0);
 }
 
-//## Operation: ExtractComponents%39080C8A00CC
 int AcceleratorModel::ExtractComponents (const string& pat, vector<ComponentFrame*>& frames)
 {
-  //## begin AcceleratorModel::ExtractComponents%39080C8A00CC.body preserve=yes
-	vector<ComponentFrame*> results;
-	if(pat=="*") // copy everything!
-		copy(lattice.begin(),lattice.end(),back_inserter(results));
-	else {
-		MatchName mname(pat);
-		for(BeamlineIterator bi=lattice.begin(); bi!=lattice.end(); bi++)
-			if(mname(*bi))
-				results.push_back(*bi);
-	}
-	frames.swap(results);
-	return frames.size();
-  //## end AcceleratorModel::ExtractComponents%39080C8A00CC.body
+    vector<ComponentFrame*> results;
+    if(pat=="*") // copy everything!
+        copy(lattice.begin(),lattice.end(),back_inserter(results));
+    else {
+        MatchName mname(pat);
+        for(BeamlineIterator bi=lattice.begin(); bi!=lattice.end(); bi++)
+            if(mname(*bi))
+                results.push_back(*bi);
+    }
+    frames.swap(results);
+    return frames.size();
 }
 
-//## Operation: ExtractModelElements%39080D560274
 int AcceleratorModel::ExtractModelElements (const string& pat, vector<ModelElement*>& results)
 {
-  //## begin AcceleratorModel::ExtractModelElements%39080D560274.body preserve=yes
-	return theElements->Find(pat,results);
-  //## end AcceleratorModel::ExtractModelElements%39080D560274.body
+    return theElements->Find(pat,results);
 }
 
-//## Operation: GetROChannels%3A9BCC60006E
 size_t AcceleratorModel::GetROChannels (const string& chID, std::vector<ROChannel*>& channels)
 {
-  //## begin AcceleratorModel::GetROChannels%3A9BCC60006E.body preserve=yes
-	return chServer->GetROChannels(chID,channels);
-  //## end AcceleratorModel::GetROChannels%3A9BCC60006E.body
+    return chServer->GetROChannels(chID,channels);
 }
 
-//## Operation: GetRWChannels%3A9BCC6000DC
 size_t AcceleratorModel::GetRWChannels (const string& chID, std::vector<RWChannel*>& channels)
 {
-  //## begin AcceleratorModel::GetRWChannels%3A9BCC6000DC.body preserve=yes
-	return chServer->GetRWChannels(chID,channels);
-  //## end AcceleratorModel::GetRWChannels%3A9BCC6000DC.body
+    return chServer->GetRWChannels(chID,channels);
 }
 
-//## Operation: GetROChannels%3CFB412C014E
 size_t AcceleratorModel::GetROChannels (AcceleratorModel::Beamline& aBeamline, const std::string& chid, std::vector<ROChannel*>& channels)
 {
-  //## begin AcceleratorModel::GetROChannels%3CFB412C014E.body preserve=yes
-	return chServer->GetROChannels(aBeamline,chid,channels);
-  //## end AcceleratorModel::GetROChannels%3CFB412C014E.body
+    return chServer->GetROChannels(aBeamline,chid,channels);
 }
 
-//## Operation: GetRWChannels%3CFB40D000C9
 size_t AcceleratorModel::GetRWChannels (AcceleratorModel::Beamline& aBeamline, const std::string& chid, std::vector<RWChannel*>& channels)
 {
-  //## begin AcceleratorModel::GetRWChannels%3CFB40D000C9.body preserve=yes
-	return chServer->GetRWChannels(aBeamline,chid,channels);
-  //## end AcceleratorModel::GetRWChannels%3CFB40D000C9.body
+    return chServer->GetRWChannels(aBeamline,chid,channels);
 }
 
-//## Operation: AddModelElement%3AE843E400BE
 void AcceleratorModel::AddModelElement (ModelElement* element)
 {
-  //## begin AcceleratorModel::AddModelElement%3AE843E400BE.body preserve=yes
-	if(element!=0)
-		theElements->Add(element);
-  //## end AcceleratorModel::AddModelElement%3AE843E400BE.body
+    if(element!=0)
+        theElements->Add(element);
 }
 
-//## Operation: ReportModelStatistics%3CAC27C9039A
 void AcceleratorModel::ReportModelStatistics (std::ostream& os) const
 {
-  //## begin AcceleratorModel::ReportModelStatistics%3CAC27C9039A.body preserve=yes
-	using std::map;
+    using std::map;
 
-	os<<"Arc length of beamline:     "<<globalFrame->GetGeometryLength()<<" meter"<<endl;
-	os<<"Total number of components: "<<lattice.size()<<endl;
-	os<<"Total numner of elements:   "<<theElements->Size()<<endl;
-	os<<endl;
-	os<<"Model Element statistics\n";
-	os<<"------------------------\n\n";
+    os<<"Arc length of beamline:     "<<globalFrame->GetGeometryLength()<<" meter"<<endl;
+    os<<"Total number of components: "<<lattice.size()<<endl;
+    os<<"Total numner of elements:   "<<theElements->Size()<<endl;
+    os<<endl;
+    os<<"Model Element statistics\n";
+    os<<"------------------------\n\n";
 
-	map<string,int> stats;
-	for_each(theElements->begin(),theElements->end(),ModelStats(stats));
-	for(map<string,int>::iterator si=stats.begin(); si!=stats.end(); si++) {
-		string atype = (*si).first;
-		int count = (*si).second;
-		os<<std::setw(20)<<left<<atype.c_str();
-		os<<std::setw(4)<<count<<endl;
-	}
-	os<<endl;
-  //## end AcceleratorModel::ReportModelStatistics%3CAC27C9039A.body
+    map<string,int> stats;
+    for_each(theElements->begin(),theElements->end(),ModelStats(stats));
+    for(map<string,int>::iterator si=stats.begin(); si!=stats.end(); si++) {
+        string atype = (*si).first;
+        int count = (*si).second;
+        os<<std::setw(20)<<left<<atype.c_str();
+        os<<std::setw(4)<<count<<endl;
+    }
+    os<<endl;
 }
 
-size_t AcceleratorModel::GetIndecies(const std::string& pat, 
-				     std::vector<AcceleratorModel::Index>& iarray) const
+size_t AcceleratorModel::GetIndecies(const std::string& pat,
+                                     std::vector<AcceleratorModel::Index>& iarray) const
 {
-  return GetIndecies(const_cast<AcceleratorModel*>(this)->GetBeamline(),pat,iarray);
+    return GetIndecies(const_cast<AcceleratorModel*>(this)->GetBeamline(),pat,iarray);
 }
 
-size_t AcceleratorModel::GetIndecies(const AcceleratorModel::Beamline& bline, 
-				     const std::string& pat, 
-				     std::vector<AcceleratorModel::Index>& iarray) const
+size_t AcceleratorModel::GetIndecies(const AcceleratorModel::Beamline& bline,
+                                     const std::string& pat,
+                                     std::vector<AcceleratorModel::Index>& iarray) const
 {
-	vector<Index> iarray1;
-	StringPattern pattern(pat);
+    vector<Index> iarray1;
+    StringPattern pattern(pat);
 
-	Index n0 = distance(lattice.begin(),bline.begin());
-	for(ConstBeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
-		string id = (*(*fi)).GetComponent().GetQualifiedName();
-		if(pattern(id))
-			iarray1.push_back(n0);
-	}
-	iarray.swap(iarray1);
-	return iarray.size();
+    Index n0 = distance(lattice.begin(),bline.begin());
+    for(ConstBeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
+        string id = (*(*fi)).GetComponent().GetQualifiedName();
+        if(pattern(id))
+            iarray1.push_back(n0);
+    }
+    iarray.swap(iarray1);
+    return iarray.size();
 }
-		
-//## begin module%375C202C0276.epilog preserve=yes
-//## end module%375C202C0276.epilog
+

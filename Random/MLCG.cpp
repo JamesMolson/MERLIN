@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1989 Free Software Foundation
 
 This file is part of the GNU C++ Library.  This library is free
@@ -15,7 +15,6 @@ License along with this library; if not, write to the Free Software
 Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifdef __GNUG__
-#pragma implementation
 #endif
 #include "Random/MLCG.h"
 //
@@ -26,15 +25,15 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #define SEED_TABLE_SIZE 32
 
 static _G_int32_t seedTable[SEED_TABLE_SIZE] = {
-0xbdcc47e5, 0x54aea45d, 0xec0df859, 0xda84637b,
-0xc8c6cb4f, 0x35574b01, 0x28260b7d, 0x0d07fdbf,
-0x9faaeeb0, 0x613dd169, 0x5ce2d818, 0x85b9e706,
-0xab2469db, 0xda02b0dc, 0x45c60d6e, 0xffe49d10,
-0x7224fea3, 0xf9684fc9, 0xfc7ee074, 0x326ce92a,
-0x366d13b5, 0x17aaa731, 0xeb83a675, 0x7781cb32,
-0x4ec7c92d, 0x7f187521, 0x2cf346b4, 0xad13310f,
-0xb89cff2b, 0x12164de1, 0xa865168d, 0x32b56cdf
-};
+            0xbdcc47e5, 0x54aea45d, 0xec0df859, 0xda84637b,
+            0xc8c6cb4f, 0x35574b01, 0x28260b7d, 0x0d07fdbf,
+            0x9faaeeb0, 0x613dd169, 0x5ce2d818, 0x85b9e706,
+            0xab2469db, 0xda02b0dc, 0x45c60d6e, 0xffe49d10,
+            0x7224fea3, 0xf9684fc9, 0xfc7ee074, 0x326ce92a,
+            0x366d13b5, 0x17aaa731, 0xeb83a675, 0x7781cb32,
+            0x4ec7c92d, 0x7f187521, 0x2cf346b4, 0xad13310f,
+            0xb89cff2b, 0x12164de1, 0xa865168d, 0x32b56cdf
+        };
 
 MLCG::MLCG(_G_int32_t seed1, _G_int32_t seed2)
 {
@@ -55,25 +54,25 @@ MLCG::reset()
     //	map that to a specific seed.
     //
     if (seed1 < 0) {
-	seed1 = (seed1 + 2147483561);
-	seed1 = (seed1 < 0) ? -seed1 : seed1;
+        seed1 = (seed1 + 2147483561);
+        seed1 = (seed1 < 0) ? -seed1 : seed1;
     }
 
     if (seed2 < 0) {
-	seed2 = (seed2 + 2147483561);
-	seed2 = (seed2 < 0) ? -seed2 : seed2;
+        seed2 = (seed2 + 2147483561);
+        seed2 = (seed2 < 0) ? -seed2 : seed2;
     }
 
     if (seed1 > -1 && seed1 < SEED_TABLE_SIZE) {
-	seedOne = seedTable[seed1];
+        seedOne = seedTable[seed1];
     } else {
-	seedOne = seed1 ^ seedTable[seed1 & (SEED_TABLE_SIZE-1)];
+        seedOne = seed1 ^ seedTable[seed1 & (SEED_TABLE_SIZE-1)];
     }
 
     if (seed2 > -1 && seed2 < SEED_TABLE_SIZE) {
-	seedTwo = seedTable[seed2];
+        seedTwo = seedTable[seed2];
     } else {
-	seedTwo = seed2 ^ seedTable[ seed2 & (SEED_TABLE_SIZE-1) ];
+        seedTwo = seed2 ^ seedTable[ seed2 & (SEED_TABLE_SIZE-1) ];
     }
     seedOne = (seedOne % 2147483561) + 1;
     seedTwo = (seedTwo % 2147483397) + 1;
@@ -85,18 +84,18 @@ _G_uint32_t MLCG::asLong()
 
     seedOne = 40014 * (seedOne-k * 53668) - k * 12211;
     if (seedOne < 0) {
-	seedOne += 2147483563;
+        seedOne += 2147483563;
     }
 
     k = seedTwo % 52774;
     seedTwo = 40692 * (seedTwo - k * 52774) - k * 3791;
     if (seedTwo < 0) {
-	seedTwo += 2147483399;
+        seedTwo += 2147483399;
     }
 
     _G_int32_t z = seedOne - seedTwo;
     if (z < 1) {
-	z += 2147483562;
+        z += 2147483562;
     }
     return( (unsigned long) z);
 }

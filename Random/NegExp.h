@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _NegativeExpntl_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _NegativeExpntl_h 1
 
@@ -25,7 +24,7 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //	Negative Exponential Random Numbers
 //
-// 
+//
 
 #include "Random/Random.h"
 
@@ -42,14 +41,14 @@ public:
 
 
 inline NegativeExpntl::NegativeExpntl(double xmean, RNG *gen)
-: Random(gen) {
-  pMean = xmean;
+        : Random(gen) {
+    pMean = xmean;
 }
 
 inline double NegativeExpntl::mean() { return pMean; }
 inline double NegativeExpntl::mean(double x) {
-  double t = pMean; pMean = x;
-  return t;
+    double t = pMean; pMean = x;
+    return t;
 }
 
 #endif

@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _Poisson_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _Poisson_h 
 
@@ -37,15 +36,15 @@ public:
 
 
 inline Poisson::Poisson(double mean, RNG *gen)
-: Random(gen) {
-  pMean = mean;
+        : Random(gen) {
+    pMean = mean;
 }
 
 inline double Poisson::mean() { return pMean; }
 inline double Poisson::mean(double x) {
-  double t = pMean;
-  pMean = x;
-  return t;
+    double t = pMean;
+    pMean = x;
+    return t;
 }
 
 #endif

@@ -6,7 +6,7 @@
 
 namespace SMPTracking {
 
-	typedef TTrackSim<SMPComponentTracker> SMPTracker;
+typedef TTrackSim<SMPComponentTracker> SMPTracker;
 
 };
 

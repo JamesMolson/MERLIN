@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -15,7 +15,6 @@ License along with this library; if not, write to the Free Software
 Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifdef __GNUG__
-#pragma implementation
 #endif
 //// #include "Random/builtin.h"
 #include "Random/Random.h"
@@ -24,37 +23,37 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //	See Simulation, Modelling & Analysis by Law & Kelton, pp259
 //
 //	This is the ``polar'' method.
-// 
+//
 
 double Normal::operator()()
 {
-    
+
     if (haveCachedNormal == 1) {
-	haveCachedNormal = 0;
-	return(cachedNormal * pStdDev + pMean );
+        haveCachedNormal = 0;
+        return(cachedNormal * pStdDev + pMean );
     } else {
-	
-	for(;;) {
-	    double u1 = pGenerator -> asDouble();
-	    double u2 = pGenerator -> asDouble();
-	    double v1 = 2 * u1 - 1;
-	    double v2 = 2 * u2 - 1;
-	    double w = (v1 * v1) + (v2 * v2);
-	    
-//
-//	We actually generate two IID normal distribution variables.
-//	We cache the one & return the other.
-// 
-	    if (w <= 1) {
-		double y = sqrt( (-2 * log(w)) / w);
-		double x1 = v1 * y;
-		double x2 = v2 * y;
-		
-		haveCachedNormal = 1;
-		cachedNormal = x2;
-		return(x1 * pStdDev + pMean);
-	    }
-	}
+
+        for(;;) {
+            double u1 = pGenerator -> asDouble();
+            double u2 = pGenerator -> asDouble();
+            double v1 = 2 * u1 - 1;
+            double v2 = 2 * u2 - 1;
+            double w = (v1 * v1) + (v2 * v2);
+
+            //
+            //	We actually generate two IID normal distribution variables.
+            //	We cache the one & return the other.
+            //
+            if (w <= 1) {
+                double y = sqrt( (-2 * log(w)) / w);
+                double x1 = v1 * y;
+                double x2 = v2 * y;
+
+                haveCachedNormal = 1;
+                cachedNormal = x2;
+                return(x1 * pStdDev + pMean);
+            }
+        }
     }
 }
 

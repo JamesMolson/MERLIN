@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _DiscreteUniform_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _DiscreteUniform_h 1
 
@@ -25,7 +24,7 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 //
 //	The interval [lo..hi)
-// 
+//
 
 class DiscreteUniform: public Random {
     long pLow;
@@ -44,7 +43,7 @@ public:
 
 
 inline DiscreteUniform::DiscreteUniform(long low, long high, RNG *gen)
-: Random(gen)
+        : Random(gen)
 {
     pLow = (low < high) ? low : high;
     pHigh = (low < high) ? high : low;
@@ -54,19 +53,19 @@ inline DiscreteUniform::DiscreteUniform(long low, long high, RNG *gen)
 inline long DiscreteUniform::low() { return pLow; }
 
 inline long DiscreteUniform::low(long x) {
-  long tmp = pLow;
-  pLow = x;
-  delta = (pHigh - pLow) + 1;
-  return tmp;
+    long tmp = pLow;
+    pLow = x;
+    delta = (pHigh - pLow) + 1;
+    return tmp;
 }
 
 inline long DiscreteUniform::high() { return pHigh; }
 
 inline long DiscreteUniform::high(long x) {
-  long tmp = pHigh;
-  pHigh = x;
-  delta = (pHigh - pLow) + 1;
-  return tmp;
+    long tmp = pHigh;
+    pHigh = x;
+    delta = (pHigh - pLow) + 1;
+    return tmp;
 }
 
 #endif

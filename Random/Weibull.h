@@ -1,5 +1,5 @@
 // This may look like C code, but it is really -*- C++ -*-
-/* 
+/*
 Copyright (C) 1988 Free Software Foundation
     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
 
@@ -17,7 +17,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 #ifndef _Weibull_h
 #ifdef __GNUG__
-#pragma interface
 #endif
 #define _Weibull_h 
 
@@ -30,7 +29,7 @@ protected:
     double pBeta;
 
     void setState();
-    
+
 public:
     Weibull(double alpha, double beta, RNG *gen);
 
@@ -45,30 +44,30 @@ public:
 
 
 inline void Weibull::setState() {
-  pInvAlpha = 1.0 / pAlpha;
+    pInvAlpha = 1.0 / pAlpha;
 }
-    
+
 inline Weibull::Weibull(double alpha, double beta,  RNG *gen) : Random(gen)
 {
-  pAlpha = alpha;
-  pBeta = beta;
-  setState();
+    pAlpha = alpha;
+    pBeta = beta;
+    setState();
 }
 
 inline double Weibull::alpha() { return pAlpha; }
 
 inline double Weibull::alpha(double x) {
-  double tmp = pAlpha;
-  pAlpha = x;
-  setState();
-  return tmp;
+    double tmp = pAlpha;
+    pAlpha = x;
+    setState();
+    return tmp;
 }
 
 inline double Weibull::beta() { return pBeta; };
 inline double Weibull::beta(double x) {
-  double tmp = pBeta;
-  pBeta = x;
-  return tmp;
+    double tmp = pBeta;
+    pBeta = x;
+    return tmp;
 };
 
 #endif

@@ -1,33 +1,16 @@
-//   Read the documentation to learn more about C++ code generator
-//   versioning.
-
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 3.0 (2003)
- * 
- * file Merlin\MADInterface\MADKeyMap.cpp
- * last modified 20/11/01 12:46:22
- */
-
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- * Copyright (c) 2003 by The Merlin Collaboration.
- * - ALL RIGHTS RESERVED - 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:54 $
+// $Revision: 1.3 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
 #include "IO/MerlinIO.h"
@@ -35,10 +18,6 @@
 // MADKeyMap
 #include "MADInterface/MADKeyMap.h"
 using namespace std;
-
-// Class MADKeyMap::bad_key
-
-// Class MADKeyMap
 
 MADKeyMap::MADKeyMap (const std::string& hstr)
         : has_type(false)

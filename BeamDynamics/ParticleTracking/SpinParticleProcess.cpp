@@ -1,0 +1,267 @@
+// (c) 2004 Daniel A. Bates (LBNL) -- All Rights Reserved --
+// Part of the Spin Particle Process Package 1.0
+// Modified 02/27/2004
+// Further Modified A.Wolski 04/27/2004 (general tidying up)
+
+#include "BeamDynamics/ParticleTracking/SpinParticleProcess.h"
+#include "AcceleratorModel/StdComponent/SectorBend.h"
+#include "EuclideanGeometry/Space3D.h"
+#include "NumericalUtils/PhysicalConstants.h"
+#include "NumericalUtils/utils.h"
+
+using namespace PhysicalConstants;
+using namespace PhysicalUnits;
+
+SpinVector::SpinVector()
+{
+    spin[0] = 0;
+    spin[1] = 0;
+    spin[2] = 1;
+}
+
+SpinVector::SpinVector(double _x, double _y, double _z)
+{
+    spin[0] = _x;
+    spin[1] = _y;
+    spin[2] = _z;
+}
+
+double SpinVector::x() const
+{
+    return spin[0];
+}
+
+double SpinVector::y() const
+{
+    return spin[1];
+}
+
+double SpinVector::z() const
+{
+    return spin[2];
+}
+
+double& SpinVector::x()
+{
+    return spin[0];
+}
+
+double& SpinVector::y()
+{
+    return spin[1];
+}
+
+double& SpinVector::z()
+{
+    return spin[2];
+}
+
+SpinParticleBunch::SpinParticleBunch(double P0, double Qm)
+        : ParticleBunch(P0,Qm)
+{}
+
+size_t SpinParticleBunch::AddParticle(const Particle& p)
+{
+    SpinVector* spin = new SpinVector(0,0,1);
+    spinArray.push_back(*spin);
+    return ParticleBunch::AddParticle(p);
+}
+
+size_t SpinParticleBunch::AddParticle(const Particle& p, const SpinVector& spin)
+{
+    spinArray.push_back(spin);
+    return ParticleBunch::AddParticle(p);
+}
+
+void SpinParticleBunch::push_back(const Particle& p)
+{
+    AddParticle(p);
+}
+
+void SpinParticleBunch::SortByCT()
+{
+    // Not yet fully implemented!
+    // At present, only the list of phase space vectors is sorted;
+    // the correlation with the list of spin vectors is lost.
+
+    ParticleBunch::SortByCT();
+}
+
+ParticleBunch::iterator SpinParticleBunch::erase(ParticleBunch::iterator p)
+{
+    // find the 'offset' of p from the start of the particle bunch
+    size_t n = distance(pArray.begin(),p);
+
+    // remove the n-th spin vector
+    SpinVectorArray::iterator it = spinArray.begin();
+    advance(it,n);
+    spinArray.erase(it);
+
+    // called the base function to remove the PSvector
+    return ParticleBunch::erase(p);
+}
+
+vector<SpinVector>::iterator SpinParticleBunch::beginSpinArray()
+{
+    return spinArray.begin();
+}
+
+vector<SpinVector>::iterator SpinParticleBunch::endSpinArray()
+{
+    return spinArray.end();
+}
+
+SpinParticleProcess::SpinParticleProcess(int prio, int nstep)
+        : ParticleBunchProcess("SPIN TRACKING PROCESS",prio),ns(nstep),pspin(0) {}
+
+void SpinParticleProcess::SetCurrentComponent(AcceleratorComponent& component){
+    nk1 = 0;
+    intS = 0;
+
+    //Get current field of current component
+    currentField = component.GetEMField();
+
+    //Get length of current component/ns
+    clength = component.GetLength();
+    dL = clength/ns;
+
+    //Determine if the component is a SectorBend
+    sbend = dynamic_cast<SectorBend*>(&component);
+
+    //Determine if the present bunch has any spin information
+    SpinParticleBunch* spinbunch = dynamic_cast<SpinParticleBunch*>(currentBunch);
+
+    if (currentField && spinbunch) {
+        active = true;
+    } else {
+        active = false;
+    }
+}
+
+struct RotateSpinVector
+{
+private:
+    bool isBend;
+
+public:
+    RotateSpinVector(bool bend)
+            : isBend(bend)
+    {};
+
+    void RotateSpin(const Vector3D& bnorm, double ds, SpinVector& spin, double gamma)
+    {
+        double& spinx = spin.x();
+        double& spiny = spin.y();
+        double& spinz = spin.z();
+
+        Vector3D w;
+        if (isBend) {	// Arc geometry
+            w.x = -(1+ElectronGe*gamma)*bnorm.x;
+            w.y = -(  ElectronGe*gamma)*bnorm.y;
+            w.z = -(1+ElectronGe      )*bnorm.z;
+        } else {		// Rectangular geometry
+            w.x = -(1+ElectronGe*gamma)*bnorm.x;
+            w.y = -(1+ElectronGe*gamma)*bnorm.y;
+            w.z = -(1+ElectronGe      )*bnorm.z;
+        }
+
+        // Calculate Cross Products
+        double pX_crossproduct = w.y*spinz - w.z*spiny;
+        double pY_crossproduct = w.z*spinx - w.x*spinz;
+        double pZ_crossproduct = w.x*spiny - w.y*spinx;
+
+        // Calculate Scalar Product
+        double scalarproduct = w.z*spinz + w.y*spiny + w.x*spinx;
+
+        // Calculate and apply spin rotation
+        double w2    = w.x*w.x + w.y*w.y + w.z*w.z;
+        double omega = sqrt(w2);
+
+        double dt = ds / SpeedOfLight;
+        double cosOmegaT = cos(dt*omega);
+        double sinOmegaT = sin(dt*omega);
+
+        double pX = spinx*cosOmegaT + w.x*scalarproduct*(1-cosOmegaT)/w2 + pX_crossproduct*sinOmegaT/omega;
+        double pY = spiny*cosOmegaT + w.y*scalarproduct*(1-cosOmegaT)/w2 + pY_crossproduct*sinOmegaT/omega;
+        double pZ = spinz*cosOmegaT + w.z*scalarproduct*(1-cosOmegaT)/w2 + pZ_crossproduct*sinOmegaT/omega;
+
+        spinx = pX;
+        spiny = pY;
+        spinz = pZ;
+    };
+
+};
+
+void SpinParticleProcess::SetSpinMomentum(double p_spin)
+{
+    pspin = p_spin;
+};
+
+void SpinParticleProcess::DoProcess(double ds)
+{
+    double P0   = currentBunch->GetReferenceMomentum();
+    double brho = P0/eV/SpeedOfLight;
+    bool isBend = sbend ? true : false;
+
+    if(pspin != 0)
+        P0 = pspin;
+
+    RotateSpinVector rot(isBend);
+
+    Vector3D b;
+
+    SpinParticleBunch* spinbunch = dynamic_cast<SpinParticleBunch*>(currentBunch);
+    SpinVectorArray::iterator spin = spinbunch->beginSpinArray();
+    for(PSvectorArray::iterator p = spinbunch->begin(); p!=spinbunch->end(); p++,spin++) {
+        double norm  = SpeedOfLight/brho/(1.0+p->dp());
+        double gamma = P0*(1.0+p->dp())/(ElectronMassMeV*MeV);
+
+        // Apply spin rotation from dipole entrance fringe field
+        if (sbend && intS==0) {
+            SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().entrance;
+            double theta = pf ? pf->rot : 0;
+            double intbz = 0.5*sbend->GetB0()*p->y()*norm;
+            b.x = sin(theta)*intbz;
+            b.y = 0;
+            b.z = cos(theta)*intbz;
+            if ( b.x!=0 || b.z!=0 )
+                rot.RotateSpin(b, 1.0, *spin, gamma);
+        };
+
+        // Apply spin rotation from body of magnet
+        b = currentField->GetBFieldAt(Point3D(p->x(),p->y(),0));
+
+        if ( b.x!=0 || b.y!=0 || b.z!=0 ) {
+            b.x *= norm;
+            b.y *= norm;
+            b.z *= norm;
+            rot.RotateSpin(b, ds, *spin, gamma);
+        };
+
+        // Apply spin rotation from dipole exit fringe field
+        if (sbend && fequal(intS+ds,clength)) {
+            SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().exit;
+            double theta = pf ? pf->rot : 0;
+            double intbz = 0.5*sbend->GetB0()*p->y()*norm;
+            b.x = sin(theta)*intbz;
+            b.y = 0;
+            b.z =-cos(theta)*intbz;
+            if ( b.x!=0 || b.z!=0 )
+                rot.RotateSpin(b, 1.0, *spin, gamma);
+        };
+
+    };
+
+    intS += ds;
+
+}
+
+double SpinParticleProcess::GetMaxAllowedStepSize() const
+{
+    return (nk1+1)*dL-intS;
+}
+
+void SpinParticleProcess::SetNumComponentSteps(int n)
+{
+    ns = n;
+}

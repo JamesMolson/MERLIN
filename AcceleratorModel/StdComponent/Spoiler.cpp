@@ -32,38 +32,38 @@
 // ComponentTracker
 #include "AcceleratorModel/TrackingInterface/ComponentTracker.h"
 
-// Class Spoiler 
+// Class Spoiler
 const int Spoiler::ID = UniqueIndex();
 
 Spoiler::Spoiler (const string& id, double len, double radLength)
-: Drift(id,len),Xr(radLength) 
+        : Drift(id,len),Xr(radLength)
 {}
 
 const string& Spoiler::GetType () const
 {
-	_TYPESTR(Spoiler); 
+    _TYPESTR(Spoiler);
 }
 
 int Spoiler::GetIndex () const
-{  
-	return  ID; 
+{
+    return  ID;
 }
 
 
 void Spoiler::PrepareTracker (ComponentTracker& aTracker)
 {
-	_PREPTRACK(aTracker,Drift); 
+    _PREPTRACK(aTracker,Drift);
 }
 
 void Spoiler::RotateY180 ()
 {
-	// nothing to do 
+    // nothing to do
 }
 
 
 ModelElement* Spoiler::Copy () const
 {
-	return new Spoiler(*this);
+    return new Spoiler(*this);
 }
 
 

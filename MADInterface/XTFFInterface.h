@@ -1,51 +1,32 @@
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 3.0 (2003)
- * 
- * file Merlin/MADInterface/XTFFInterface.h
- * last modified 01/23/02 10.35
- */
-
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- * Copyright (c) 2003 by The Merlin Collaboration.
- * - ALL RIGHTS RESERVED - 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:54 $
+// $Revision: 1.5 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #ifndef XTFFInterface_h
 #define XTFFInterface_h 1
 
 #include "merlin_config.h"
-
 #include <fstream>
 #include <string>
 #include <set>
-
-// AcceleratorModel
 #include "AcceleratorModel/AcceleratorModel.h"
-
-// BeamData
 #include "BeamModel/BeamData.h"
 
 class AcceleratorModelConstructor;
 
 //  class XTFFInterface
-//      Class used to construct a MERLIN model from a MAD TWISS TAPE
-//      output listing. XTFF (eXtended Tape File Format) contains
+//  Class used to construct a MERLIN model from a MAD TWISS TAPE
+//  output listing. XTFF (eXtended Tape File Format) contains
 //  SLAC extentions for cavities and acceleration.
 
 class XTFFInterface {

@@ -1,24 +1,24 @@
-//## begin module%3734078C0370.cm preserve=no
-//## end module%3734078C0370.cm
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2004-12-13 08:38:51 $
+// $Revision: 1.4 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
-//## begin module%3734078C0370.cp preserve=no
-//## end module%3734078C0370.cp
-
-//## Module: Components%3734078C0370; Package specification
 //	A single include file which includes all the header
 //	files for the standard accelerator model components.
-//## Subsystem: AcceleratorModel%371355260226
-//## Source file: C:\C++\Merlin\AcceleratorModel\Components.h
 
 #ifndef Components_h
 #define Components_h 1
 
-//## begin module%3734078C0370.additionalIncludes preserve=no
 #include "merlin_config.h"
-//## end module%3734078C0370.additionalIncludes
-
-//## begin module%3734078C0370.includes preserve=yes
-//## end module%3734078C0370.includes
 
 // StandardMultipoles
 #include "AcceleratorModel/StdComponent/StandardMultipoles.h"
@@ -42,15 +42,5 @@
 #include "AcceleratorModel/StdComponent/Marker.h"
 // Solenoid
 #include "AcceleratorModel/StdComponent/Solenoid.h"
-//## begin module%3734078C0370.declarations preserve=no
-//## end module%3734078C0370.declarations
-
-//## begin module%3734078C0370.additionalDeclarations preserve=yes
-//## end module%3734078C0370.additionalDeclarations
-
-
-//## begin module%3734078C0370.epilog preserve=yes
-//## end module%3734078C0370.epilog
-
 
 #endif
