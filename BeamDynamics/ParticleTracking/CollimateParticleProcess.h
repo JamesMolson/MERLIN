@@ -165,6 +165,8 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
       //	original cooridinates.
       void IndexParticles (bool index);
 
+	  void IndexParticles (list<size_t>& anIndex);
+
       //## Operation: SetLossThreshold%988274692
       //	Sets the threshold for particle loss before the process
       //	throws ParticleLossThreshold exception. The value is in

@@ -188,6 +188,14 @@ void CollimateParticleProcess::IndexParticles (bool index)
   //## end CollimateParticleProcess::IndexParticles%988274691.body
 }
 
+void CollimateParticleProcess::IndexParticles (list<size_t>& anIndex)
+{
+	if(!pindex)
+		delete pindex;
+
+	pindex=&anIndex;
+}
+
 //## Operation: SetLossThreshold%988274692
 void CollimateParticleProcess::SetLossThreshold (double losspc)
 {
