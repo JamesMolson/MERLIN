@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.6 $
+// $Date: 2005-03-29 08:23:38 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -34,6 +34,8 @@
 #include "utility/StringPattern.h"
 // ring_iterator
 #include "stdext/ring_iterator.h"
+// MerlinException
+#include "Exception/MerlinException.h"
 
 class ChannelServer;
 class ComponentFrame;
@@ -160,9 +162,10 @@ public:
     };
 
     // Exception class fro GetBeamline functions
-    class BadRange
+    class BadRange : public MerlinException
     {
     public:
+        BadRange() : MerlinException("Bad Beamline Range") {}
     protected:
     private:
     private:
