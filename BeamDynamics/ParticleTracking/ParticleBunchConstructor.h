@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleBunchConstructor.h
- * last modified 03/12/01 16:50:10
+ * last modified 14/10/02 11:01:55
  */
 //## end module%37C533BB02FB.cm
 
@@ -149,17 +149,20 @@ class ParticleBunchConstructor : public BunchConstructor  //## Inherits: <unname
       //## Operation: SetDistributionCutoff%391BDB120320
       //	Sets the distribution cut-off in standard deviations.
       //	Passing 0 indicates that no cut-off be applied
-      //	(default). Only applies to normal distributions.
-	  //    The second form allows individual cutoffs for each
-	  //    of the six phase-space coordinates.
+      //	(default). Only applies to normal distributions. The
+      //	second form allows individual cutoffs for each of the
+      //	six phase-space coordinates.
       void SetDistributionCutoff (double cut);
-	  void SetDistributionCutoff (const PSvector&);
+
+      //## Operation: SetDistributionCutoff%3DAA874F00C2
+      void SetDistributionCutoff (const PSvector& cut);
 
       //## Operation: ConstructBunch%3729CF89015E
       //	Constructs a new ParticleBunch based on the current
       //	bunch parameter settings. Each call to ConstructBunch
-      //	generates a new random distribution (seed).
-      virtual Bunch* ConstructBunch () const;
+      //	generates a new random distribution (seed). The bunch
+      //	Index is ignored in this case.
+      virtual Bunch* ConstructBunch (int bunchIndex = 0) const;
 
       //## Operation: SetFilter%37C535C702D7
       //	Sets the filter to be used during bunch construction. A
@@ -192,10 +195,10 @@ class ParticleBunchConstructor : public BunchConstructor  //## Inherits: <unname
       DistributionType dtype;
       //## end ParticleBunchConstructor::dtype%37C532CD02D1.attr
 
-      //## Attribute: cutOff%391BDBD00048
-      //## begin ParticleBunchConstructor::cutOff%391BDBD00048.attr preserve=no  private: double {UA} 
+      //## Attribute: cutoffs%391BDBD00048
+      //## begin ParticleBunchConstructor::cutoffs%391BDBD00048.attr preserve=no  private: PSvector {UA} 
       PSvector cutoffs;
-      //## end ParticleBunchConstructor::cutOff%391BDBD00048.attr
+      //## end ParticleBunchConstructor::cutoffs%391BDBD00048.attr
 
       //## Attribute: force_c%3C0B9C99018E
       //## begin ParticleBunchConstructor::force_c%3C0B9C99018E.attr preserve=no  private: bool {UA} 
