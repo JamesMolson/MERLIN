@@ -250,15 +250,6 @@ inline int AcceleratorComponent::TotalComponentNumber ()
   //## end AcceleratorComponent::TotalComponentNumber%924072844.body
 }
 
-//## Operation: UniqueIndex%924072845
-inline int AcceleratorComponent::UniqueIndex ()
-{
-  //## begin AcceleratorComponent::UniqueIndex%924072845.body preserve=yes
-	static int ID_count = 0;
-	return ID_count++;
-  //## end AcceleratorComponent::UniqueIndex%924072845.body
-}
-
 //## begin module%37135534037A.epilog preserve=yes
 //## end module%37135534037A.epilog
 

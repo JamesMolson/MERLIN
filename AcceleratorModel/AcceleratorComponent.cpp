@@ -63,10 +63,14 @@
 const int AcceleratorComponent::ID = UniqueIndex();
 //## end AcceleratorComponent::ID%371463CE019A.attr
 
-
-
-
-
+//## Operation: UniqueIndex%924072845
+int AcceleratorComponent::UniqueIndex ()
+{
+  //## begin AcceleratorComponent::UniqueIndex%924072845.body preserve=yes
+	static int ID_count = 0;
+	return ID_count++;
+  //## end AcceleratorComponent::UniqueIndex%924072845.body
+}
 
 //## Operation: ~AcceleratorComponent%924014182
 AcceleratorComponent::~AcceleratorComponent ()
