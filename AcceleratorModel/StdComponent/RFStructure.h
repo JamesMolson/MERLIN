@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\StdComponent\RFStructure.h
- * last modified 24/01/02 15:35:50
+ * last modified 04/04/02 12:49:22
  */
 //## end module%3ACC8D800320.cm
 
@@ -54,8 +54,6 @@
 #include "AcceleratorModel/StdComponent/TemplateComponents.h"
 // RectangularGeometry
 #include "AcceleratorModel/StdGeometry/RectangularGeometry.h"
-// WakePotentials
-#include "AcceleratorModel/StdField/WakePotentials.h"
 //## begin module%3ACC8D800320.additionalDeclarations preserve=yes
 #define _FIELD static_cast<F*>(itsField)
 //## end module%3ACC8D800320.additionalDeclarations
@@ -116,28 +114,12 @@ class RFStructure : public TAccCompGF<RectangularGeometry,F>  //## Inherits: <un
       //## Operation: SetK%3ACC8E9B037A
       void SetK (double k);
 
-      //## Operation: GetWakePotentials%3C501B0D02AE
-      //	Returns the wake potentials associated with this cavity.
-      WakePotentials* GetWakePotentials () const;
-
-      //## Operation: SetWakePotentials%3C501B41028A
-      //	Sets the wake potentials associated with this cavity.
-      void SetWakePotentials (WakePotentials* wp);
-
   protected:
     //## Constructors (specified)
       //## Operation: RFStructure%3ACC951E0032
       RFStructure (const string& id, double len, F* aField);
 
   private:
-    // Data Members for Associations
-
-      //## Association: Merlin::AcceleratorModel::StdComponent::class details::<unnamed>%3C501A73039C
-      //## Role: RFStructure::wakes%3C501A74013B
-      //## begin RFStructure::wakes%3C501A74013B.role preserve=no  private: WakePotentials { -> 0..1RHAN}
-      WakePotentials* wakes;
-      //## end RFStructure::wakes%3C501A74013B.role
-
   private: //## implementation
 };
 
@@ -237,31 +219,13 @@ inline void RFStructure<F>::SetK (double k)
   //## end RFStructure::SetK%3ACC8E9B037A.body
 }
 
-//## Operation: GetWakePotentials%3C501B0D02AE
-template <class F>
-inline WakePotentials* RFStructure<F>::GetWakePotentials () const
-{
-  //## begin RFStructure::GetWakePotentials%3C501B0D02AE.body preserve=yes
-	return wakes;
-  //## end RFStructure::GetWakePotentials%3C501B0D02AE.body
-}
-
-//## Operation: SetWakePotentials%3C501B41028A
-template <class F>
-inline void RFStructure<F>::SetWakePotentials (WakePotentials* wp)
-{
-  //## begin RFStructure::SetWakePotentials%3C501B41028A.body preserve=yes
-	wakes = wp;
-  //## end RFStructure::SetWakePotentials%3C501B41028A.body
-}
-
 // Parameterized Class RFStructure 
 
 //## Operation: RFStructure%3ACC951E0032
 template <class F>
 RFStructure<F>::RFStructure (const string& id, double len, F* aField)
   //## begin RFStructure::RFStructure%3ACC951E0032.initialization preserve=yes
-  : TAccCompGF<RectangularGeometry,F>(id,new RectangularGeometry(len),aField),wakes(0)
+  : TAccCompGF<RectangularGeometry,F>(id,new RectangularGeometry(len),aField)
   //## end RFStructure::RFStructure%3ACC951E0032.initialization
 {
   //## begin RFStructure::RFStructure%3ACC951E0032.body preserve=yes
