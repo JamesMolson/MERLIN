@@ -1,11 +1,16 @@
+//## begin module%1.4%.codegen_version preserve=yes
+//   Read the documentation to learn more about C++ code generator
+//   versioning.
+//## end module%1.4%.codegen_version
+
 //## begin module%371F5B6700D2.cm preserve=no
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
- * Class library version 2.0 (2000)
+ * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\StdComponent\StandardMultipoles.h
- * last modified 03/04/01 14:21:39
+ * last modified 16/05/02 11:10:34
  */
 //## end module%371F5B6700D2.cm
 
@@ -16,9 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -33,7 +37,7 @@
 
 //## Module: StandardMultipoles%371F5B6700D2; Package specification
 //## Subsystem: Merlin::AcceleratorModel::StdComponent%3714A06602A8
-//## Source file: D:\dev\Merlin\AcceleratorModel\StdComponent\StandardMultipoles.h
+//## Source file: C:\C++\Merlin\AcceleratorModel\StdComponent\StandardMultipoles.h
 
 #ifndef StandardMultipoles_h
 #define StandardMultipoles_h 1
@@ -50,9 +54,6 @@
 
 class ComponentTracker;
 
-//## begin module%371F5B6700D2.declarations preserve=no
-//## end module%371F5B6700D2.declarations
-
 //## begin module%371F5B6700D2.additionalDeclarations preserve=yes
 // type strings for template parameter instantiation
 //## end module%371F5B6700D2.additionalDeclarations
@@ -65,37 +66,39 @@ class ComponentTracker;
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3720B7240212;ComponentTracker { -> F}
 
 class Quadrupole : public RectMultipole  //## Inherits: <unnamed>%371F39F602E4
 {
   public:
     //## Constructors (specified)
-      //## Operation: Quadrupole%924771670
+      //## Operation: Quadrupole%371F4EFE0258
       //	Constructor. The primary field component is specified as
       //	a the quadrupole gradient. Units are Tesla/meter.
       Quadrupole (const string& id, double len, double dnB);
 
-      //## Operation: Quadrupole%924771669
+      //## Operation: Quadrupole%371F4E9F03C0
       //	Constructor. The primary field component is specified as
       //	a field B (in Tesla) at a speciific radius r0 (in meter).
       Quadrupole (const string& id, double len, double B, double r0);
 
 
     //## Other Operations (specified)
-      //## Operation: PrepareTracker%924771671
+      //## Operation: PrepareTracker%371F4D64001E
       //	Initialise aTracker with *this.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
-      //## Operation: GetIndex%924771672
+      //## Operation: GetIndex%371F4D6E0014
       //	Returns the unique index for a Quadrupole
       virtual int GetIndex () const;
 
-      //## Operation: GetType%924860387
+      //## Operation: GetType%3720408F0032
       //	Returns the type string "Quadrupole"
       virtual const string& GetType () const;
 
-      //## Operation: Copy%924860388
+      //## Operation: Copy%372040950244
       //	Virtual constructor.
       virtual ModelElement* Copy () const;
 
@@ -108,7 +111,7 @@ class Quadrupole : public RectMultipole  //## Inherits: <unnamed>%371F39F602E4
 
   protected:
   private:
-  private:  //## implementation
+  private: //## implementation
 };
 
 //## Class: Sextupole%3721C272033E
@@ -118,39 +121,41 @@ class Quadrupole : public RectMultipole  //## Inherits: <unnamed>%371F39F602E4
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3721C6310154;ComponentTracker { -> F}
 
 class Sextupole : public RectMultipole  //## Inherits: <unnamed>%3721C273000D
 {
   public:
     //## Constructors (specified)
-      //## Operation: Sextupole%924960066
+      //## Operation: Sextupole%3721C27203AD
       //	Constructor. The primary field component is specified as
       //	a the sextupole gradient. Units are Tesla/meter^2.
       Sextupole (const string& id, double len, double dnB);
 
-      //## Operation: Sextupole%924960067
+      //## Operation: Sextupole%3721C2730003
       //	Constructor. The primary field component is specified as
       //	a field B (in Tesla) at a speciific radius r0 (in meter).
       Sextupole (const string& id, double len, double B, double r0);
 
 
     //## Other Operations (specified)
-      //## Operation: PrepareTracker%924960068
+      //## Operation: PrepareTracker%3721C2730008
       //	Primary tracking interface. Prepares the specified
       //	Tracker object for tracking this component.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
-      //## Operation: GetIndex%924960069
+      //## Operation: GetIndex%3721C273000A
       //	Returns the unique index for this class of accelerator
       //	components.
       virtual int GetIndex () const;
 
-      //## Operation: GetType%924960070
+      //## Operation: GetType%3721C273000B
       //	Returns the type string for this component.
       virtual const string& GetType () const;
 
-      //## Operation: Copy%924960071
+      //## Operation: Copy%3721C273000C
       //	Virtual constructor.
       virtual ModelElement* Copy () const;
 
@@ -163,7 +168,7 @@ class Sextupole : public RectMultipole  //## Inherits: <unnamed>%3721C273000D
 
   protected:
   private:
-  private:  //## implementation
+  private: //## implementation
 };
 
 //## Class: SkewQuadrupole%3721C2EB037A
@@ -173,37 +178,39 @@ class Sextupole : public RectMultipole  //## Inherits: <unnamed>%3721C273000D
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3721C62C0262;ComponentTracker { -> F}
 
 class SkewQuadrupole : public RectMultipole  //## Inherits: <unnamed>%3721C2F7032A
 {
   public:
     //## Constructors (specified)
-      //## Operation: SkewQuadrupole%924960072
+      //## Operation: SkewQuadrupole%3721C3190172
       //	Constructor. The primary field component is specified as
       //	a the quadrupole gradient. Units are Tesla/meter.
       SkewQuadrupole (const string& id, double len, double dnB);
 
-      //## Operation: SkewQuadrupole%924960073
+      //## Operation: SkewQuadrupole%3721C31901E0
       //	Constructor. The primary field component is specified as
       //	a field B (in Tesla) at a speciific radius r0 (in meter).
       SkewQuadrupole (const string& id, double len, double B, double r0);
 
 
     //## Other Operations (specified)
-      //## Operation: PrepareTracker%924960074
+      //## Operation: PrepareTracker%3721C3190212
       //	Initialise aTracker to track *this.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
-      //## Operation: GetIndex%924960075
+      //## Operation: GetIndex%3721C319024E
       //	Return the index for a SkewQuadrupole.
       virtual int GetIndex () const;
 
-      //## Operation: GetType%924960076
+      //## Operation: GetType%3721C3190280
       //	Returns the type string "SkewQuadrupole".
       virtual const string& GetType () const;
 
-      //## Operation: Copy%924960077
+      //## Operation: Copy%3721C31902BC
       //	Virtual constructor.
       virtual ModelElement* Copy () const;
 
@@ -216,7 +223,7 @@ class SkewQuadrupole : public RectMultipole  //## Inherits: <unnamed>%3721C2F703
 
   protected:
   private:
-  private:  //## implementation
+  private: //## implementation
 };
 
 //## Class: Octupole%3721C335021C
@@ -226,37 +233,39 @@ class SkewQuadrupole : public RectMultipole  //## Inherits: <unnamed>%3721C2F703
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3721C63301A4;ComponentTracker { -> F}
 
 class Octupole : public RectMultipole  //## Inherits: <unnamed>%3721C35B03AC
 {
   public:
     //## Constructors (specified)
-      //## Operation: Octupole%924960078
+      //## Operation: Octupole%3721C34B0014
       //	Constructor. The primary field component is specified as
       //	a the octupole gradient. Units are Tesla/meter^3.
       Octupole (const string& id, double len, double dnB);
 
-      //## Operation: Octupole%924960079
+      //## Operation: Octupole%3721C34B0046
       //	Constructor. The primary field component is specified as
       //	a field B (in Tesla) at a speciific radius r0 (in meter).
       Octupole (const string& id, double len, double B, double r0);
 
 
     //## Other Operations (specified)
-      //## Operation: PrepareTracker%924960080
+      //## Operation: PrepareTracker%3721C34B0082
       //	Initialise aTracker to track *this.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
-      //## Operation: GetIndex%924960081
+      //## Operation: GetIndex%3721C34B0084
       //	Returns the index for an Octupole.
       virtual int GetIndex () const;
 
-      //## Operation: GetType%924960082
+      //## Operation: GetType%3721C34B00B4
       //	Returns the type string "Octupole".
       virtual const string& GetType () const;
 
-      //## Operation: Copy%924960083
+      //## Operation: Copy%3721C34B00F0
       //	Virtual constructor.
       virtual ModelElement* Copy () const;
 
@@ -269,7 +278,7 @@ class Octupole : public RectMultipole  //## Inherits: <unnamed>%3721C35B03AC
 
   protected:
   private:
-  private:  //## implementation
+  private: //## implementation
 };
 
 //## Class: SkewSextupole%3AC87F1301F4
@@ -278,37 +287,39 @@ class Octupole : public RectMultipole  //## Inherits: <unnamed>%3721C35B03AC
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 class SkewSextupole : public RectMultipole  //## Inherits: <unnamed>%3AC87F2B03AC
 {
   public:
     //## Constructors (specified)
-      //## Operation: SkewSextupole%986295714
+      //## Operation: SkewSextupole%3AC87F460352
       //	Constructor. The primary field component is specified as
       //	a the sextupole gradient. Units are Tesla/meter^2.
       SkewSextupole (const string& id, double len, double dnB);
 
-      //## Operation: SkewSextupole%986295715
+      //## Operation: SkewSextupole%3AC87F46038E
       //	Constructor. The primary field component is specified as
       //	a field B (in Tesla) at a speciific radius r0 (in meter).
       SkewSextupole (const string& id, double len, double B, double r0);
 
 
     //## Other Operations (specified)
-      //## Operation: PrepareTracker%986295716
+      //## Operation: PrepareTracker%3AC87F4603C0
       //	Primary tracking interface. Prepares the specified
       //	Tracker object for tracking this component.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
-      //## Operation: GetIndex%986295717
+      //## Operation: GetIndex%3AC87F470014
       //	Returns the unique index for this class of accelerator
       //	components.
       virtual int GetIndex () const;
 
-      //## Operation: GetType%986295718
+      //## Operation: GetType%3AC87F470046
       //	Returns the type string for this component.
       virtual const string& GetType () const;
 
-      //## Operation: Copy%986295719
+      //## Operation: Copy%3AC87F470082
       //	Virtual constructor.
       virtual ModelElement* Copy () const;
 
@@ -321,7 +332,55 @@ class SkewSextupole : public RectMultipole  //## Inherits: <unnamed>%3AC87F2B03A
 
   protected:
   private:
-  private:  //## implementation
+  private: //## implementation
+};
+
+//## Class: Decapole%3CE376C90380
+//	A standard (normal) decapole magnet.
+//## Category: Merlin::AcceleratorModel::StdComponent%331EC8B201EE
+//## Subsystem: Merlin::AcceleratorModel::StdComponent%3714A06602A8
+//## Persistence: Transient
+//## Cardinality/Multiplicity: n
+
+
+
+class Decapole : public RectMultipole  //## Inherits: <unnamed>%3CE3771000D9
+{
+  public:
+    //## Constructors (specified)
+      //## Operation: Decapole%3CE3773A00BB
+      //	Constructor. The primary field component is specified as
+      //	a the octupole gradient. Units are Tesla/meter^4.
+      Decapole (const string& id, double len, double dnB);
+
+      //## Operation: Decapole%3CE3773A00C5
+      //	Constructor. The primary field component is specified as
+      //	a field B (in Tesla) at a speciific radius r0 (in meter).
+      Decapole (const string& id, double len, double B, double r0);
+
+
+    //## Other Operations (specified)
+      //## Operation: PrepareTracker%3CE3773A00CF
+      //	Initialise aTracker to track *this.
+      virtual void PrepareTracker (ComponentTracker& aTracker);
+
+      //## Operation: GetIndex%3CE3773A00D9
+      //	Returns the index for an Octupole.
+      virtual int GetIndex () const;
+
+      //## Operation: GetType%3CE3773A00DA
+      //	Returns the type string "Octupole".
+      virtual const string& GetType () const;
+
+      //## Operation: Copy%3CE3773A00E3
+      //	Virtual constructor.
+      virtual ModelElement* Copy () const;
+
+      static const int ID;
+
+  protected:
+  private:
+  private: //## implementation
 };
 
 // Class Quadrupole 
@@ -333,6 +392,8 @@ class SkewSextupole : public RectMultipole  //## Inherits: <unnamed>%3AC87F2B03A
 // Class Octupole 
 
 // Class SkewSextupole 
+
+// Class Decapole 
 
 //## begin module%371F5B6700D2.epilog preserve=yes
 //## end module%371F5B6700D2.epilog
