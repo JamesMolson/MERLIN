@@ -73,19 +73,20 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins
 	size_t lost = TruncateZ(bunch,zmin,zmax);
 
 	ParticleBunch::iterator p = bunch.begin();
-	double z=zmin;
+	bins.push_back(p);
 
+	double z=zmin;
 	double total=0;
 	size_t n;
 
 	for(n=0; n<nbins; n++) {
-		bins.push_back(p);
 		z+=dz;
 		while(p!=bunch.end() && p->ct()<z) {
 			total++;
 			hbins[n]++;
 			p++;
 		}
+		bins.push_back(p);
 	}
 
 	if(p!=bunch.end()) {
@@ -94,7 +95,7 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins
 		abort();
 	}
 
-	bins.push_back(p); // should be end()
+//	bins.push_back(p); // should be end()
 
 	// normalise distribution
 	double a = 1/total/dz;
