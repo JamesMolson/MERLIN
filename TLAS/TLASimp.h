@@ -287,7 +287,7 @@ namespace TLAS {
 	}
 
 	// SVD routines
-	#include "TLAS/svdcmp.cpp"
+	#include "TLAS/svdcmp.h"
 
 }; // end namespace TLAS
 
