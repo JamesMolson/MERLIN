@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:36:44 $
-// $Revision: 1.8 $
+// $Date: 2005-04-01 15:21:48 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@
 #include "BasicTransport/MatrixMaps.h"
 #include "NumericalUtils/PhysicalUnits.h"
 #include "NumericalUtils/PhysicalConstants.h"
-#include "BeamDynamics/ParticleTracking/Integrators/TransRFintegrator.h"
+#include "BeamDynamics/ParticleTracking/Integrators/TransRFIntegrator.h"
 
 using namespace PhysicalConstants;
 using namespace PhysicalUnits;

@@ -7,13 +7,13 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:17:37 $
-// $Revision: 1.1 $
+// $Date: 2005-04-01 15:21:48 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
 
-#include "MadInterface/ConstructSrot.h"
+#include "MADInterface/ConstructSrot.h"
 #include "AcceleratorModel/Frames/PatchFrame.h"
 
 ComponentFrame* ConstructSrot(double angle, const std::string& name)
