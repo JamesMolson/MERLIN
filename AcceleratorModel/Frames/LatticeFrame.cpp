@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2005-03-29 08:29:36 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -18,12 +18,6 @@
 
 #define VALID_SFRAME(sframe) \
 assert(sframe==this || sframe==GLOBAL_FRAME || superFrame!=GLOBAL_FRAME)
-
-// macro for transformations
-#define _TRNSFM(func) \
-	if(local_T) (*local_T)*=Transform3D::func; \
-	else local_T = new Transform3D(Transform3D::func); \
-	Invalidate();
 
 Transform3D LatticeFrame::GetFrameTransform (const LatticeFrame* sframe) const
 {
@@ -93,7 +87,7 @@ Transform3D LatticeFrame::GetBoundaryPlaneTransform (BoundaryPlane p) const
         t0=t0*(superFrame->GetBoundaryPlaneTransform(p));
     return t0;
 }
-
+/****
 void LatticeFrame::Translate (double dx, double dy, double dz)
 {
     _TRNSFM(translation(dx,dy,dz));
@@ -113,6 +107,7 @@ void LatticeFrame::RotateZ (double angle)
 {
     _TRNSFM(rotationZ(angle));
 }
+***/
 
 void LatticeFrame::ApplyLocalFrameTransform (const Transform3D& t)
 {
@@ -136,11 +131,7 @@ void LatticeFrame::SetLocalFrameTransform (const Transform3D& t)
 
 void LatticeFrame::ClearLocalFrameTransform ()
 {
-    if(local_T){
-        delete local_T;
-        local_T=0;
-    }
-    Invalidate();
+    ClearTransform();
 }
 
 LatticeFrame* LatticeFrame::GetGlobalFrame () const

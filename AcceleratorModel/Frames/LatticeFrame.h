@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2005-03-29 08:29:37 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -20,8 +20,8 @@
 #include "AcceleratorModel/ModelElement.h"
 // AcceleratorGeometry
 #include "AcceleratorModel/AcceleratorGeometry.h"
-// Transform3D
-#include "EuclideanGeometry/Transform3D.h"
+// Transformable
+#include "EuclideanGeometry/Transformable.h"
 
 #define GLOBAL_FRAME (LatticeFrame*)0
 
@@ -87,7 +87,7 @@ public:
 //	beam dynamics tracking operations, while Physical
 //	Transformations can be used for surveying.
 
-class LatticeFrame : public ModelElement
+class LatticeFrame : public ModelElement, public Transformable
 {
 public:
 
@@ -178,7 +178,7 @@ public:
     //	frame. Includes the effects of all nested frame
     //	boundaries which occur at this location.
     Transform3D GetExitPlaneTransform () const;
-
+/*
     //	Returns true if this frame has been locally transformed.
     bool IsTransformed () const;
 
@@ -205,7 +205,7 @@ public:
 
     //	Rotates the frame about the current z-axis by angle.
     void RotateZ (double angle);
-
+*/
     //	Transform the frame (with respect to the current axes)
     //	by the transformation t.
     void ApplyLocalFrameTransform (const Transform3D& t1);
@@ -215,10 +215,6 @@ public:
 
     //	Clear the local frame transformation.
     void ClearLocalFrameTransform ();
-
-    //	Causes any cached state to be invalidated. The cached
-    //	state should be re-calculated if and when required.
-    virtual void Invalidate () const;
 
     //	Function called after construction of the Accelerator
     //	Model is complete. Allows the nested frame hierachy to
@@ -264,9 +260,6 @@ private:
     //	s-frame.
     double s_0;
 
-    //	The local transformation for this frame.
-    Transform3D* local_T;
-
     //	The geometry associated with this frame.
     const AcceleratorGeometry *itsGeometry;
 
@@ -281,17 +274,15 @@ private:
 // Class LatticeFrame
 
 inline LatticeFrame::LatticeFrame (const string& id)
-        : ModelElement(id),s_0(0),local_T(0),superFrame(0),itsGeometry(0)
+        : ModelElement(id),Transformable(), s_0(0),superFrame(0),itsGeometry(0)
 {}
 
 inline LatticeFrame::LatticeFrame (const LatticeFrame& rhs)
-        : ModelElement(rhs),s_0(0),local_T(0),superFrame(0),itsGeometry(0)
+        : ModelElement(rhs),Transformable(rhs),s_0(0),superFrame(0),itsGeometry(0)
 {}
 
 inline LatticeFrame::~LatticeFrame ()
-{
-    if(local_T) delete local_T;
-}
+{}
 
 inline Transform3D LatticeFrame::GetLocalFrameTransform () const
 {
@@ -362,7 +353,7 @@ inline Transform3D LatticeFrame::GetExitPlaneTransform () const
 {
     return GetBoundaryPlaneTransform(AcceleratorGeometry::exit).inv();
 }
-
+/***
 inline bool LatticeFrame::IsTransformed () const
 {
     return local_T!=0 && !local_T->isIdentity();
@@ -390,7 +381,7 @@ inline void LatticeFrame::TranslateZ (double dz)
 
 inline void LatticeFrame::Invalidate () const
 {}
-
+****/
 inline void LatticeFrame::ConsolidateConstruction ()
 {}
 
