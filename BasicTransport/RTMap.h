@@ -74,8 +74,10 @@ public:
 	//double operator()(int i, int j) const;
 	//double operator()(int i, int j, int k) const;
 
-	// Operating on a PSvector
+	// Remove all zero terms
+	void Purge();
 
+	// Operating on a PSvector
 	PSvector& Apply(PSvector& p) const {
 		TermBase::X.zero();
 		std::for_each(rs.begin(),rs.end(),ApplyMap(p));

@@ -36,5 +36,23 @@ void RTMap::Print(std::ostream& os) const
 	}
 }
 
+void RTMap::Purge()
+{
+	RtermList::iterator i = rs.begin();
+	while(i!=rs.end()) {
+		if(i->v == 0)
+			i=rs.erase(i);
+		else
+			i++;
+	}
+	
+	TtermList::iterator j = ts.begin();
+	while(j!=ts.end()) {
+		if(j->v == 0)
+			j=ts.erase(j);
+		else
+			j++;
+	}
+}
 
 	

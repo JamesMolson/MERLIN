@@ -450,21 +450,33 @@ RealMatrix& TransportMatrix::TWRFCavity (double length, double g, double f, doub
 	InitR(R);
 	
 	const double dE=length*g;
-	const double dEcosPhi = dE*cos(phi);
+	const double cosphi = cos(phi);
+	const double dEcosPhi = dE*cosphi;
+	const double E1 = E0+dEcosPhi;
+	const double Er = E1/E0;
+	const double logEr = log(Er);
 	
 	if(dEcosPhi==0) {
-		// no acceleration - return drift matrix
-		R(0,1)=R(2,3)=length;
+		R(0,1)=length;
 	}
 	else {
-		R(0,1)=R(2,3)=length*E0*log(1+dEcosPhi/E0)/dEcosPhi;
-		R(1,1)=R(3,3)=E0/(E0+dEcosPhi);
+		R(0,0) = 1-0.5*logEr;
+		R(0,1) = E0*length*logEr/dEcosPhi;
+		R(1,0) = -dEcosPhi*logEr/(4*E1*length);
+		R(1,1) = (1+0.5*logEr)/Er;
 	}
-	
+
+	if(R.nrows()>2) {
+		R(2,2)=R(0,0);
+		R(2,3)=R(0,1);
+		R(3,2)=R(1,0);
+		R(3,3)=R(1,1);
+	}
+
 	if(R.nrows()==6) {
 		const double k = twoPi*f/SpeedOfLight;
-		R(5,4)=k*dE*sin(phi)/(E0+dEcosPhi);
-		R(5,5)=E0/(E0+dEcosPhi);
+		R(5,4)=k*dE*sin(phi)/E1;
+		R(5,5)=1/Er;
 	}
 	return R;
 	//## end TransportMatrix::TWRFCavity%882199467.body
@@ -491,11 +503,19 @@ RealMatrix& TransportMatrix::SWRFCavity (int ncells, double g, double f, double 
 	double cosAlpha = cos(alpha);
 	double sinAlpha = sin(alpha);
 	
-	R(0,0) = R(2,2) = cosAlpha - root2*cosPhi*sinAlpha;
-	R(0,1) = R(2,3) = root8*E0*sinAlpha/g;
-	R(1,0) = R(3,2) = -g*(2+cos(2*phi))*sinAlpha/E1/root8;
-	R(1,1) = R(3,3) = E0*(cosAlpha+root2*cosPhi*sinAlpha)/E1;
-	
+
+	R(0,0) = cosAlpha - root2*cosPhi*sinAlpha;
+	R(0,1) = root8*E0*sinAlpha/g;
+	R(1,0) = -g*(2+cos(2*phi))*sinAlpha/E1/root8;
+	R(1,1) = E0*(cosAlpha+root2*cosPhi*sinAlpha)/E1;
+
+	if(R.nrows()==4) {
+		R(2,2)=R(0,0);
+		R(2,3)=R(0,1);
+		R(3,2)=R(1,0);
+		R(3,3)=R(1,1);
+	}
+
 	return R;
 	//## end TransportMatrix::SWRFCavity%903606812.body
 }
