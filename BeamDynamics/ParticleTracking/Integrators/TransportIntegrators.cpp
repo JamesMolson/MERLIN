@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.6 $
+// $Date: 2005-01-28 08:08:13 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -271,7 +271,7 @@ void SectorBendCI::ApplyPoleFaceRotation (const SectorBend::PoleFace* pf)
 
     double beta = _PFV(pf,rot);
     double c = 0; // currently not implemented
-    double hg = _PFV(pf,fint);
+    double hg = _PFV(pf,hgap);
     double fint = _PFV(pf,fint);
     RTMap* M = PoleFaceTM(h,k,beta,c,fint,hg);
     ApplyMapToBunch(*currentBunch,M);
