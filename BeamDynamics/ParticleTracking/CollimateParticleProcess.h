@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.7 $
+// $Date: 2005-01-12 12:08:51 $
+// $Revision: 1.8 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -139,7 +139,8 @@ private:
 
     bool scatter;
     bool is_spoiler;
-    double Xr;
+    double Xr; // radiation length 
+    double len; // physical length     
     bool DoScatter(Particle&);
 };
 

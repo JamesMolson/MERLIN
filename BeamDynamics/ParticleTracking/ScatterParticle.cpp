@@ -25,10 +25,14 @@ pair<double,double> CoulombScatter(double E, double x, double theta0)
 }
 };
 
-void ScatterParticle(PSvector& p, double t, const double E0)
+void ScatterParticle(PSvector& p, double t, double l, const double E0)
 {
-    // compute the random energy loss (approximate formulas)
-    //
+  // compute the random energy loss (approximate formulas)
+  // inputs:
+  // p - particle phase space vector   
+  // t - material radiation length
+  // l - material physical length
+
     static const double MAXDP=1.0-1.0e-7;
 
     double E1=E0*(1+p.dp());
@@ -53,11 +57,12 @@ void ScatterParticle(PSvector& p, double t, const double E0)
     double Eav = (E1+E2)/2.0;
     double theta = 0.0136*sqrt(t)*(1.0+0.038*log(t))/Eav;
 
-    pair<double,double> s = CoulombScatter(Eav,t,theta);
+    pair<double,double> s = CoulombScatter(Eav,l,theta);
     p.x() += s.first;
     p.xp()+= s.second;
 
-    s = CoulombScatter(Eav,t,theta);
+    s = CoulombScatter(Eav,l,theta);
     p.y() += s.first;
     p.yp()+= s.second;
 }
+

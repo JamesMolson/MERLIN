@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-22 09:28:00 $
-// $Revision: 1.8 $
+// $Date: 2005-01-12 12:08:50 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@
 
 using namespace std;
 
-extern void ScatterParticle(PSvector&, double t, double E0);
+extern void ScatterParticle(PSvector&, double t, double l, double E0);
 
 namespace {
 
@@ -96,6 +96,7 @@ void CollimateParticleProcess::SetCurrentComponent (AcceleratorComponent& compon
             at_exit = true;
             SetNextS();
             Xr = aSpoiler->GetNumRadLengths();
+	    len = aSpoiler->GetLength();
         }
     }
     else {
@@ -234,7 +235,7 @@ void CollimateParticleProcess::DoOutput (const PSvectorArray& lostb, const list<
 bool CollimateParticleProcess::DoScatter (Particle& p)
 {
     double E0=currentBunch->GetReferenceMomentum();
-    ScatterParticle(p,Xr,E0);
+    ScatterParticle(p,Xr,len,E0);
     return p.dp()<=-0.99; // return true if E below 1% cut-off
 }
 
