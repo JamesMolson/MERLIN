@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3B73CEA900C1.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleMapComponent.cpp
- * last modified 08/10/01 02:23:07 PM
+ * last modified 26/09/02 15:18:14
  */
 //## end module%3B73CEA900C1.cm
 
@@ -21,7 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -60,11 +61,10 @@
 const int ParticleMapComponent::ID = UniqueIndex();
 //## end ParticleMapComponent::ID%3B73CD3D00A0.attr
 
-
 //## Operation: ParticleMapComponent%3B73CCE10115
-ParticleMapComponent::ParticleMapComponent (const std::string& id, ParticleMap* pmap)
+ParticleMapComponent::ParticleMapComponent (const std::string& id, ParticleMap* pmap, double intB2ds)
   //## begin ParticleMapComponent::ParticleMapComponent%3B73CCE10115.initialization preserve=yes
-  : AcceleratorComponent(id),itsMap(pmap)
+  : AcceleratorComponent(id),itsMap(pmap),ib2(intB2ds)
   //## end ParticleMapComponent::ParticleMapComponent%3B73CCE10115.initialization
 {
   //## begin ParticleMapComponent::ParticleMapComponent%3B73CCE10115.body preserve=yes

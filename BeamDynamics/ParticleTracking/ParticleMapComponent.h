@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3B73CEA0035D.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleMapComponent.h
- * last modified 08/10/01 02:23:07 PM
+ * last modified 26/09/02 15:18:13
  */
 //## end module%3B73CEA0035D.cm
 
@@ -21,7 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -68,6 +69,8 @@ class ParticleBunch;
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3B73CE5C020B;ParticleBunch { -> F}
 //## Uses: <unnamed>%3B73D1F50287;ComponentTracker { -> }
 
@@ -76,7 +79,7 @@ class ParticleMapComponent : public AcceleratorComponent  //## Inherits: <unname
   public:
     //## Constructors (specified)
       //## Operation: ParticleMapComponent%3B73CCE10115
-      ParticleMapComponent (const std::string& id, ParticleMap* pmap);
+      ParticleMapComponent (const std::string& id, ParticleMap* pmap, double intB2ds = 0);
 
 
     //## Other Operations (specified)
@@ -105,6 +108,11 @@ class ParticleMapComponent : public AcceleratorComponent  //## Inherits: <unname
       //	Tracker object for tracking this component.
       virtual void PrepareTracker (ComponentTracker& aTracker);
 
+      //## Operation: GetIntB2ds%3D93087C02A0
+      //	Returns the integral of B^2 for synchrotron radiation
+      //	applications
+      double GetIntB2ds () const;
+
     // Data Members for Class Attributes
 
       //## Attribute: ID%3B73CD3D00A0
@@ -115,6 +123,13 @@ class ParticleMapComponent : public AcceleratorComponent  //## Inherits: <unname
 
   protected:
   private:
+    // Data Members for Class Attributes
+
+      //## Attribute: ib2%3D93086E02BE
+      //## begin ParticleMapComponent::ib2%3D93086E02BE.attr preserve=no  private: double {UA} 
+      double ib2;
+      //## end ParticleMapComponent::ib2%3D93086E02BE.attr
+
     // Data Members for Associations
 
       //## Association: Merlin::BeamDynamics::ParticleTracking::<unnamed>%3B73CB9202A4
@@ -136,6 +151,14 @@ inline ParticleBunch& ParticleMapComponent::Apply (ParticleBunch& bunch) const
   //## begin ParticleMapComponent::Apply%3B73CD9E006D.body preserve=yes
 	return itsMap->Apply(bunch);
   //## end ParticleMapComponent::Apply%3B73CD9E006D.body
+}
+
+//## Operation: GetIntB2ds%3D93087C02A0
+inline double ParticleMapComponent::GetIntB2ds () const
+{
+  //## begin ParticleMapComponent::GetIntB2ds%3D93087C02A0.body preserve=yes
+    return ib2; 
+  //## end ParticleMapComponent::GetIntB2ds%3D93087C02A0.body
 }
 
 //## begin module%3B73CEA0035D.epilog preserve=yes
