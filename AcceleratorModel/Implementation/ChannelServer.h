@@ -97,6 +97,9 @@ class ChannelServer
     {
       public:
 
+      // destructor
+      virtual ~ChannelCtor() {}
+
         //## Other Operations (specified)
           //## Operation: ConstructRO%3ACC6C9203B6
           //	Constructs a channel for the specified ModelElement.
