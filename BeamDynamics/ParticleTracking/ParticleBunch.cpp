@@ -114,8 +114,8 @@ namespace {
 	double Mean(IT F, IT L,int i)
 	{
 		double s=0;
-		double n=distance(F,L);
-		while(F!=L) s+=(*F)[i];
+		double n=0;
+		while(F!=L) {s+=(*F++)[i];n++;}
 		return s/n;
 	}
 
@@ -232,7 +232,7 @@ double ParticleBunch::AdjustRefMomentum (double dpp)
   //## begin ParticleBunch::AdjustRefMomentum%3B94E5990346.body preserve=yes
 	for(iterator p=begin(); p!=end(); p++){
 		(*p).dp()-=dpp;
-		(*p).dp()/=dpp+1;
+		(*p).dp()/=1+dpp;
 	}
 	double P0 = (1+dpp)*GetReferenceMomentum();
 	SetReferenceMomentum(P0);
