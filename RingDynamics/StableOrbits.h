@@ -5,7 +5,7 @@ class StableOrbits
 {
 public:
 	StableOrbits(AcceleratorModel* aModel);
-	void SelectStable(ParticleBunch* aBunch, int nturns, double limit =1.0);
+	void SelectStable(ParticleBunch* aBunch, int nturns, list<size_t>* index);
 
 private:
 	AcceleratorModel* theModel;
