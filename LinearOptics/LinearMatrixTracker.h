@@ -102,13 +102,13 @@ class LinearMatrixTracker : public ComponentTracker  //## Inherits: <unnamed>%39
       //## Association: Merlin::LinearOptics::<unnamed>%3993B869015C
       //## Role: LinearMatrixTracker::R1%3993B8690348
       //## begin LinearMatrixTracker::R1%3993B8690348.role preserve=no  private: RMtrx { -> VHgAN}
-      RMtrx R1;
+      mutable RMtrx R1;
       //## end LinearMatrixTracker::R1%3993B8690348.role
 
       //## Association: Merlin::LinearOptics::<unnamed>%39ABC71F03E1
       //## Role: LinearMatrixTracker::R2%39ABC7200193
       //## begin LinearMatrixTracker::R2%39ABC7200193.role preserve=no  private: RMtrx { -> 1VHgAN}
-      RMtrx R2;
+      mutable RMtrx R2;
       //## end LinearMatrixTracker::R2%39ABC7200193.role
 
   private: //## implementation
@@ -122,6 +122,7 @@ class LinearMatrixTracker : public ComponentTracker  //## Inherits: <unnamed>%39
 inline const RMtrx& LinearMatrixTracker::GetCurrentR1 () const
 {
   //## begin LinearMatrixTracker::GetCurrentR1%3992CF5A0396.body preserve=yes
+	R1.SetRefMomentum(GetReferenceMomentum());
 	return R1;
   //## end LinearMatrixTracker::GetCurrentR1%3992CF5A0396.body
 }
@@ -130,6 +131,7 @@ inline const RMtrx& LinearMatrixTracker::GetCurrentR1 () const
 inline const RMtrx& LinearMatrixTracker::GetCurrentR2 () const
 {
   //## begin LinearMatrixTracker::GetCurrentR2%39ABB6D400FE.body preserve=yes
+	R2.SetRefMomentum(GetReferenceMomentum());
 	return R2;
   //## end LinearMatrixTracker::GetCurrentR2%39ABB6D400FE.body
 }

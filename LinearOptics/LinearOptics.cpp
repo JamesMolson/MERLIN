@@ -29,6 +29,9 @@
 
 #include "LinearOptics/LinearOptics.h"
 #include "LinearOptics/LinearMatrixTracker.h"
+#include "Utility/StringPattern.h"
+#include <algorithm>
+#include <iterator>
 
 namespace {
 
@@ -41,6 +44,24 @@ namespace {
 			trker(&((*first)->GetComponent()));
 		} while(++first != last);
 	}
+
+	struct OrPattern {
+		vector<StringPattern> patterns;
+
+		OrPattern(const vector<string>& p)
+		{	
+			patterns.reserve(p.size());
+			copy(p.begin(),p.end(),back_inserter(patterns));
+		}
+
+		bool operator()(const string& s) const {
+			for(size_t n=0; n<patterns.size(); n++) {
+				if((patterns[n])(s))
+					return true;
+			}
+			return false;
+		}
+	};
 };
 
 RMtrx Rmatrix(AcceleratorModel::Beamline& bline, double p0)
@@ -57,5 +78,43 @@ RMtrx Rmatrix(AcceleratorModel::RingIterator ringi, double p0)
 	return trker.GetCurrentR1();
 }
 
+RMtrxTable* RmatrixTable(AcceleratorModel::Beamline& bline, double p0, bool centred)
+{
+	vector<string> patterns(1,"*");
+	return RmatrixTable(bline,p0,patterns,centred);
+}
+
+RMtrxTable* RmatrixTable(AcceleratorModel::Beamline& bline, double p0, 
+						const std::vector<std::string>& incTypes,
+						bool centred)
+{
+	OrPattern opat(incTypes);
+	
+	RMtrxTable* rtable = new RMtrxTable();
+	rtable->reserve(5);
+
+	LinearMatrixTracker rtrack(p0);
+
+	for(AcceleratorModel::BeamlineIterator ci = bline.begin(); ci!=bline.end(); ci++) {
+		AcceleratorComponent& component = (*ci)->GetComponent();
+		component.PrepareTracker(rtrack);
+		double ds = component.GetLength();
+		if(opat(component.GetQualifiedName())) {
+			if(centred)
+				rtrack.TrackStep(ds/2);
+			else
+				rtrack.Track();
+			
+			rtable->push_back(rtrack.GetCurrentR1());
+		
+			if(centred)
+				rtrack.TrackStep(ds/2);
+		}
+		else
+			rtrack.Track();
+	}
+
+	return rtable;
+}
 
 // RMtrx Rmatrix(AcceleratorModel::RingIterator ring, double p0);

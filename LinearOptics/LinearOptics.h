@@ -32,8 +32,16 @@
 
 #include "BasicTransport/MatrixMaps.h"
 #include "AcceleratorModel/AcceleratorModel.h"
+#include <vector>
+
+typedef std::vector<RMtrx> RMtrxTable;
 
 RMtrx Rmatrix(AcceleratorModel::Beamline& bline, double p0);
 RMtrx Rmatrix(AcceleratorModel::RingIterator ring, double p0);
+
+RMtrxTable* RmatrixTable(AcceleratorModel::Beamline& bline, double p0, bool centred=false);
+RMtrxTable* RmatrixTable(AcceleratorModel::Beamline& bline, double p0, 
+						const std::vector<std::string>& incTypes,
+						bool centred=false);
 
 #endif
