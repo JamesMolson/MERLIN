@@ -43,7 +43,7 @@
 // Returns the number of particles removed from tails
 // i.e. z<zmin || z>=zmax
 //
-size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, double dz, 
+size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins, 
 					   std::vector<ParticleBunch::iterator>& pbins,
 					   vector<double>& hd);
 

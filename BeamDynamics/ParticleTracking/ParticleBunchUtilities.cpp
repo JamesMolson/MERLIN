@@ -33,7 +33,24 @@
 #include <vector>
 #include <cmath>
 
-using namespace std;
+namespace {
+	using namespace std;
+
+	size_t TruncateZ(ParticleBunch& particles, double zmin, double zmax)
+	{
+		size_t lost=0;
+		for(ParticleBunch::iterator p = particles.begin(); p!=particles.end(); p++) {
+			double z = p->ct();
+			if(z<zmin || z>=zmax) {
+				p = particles.erase(p);
+				p--;
+				lost++;
+			}
+		}
+		return lost;
+	}
+
+};
 
 // Sort the bunch in ascending z (ct) order, and return
 // a vector of iterators which point to the equal-spaced
@@ -42,26 +59,21 @@ using namespace std;
 // Returns the number of particles removed from tails
 // i.e. z<zmin || z>=zmax
 //
-size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, double dz, 
+size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins, 
 					   vector<ParticleBunch::iterator>& pbins,
 					   vector<double>& hd)
 {
-	size_t nbins=ceil((zmax-zmin)/dz);
+	double dz = (zmax-zmin)/double(nbins);
 	vector<ParticleBunch::iterator> bins;
 	vector<double> hbins(nbins,0);
 	bins.reserve(nbins+1);
 
 	bunch.SortByCT();
 
-	ParticleBunch::iterator p = bunch.begin();
-	size_t lost=0;
-	double z=zmin;
+	size_t lost = TruncateZ(bunch,zmin,zmax);
 
-	// remove particles wth z<zmin
-	while(p!=bunch.end() && p->ct()<zmin) {
-		p=bunch.erase(p);
-		lost++;
-	}
+	ParticleBunch::iterator p = bunch.begin();
+	double z=zmin;
 
 	double total=0;
 	for(size_t n=0; n<nbins; n++) {
@@ -74,18 +86,19 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, double dz
 		}
 	}
 
-	// remove remainder of bunch
-	while(p!=bunch.end()) {
-		p=bunch.erase(p);
-		lost++;
+	if(p!=bunch.end()) {
+		cerr<<"bad slicing"<<endl;
+		cerr<<"z = "<<z<<" ct = "<<p->ct()<<" zmax = "<<zmax<<endl;
+		abort();
 	}
+
+	bins.push_back(p); // should be end()
 
 	// normalise distribution
 	double a = 1/total/dz;
 	for(n=0; n<nbins; n++)
 		hbins[n]*=a;
 
-	bins.push_back(p); // should be end()
 
 	pbins.swap(bins);
 	hd.swap(hbins);
