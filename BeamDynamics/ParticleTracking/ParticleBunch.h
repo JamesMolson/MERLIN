@@ -146,6 +146,9 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
       //## Operation: GetProjectedCentroid%3729CB5001A4
       virtual Point2D GetProjectedCentroid (PScoord u, PScoord v) const;
 
+	  // Calculate mean (first) and rms (second) of the specified coordinate.
+	  std::pair<double,double> GetMoments(PScoord u) const;
+
       //## Operation: AdjustRefMomentumToMean%3729CB500212
       //	Set the reference momentum to the mean (centroid)
       //	momentum of the bunch. Returns the new value in GeV/c.

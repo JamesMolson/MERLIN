@@ -210,6 +210,18 @@ PSvector& ParticleBunch::GetCentroid (PSvector& p) const
   //## end ParticleBunch::GetCentroid%3729CB500172.body
 }
 
+std::pair<double,double> ParticleBunch::GetMoments(PScoord i) const
+{
+	double u = Mean(begin(),end(),i);
+	double v=0;
+	for(const_iterator p = begin(); p!=end(); p++) {
+		double x = (*p)[i]-u;
+		v+=x*x;
+	}
+
+	return make_pair(u,sqrt(v/size()));
+}
+
 //## Operation: GetProjectedCentroid%3729CB5001A4
 Point2D ParticleBunch::GetProjectedCentroid (PScoord u, PScoord v) const
 {
