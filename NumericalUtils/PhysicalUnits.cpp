@@ -18,7 +18,7 @@ namespace PhysicalUnits {
 	const double nanosecond = 1.0e-09*second;
 	const double picosecond = 1.0e-12*second;
 	const double minute =60*second;
-	const double hour = 60*hour;
+	const double hour = 60*minute;
 	const double day = 24*hour;
 	const double year = 365*day;
 
