@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2005-03-29 08:36:44 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -25,6 +25,8 @@ server->RegisterCtor(new TIC_ctor<type>(#type,#key,getf,setf))
 ChannelServer* ConstructChannelServer()
 {
     ChannelServer* server = new ChannelServer();
+
+    DEF_RW_CHANNEL(Solenoid,Bz,&Solenoid::GetBz,&Solenoid::SetBz);
 
     DEF_RW_CHANNEL(Quadrupole,B1,&Quadrupole::GetFieldStrength,&Quadrupole::SetFieldStrength);
     DEF_RW_CHANNEL(Sextupole,B2,&Sextupole::GetFieldStrength,&Sextupole::SetFieldStrength);
@@ -52,6 +54,12 @@ ChannelServer* ConstructChannelServer()
     DEF_RW_CHANNEL(SWRFStructure,Phi,&SWRFStructure::GetPhase,&SWRFStructure::SetPhase);
     DEF_RW_CHANNEL(SWRFStructure,Lambda,&SWRFStructure::GetWavelength,&SWRFStructure::SetWavelength);
     DEF_RW_CHANNEL(SWRFStructure,K,&SWRFStructure::GetK,&SWRFStructure::SetK);
+
+    DEF_RW_CHANNEL(TransverseRFStructure,E,&TransverseRFStructure::GetAmplitude,&TransverseRFStructure::SetAmplitude);
+    DEF_RW_CHANNEL(TransverseRFStructure,Phi,&TransverseRFStructure::GetPhase,&TransverseRFStructure::SetPhase);
+    DEF_RW_CHANNEL(TransverseRFStructure,Lambda,&TransverseRFStructure::GetWavelength,&TransverseRFStructure::SetWavelength);
+    DEF_RW_CHANNEL(TransverseRFStructure,K,&TransverseRFStructure::GetK,&TransverseRFStructure::SetK);
+    DEF_RW_CHANNEL(TransverseRFStructure,ROLL,&TransverseRFStructure::GetFieldOrientation,&TransverseRFStructure::SetFieldOrientation);
 
     DEF_RW_CHANNEL(CorrectorWinding,X,&CorrectorWinding::GetBy,&CorrectorWinding::SetBy);
     DEF_RW_CHANNEL(CorrectorWinding,Y,&CorrectorWinding::GetBx,&CorrectorWinding::SetBx);

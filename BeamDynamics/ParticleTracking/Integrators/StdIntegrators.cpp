@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.4 $
+// $Date: 2005-03-29 08:36:44 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -19,6 +19,7 @@
 #include "BasicTransport/MatrixMaps.h"
 #include "BeamDynamics/ParticleTracking/Integrators/StdIntegrators.h"
 #include "BeamDynamics/ParticleTracking/Integrators/LCAVintegrator.h"
+#include "BeamDynamics/ParticleTracking/Integrators/TransRFintegrator.h"
 
 using namespace std;
 using namespace PhysicalConstants;
@@ -100,6 +101,7 @@ ADD_INTG(DriftCI)
 ADD_INTG(SectorBendCI)
 ADD_INTG(RectMultipoleCI)
 ADD_INTG(LCAVIntegrator)
+ADD_INTG(TransRFIntegrator)
 ADD_INTG(MonitorCI)
 ADD_INTG(SolenoidCI)
 ADD_INTG(MarkerCI)

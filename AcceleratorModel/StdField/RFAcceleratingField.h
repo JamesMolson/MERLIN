@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.3 $
+// $Date: 2005-03-29 08:36:44 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -21,12 +21,10 @@
 #include "AcceleratorModel/EMField.h"
 
 //	An RF accelerating field. An RF accelerating field is
-//	characterised by a sinusoidal electric field (0,0,Ez),
+//	characterised by a sinusoidal electric field,
 //	which is completely defined by its frequency, amplitude
 //	and phase. RFAcceleratingField implements the basic
-//	defining attributes for two derived classes, TWRFfield
-//	and  SWRFfield, which implement travelling wave and
-//	standing wave fields respectively.
+//	defining attributes for sinusoidal RF fields.
 
 class RFAcceleratingField : public EMField
 {
