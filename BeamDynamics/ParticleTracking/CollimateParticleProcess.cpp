@@ -97,7 +97,7 @@ namespace {
 CollimateParticleProcess::CollimateParticleProcess (int priority, int mode, std::ostream* osp)
   //## begin CollimateParticleProcess::CollimateParticleProcess%935667561.initialization preserve=yes
   : ParticleBunchProcess("PARTICLE COLLIMATION",priority),cmode(mode),os(osp),
-  createLossFiles(false),file_prefix(""),nstart(0),pindex(0),lossThreshold(1),scatter(false)
+  createLossFiles(false),file_prefix(""),nstart(0),pindex(0),lossThreshold(1),scatter(false),save_index(false)
   //## end CollimateParticleProcess::CollimateParticleProcess%935667561.initialization
 {
   //## begin CollimateParticleProcess::CollimateParticleProcess%935667561.body preserve=yes
@@ -109,7 +109,7 @@ CollimateParticleProcess::CollimateParticleProcess (int priority, int mode, std:
 CollimateParticleProcess::~CollimateParticleProcess ()
 {
   //## begin CollimateParticleProcess::~CollimateParticleProcess%988274693.body preserve=yes
-	if(pindex!=0)
+	if(pindex!=0 && !save_index)
 		delete pindex;
   //## end CollimateParticleProcess::~CollimateParticleProcess%988274693.body
 }
@@ -212,6 +212,7 @@ void CollimateParticleProcess::IndexParticles (list<size_t>& anIndex)
 		delete pindex;
 
 	pindex=&anIndex;
+	save_index = true;
 }
 
 //## Operation: SetLossThreshold%988274692

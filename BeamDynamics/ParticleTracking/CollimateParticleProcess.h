@@ -289,6 +289,7 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
 	  bool is_spoiler;
 	  double Xr;
 	  bool DoScatter(Particle&);
+	  bool save_index;
 };
 
 // Class ExcessiveParticleLoss 
