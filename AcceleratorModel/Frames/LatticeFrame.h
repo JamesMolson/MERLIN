@@ -181,7 +181,7 @@ class LatticeFrame : public ModelElement  //## Inherits: <unnamed>%3906DBB2007C
       //	AcceleratorGeometry related operations.
       //
       //	Return the associated AcceleratorGeometry.
-      const AcceleratorGeometry& GetGeometry () const;
+      const AcceleratorGeometry* GetGeometry () const;
 
       //## Operation: GetPosition%951841365
       //	Returns the position of this frame's origin in the
@@ -442,10 +442,10 @@ inline Transform3D LatticeFrame::GetLocalPhysicalTransform () const
 }
 
 //## Operation: GetGeometry%984653910
-inline const AcceleratorGeometry& LatticeFrame::GetGeometry () const
+inline const AcceleratorGeometry* LatticeFrame::GetGeometry () const
 {
   //## begin LatticeFrame::GetGeometry%984653910.body preserve=yes
-	return *itsGeometry;
+	return itsGeometry;
   //## end LatticeFrame::GetGeometry%984653910.body
 }
 
@@ -462,7 +462,12 @@ inline double LatticeFrame::GetLocalPosition () const
 inline Transform3D LatticeFrame::GetGeometryTransform (double s0, double s) const throw (AcceleratorGeometry::BeyondExtent)
 {
   //## begin LatticeFrame::GetGeometryTransform%984653912.body preserve=yes
-	return itsGeometry->GetGeometryTransform(s0,s);
+	if(itsGeometry!=0)
+		return  itsGeometry->GetGeometryTransform(s0,s);
+	else if(s0==s)
+		return Transform3D();
+	else
+		throw AcceleratorGeometry::BeyondExtent();
   //## end LatticeFrame::GetGeometryTransform%984653912.body
 }
 
@@ -471,7 +476,12 @@ inline Transform3D LatticeFrame::GetGeometryTransform (double s0, double s) cons
 inline Transform3D LatticeFrame::GetGeometryTransform (double s) const throw (AcceleratorGeometry::BeyondExtent)
 {
   //## begin LatticeFrame::GetGeometryTransform%985850581.body preserve=yes
-	return itsGeometry->GetGeometryTransform(s);
+	if(itsGeometry!=0)
+		return  itsGeometry->GetGeometryTransform(s);
+	else if(s==0)
+		return Transform3D();
+	else
+		throw AcceleratorGeometry::BeyondExtent();
   //## end LatticeFrame::GetGeometryTransform%985850581.body
 }
 
@@ -479,7 +489,7 @@ inline Transform3D LatticeFrame::GetGeometryTransform (double s) const throw (Ac
 inline Transform3D LatticeFrame::GetGeometryTransform (BoundaryPlane p) const
 {
   //## begin LatticeFrame::GetGeometryTransform%984653913.body preserve=yes
-	return itsGeometry->GetGeometryTransform(p);
+	return (itsGeometry!=0)? itsGeometry->GetGeometryTransform(p) : Transform3D();
   //## end LatticeFrame::GetGeometryTransform%984653913.body
 }
 
@@ -487,7 +497,7 @@ inline Transform3D LatticeFrame::GetGeometryTransform (BoundaryPlane p) const
 inline Transform3D LatticeFrame::GetTotalGeometryTransform () const
 {
   //## begin LatticeFrame::GetTotalGeometryTransform%984653914.body preserve=yes
-	return itsGeometry->GetTotalGeometryTransform();
+	return (itsGeometry!=0)? itsGeometry->GetTotalGeometryTransform() : Transform3D();
   //## end LatticeFrame::GetTotalGeometryTransform%984653914.body
 }
 
@@ -495,7 +505,7 @@ inline Transform3D LatticeFrame::GetTotalGeometryTransform () const
 inline AcceleratorGeometry::Extent LatticeFrame::GetLocalGeometryExtent () const
 {
   //## begin LatticeFrame::GetLocalGeometryExtent%984653915.body preserve=yes
-	return itsGeometry->GetGeometryExtent();
+	return (itsGeometry!=0)? itsGeometry->GetGeometryExtent() : AcceleratorGeometry::Extent(0,0);
   //## end LatticeFrame::GetLocalGeometryExtent%984653915.body
 }
 
@@ -503,7 +513,7 @@ inline AcceleratorGeometry::Extent LatticeFrame::GetLocalGeometryExtent () const
 inline double LatticeFrame::GetGeometryLength () const
 {
   //## begin LatticeFrame::GetGeometryLength%984653916.body preserve=yes
-	return itsGeometry->GetGeometryLength();
+	return (itsGeometry!=0) ? itsGeometry->GetGeometryLength() : 0;
   //## end LatticeFrame::GetGeometryLength%984653916.body
 }
 

@@ -62,7 +62,7 @@ FrameModifier::FrameModifier (LatticeFrame* frame)
 	if(oldSuperFrame)
 		oldSuperFrame->ReplaceSubFrame(frame,this);
 
-	SetGeometry(&(frame->GetGeometry()));
+	SetGeometry(frame->GetGeometry());
   //## end FrameModifier::FrameModifier%985182999.body
 }
 
