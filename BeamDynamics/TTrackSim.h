@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-20 16:58:59 $
-// $Revision: 1.4 $
+// $Date: 2004-12-22 09:26:47 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -89,6 +89,7 @@ public:
     typedef __TYPENAME__ T::bunch_type bunch_type;
     typedef __TYPENAME__ bunch_type::particle_type particle_type;
     typedef TTrnsProc<T> transport_process;
+    typedef __TYPENAME__ transport_process::integrator_type integrator_type;
 
     //	Constructor taking the beamline to be tracked and a
     //	pointer to the initial ParticleBunch. If bunch0=0
@@ -121,6 +122,11 @@ public:
 
     // Default constructor
     TTrackSim ();
+
+    // Register an additional (or override) integrator.
+    bool RegisterIntegrator(integrator_type* intg) {
+        return transportProc->RegisterIntegrator(intg);
+    }
 
     //	Sets the initial ParticleBunch for future tracking
     //	operations.
