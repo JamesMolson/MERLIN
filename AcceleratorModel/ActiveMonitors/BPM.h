@@ -220,6 +220,8 @@ class BPM : public Monitor  //## Inherits: <unnamed>%3AC4E8FB0398
       static const int ID;
       //## end BPM::ID%3726FEF001E0.attr
 
+	  static bool generate_noise;
+
     // Data Members for Associations
 
       //## Association: Merlin::AcceleratorModel::ActiveMonitors::<unnamed>%3ACC4E060000

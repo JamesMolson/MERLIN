@@ -68,6 +68,7 @@ using namespace std;
 
 // Class BPM 
 
+bool BPM::generate_noise = true;
 
 
 //## begin BPM::ID%3726FEF001E0.attr preserve=no  public: static const int {UA} UniqueIndex()
@@ -97,9 +98,9 @@ void BPM::MakeMeasurement (const Bunch& aBunch)
 	if(TakeData()) {
 		Point2D x0 = aBunch.GetProjectedCentroid(ps_X,ps_Y);
 		
-		if(res_x!=0)
+		if(generate_noise && res_x!=0)
 			x0.x += RandomNG::normal(0.0,res_x*res_x);
-		if(res_y!=0)
+		if(generate_noise && res_y!=0)
 			x0.y += RandomNG::normal(0.0,res_y*res_y);
 		
 		x0.x *= scale_x;
