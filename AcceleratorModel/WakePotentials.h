@@ -79,7 +79,11 @@ class WakePotentials
       //## Operation: Wtrans%3C501A2E02C1
       virtual double Wtrans (double z) const = 0;
 
+	  bool Is_CSR ();
+
   protected:
+	  bool csr;
+
   private:
   private: //## implementation
 };
@@ -93,11 +97,9 @@ inline WakePotentials::~WakePotentials ()
   //## end WakePotentials::~WakePotentials%3C501ACF0056.body
 }
 
-
 // Class WakePotentials 
 
 //## begin module%3C5018DF03BA.epilog preserve=yes
 //## end module%3C5018DF03BA.epilog
-
 
 #endif
