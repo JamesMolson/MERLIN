@@ -39,6 +39,7 @@
 #include "AcceleratorModel/Components.h"
 #include "AcceleratorModel/Construction/AcceleratorModelConstructor.h"
 #include "AcceleratorModel/Apertures/SimpleApertures.h"
+#include "AcceleratorModel/Supports/SupportStructure.h"
 #include "NumericalUtils/PhysicalConstants.h"
 
 using namespace PhysicalConstants;
@@ -127,6 +128,7 @@ namespace {
 #define K1     2
 #define K2     3
 #define K3     7
+#define K4     7
 #define ENERGY 5
 #define APER   4
 #define HGAP   4
@@ -227,6 +229,17 @@ namespace {
 		double brho  = energy/eV/SpeedOfLight;
 		return new Octupole(data.label,len,brho*k3);
 	}
+
+	Decapole* ConstructDecapole(const Data& data)
+	{
+		double len   = data[L];
+		double k4    = data[K4];
+		double tilt  = data[TILT];
+		assert(tilt==0);
+		double brho  = energy/eV/SpeedOfLight;
+		return new Decapole(data.label,len,brho*k4);
+	}
+
 	
 	XCor* ConstructXCor(const Data& data)
 	{
@@ -324,6 +337,8 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 	}
 	else if(dat.keywrd=="OCTU")
 		c = mc->AppendComponent(ConstructOctupole(dat));
+	else if(dat.keywrd=="DECA")
+		c = mc->AppendComponent(ConstructDecapole(dat));
 	else if(dat.keywrd=="LCAV")
 		c = mc->AppendComponent(ConstructCavity(dat));
 	else if(dat.keywrd=="SOLE")
@@ -336,8 +351,24 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 		c = mc->AppendComponent(ConstructBPM(dat));
 	else if(dat.keywrd=="WIRE")
 		c = mc->AppendComponent(ConstructProfileMonitor(dat));
-	else if(dat.keywrd=="MARK")
-		c = mc->AppendComponent(ConstructMarker(dat));
+	else if(dat.keywrd=="MARK") {
+		if(girders && dat.label.substr(0,2)=="G_") {
+			string girderName = dat.label.substr(2);
+			if(in_g) {
+				mc->EndFrame();
+				in_g=false;
+				cout<<"done"<<endl;
+			}
+			else {
+				mc->NewFrame(new SequenceFrame(girderName));
+				in_g=true;
+				cout<<"beginning girder "<<girderName<<"..."<<flush;
+			}
+			c=0;
+		}
+		else
+			c = mc->AppendComponent(ConstructMarker(dat));
+	}
 	else if(dat.keywrd=="RCOL") {
 		// construct a drift with a rectangular aperture
 		c = mc->AppendComponent(ConstructDrift(dat));
@@ -349,24 +380,27 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 		c = mc->AppendComponent(ConstructDrift(dat));
 	}
 
-	if(incApertures && dat[APER]!=0) {
+	if(c && incApertures && dat[APER]!=0) {
 		c->SetAperture(new CircularAperture(dat[APER]));
 	}
 
-	z_total += c->GetLength();
-	if(logos) {
-		(*logos)<<setw(10)<<left<<(*c).GetName().c_str();
-		(*logos)<<setw(16)<<left<<(*c).GetType().c_str();
-		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<z_total;
-		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<energy;
-		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<beamload;
-		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<dat[ENERGY];
-		(*logos)<<endl;
+	if(c) {
+		z_total += c->GetLength();
+		if(logos) {
+			(*logos)<<setw(10)<<left<<(*c).GetName().c_str();
+			(*logos)<<setw(16)<<left<<(*c).GetType().c_str();
+			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<z_total;
+			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<energy;
+			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<beamload;
+			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<dat[ENERGY];
+			(*logos)<<endl;
+		}
 	}
 }
 
 XTFFInterface::XTFFInterface(const string& fname, double Nb, ostream* logstream)
-: ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream),incApertures(true)
+: ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream),incApertures(true),
+	girders(false),in_g(false)
 {
 	if(!ifs) {
 		string msg = "cannot open file "+fname;

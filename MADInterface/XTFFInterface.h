@@ -68,6 +68,9 @@ public:
 	// Treat MAD type as DRIFT
 	void TreatTypeAsDrift(const string&);
 
+	// Construct girders
+	void ConstructGirders(bool flg) { girders = flg; }
+
 	// data structure for XTFF data
 	struct XTFF_Data;
 	
@@ -84,6 +87,10 @@ private:
 	double nb;
 	ostream* logos;
 	bool incApertures;
+
+	// used for girder construction
+	bool girders;
+	bool in_g;
 };
 
 
