@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2005-03-29 08:40:10 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -77,8 +77,8 @@ public:
     double Dy;
     double Dyp;
 
-    //	The charge of the particles in the beam. Should be -1 or
-    //	+1.
+    //	The charge of the particles in the beam.
+    //  <0 for electrons, >0 for positrons.
     double charge;
 
     double sigma_x() const { return sqrt(emit_x*beta_x); }
