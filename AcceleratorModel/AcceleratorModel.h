@@ -466,10 +466,10 @@ class AcceleratorModel
 	  // Returns the indecies of components matching par in iarray 
 	  // for the entire beamline. iarray is overwritten by this function.
 	  // Function returns length of iarray.
-	  size_t GetIndecies(const std::string& pat, std::vector<Index>& iarray);
+	  size_t GetIndecies(const std::string& pat, std::vector<Index>& iarray) const;
 
 	  // Same as above, but limits search to the specified (sub-)beamline.
-	  size_t GetIndecies(Beamline&, const std::string& pat, std::vector<Index>& iarray);
+	  size_t GetIndecies(const Beamline&, const std::string& pat, std::vector<Index>& iarray) const;
 
       //## Operation: GetROChannels%3A9BCC60006E
       //	Returns in channels all ROChannels matching chID.

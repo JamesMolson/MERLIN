@@ -292,20 +292,20 @@ void AcceleratorModel::ReportModelStatistics (std::ostream& os) const
 }
 
 size_t AcceleratorModel::GetIndecies(const std::string& pat, 
-									 std::vector<AcceleratorModel::Index>& iarray)
+				     std::vector<AcceleratorModel::Index>& iarray) const
 {
-	return GetIndecies(GetBeamline(),pat,iarray);
+  return GetIndecies(const_cast<AcceleratorModel*>(this)->GetBeamline(),pat,iarray);
 }
 
-size_t AcceleratorModel::GetIndecies(AcceleratorModel::Beamline& bline, 
-									 const std::string& pat, 
-									 std::vector<AcceleratorModel::Index>& iarray)
+size_t AcceleratorModel::GetIndecies(const AcceleratorModel::Beamline& bline, 
+				     const std::string& pat, 
+				     std::vector<AcceleratorModel::Index>& iarray) const
 {
 	vector<Index> iarray1;
 	StringPattern pattern(pat);
 
 	Index n0 = distance(lattice.begin(),bline.begin());
-	for(BeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
+	for(ConstBeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
 		string id = (*(*fi)).GetComponent().GetQualifiedName();
 		if(pattern(id))
 			iarray1.push_back(n0);
