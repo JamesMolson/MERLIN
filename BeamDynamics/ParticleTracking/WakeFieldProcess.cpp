@@ -249,7 +249,7 @@ void WakeFieldProcess::Init()
 void WakeFieldProcess::CalculateWakeL()
 {
     wake_z = vector<double>(bunchSlices.size(),0.0);
-    double a0 = dz*(currentBunch->GetTotalCharge())*ElectronCharge*Volt;
+    double a0 = dz*fabs(currentBunch->GetTotalCharge())*ElectronCharge*Volt;
 
     // Estimate the bunch wake at the slice boundaries by
     // convolving the point-like wake over the current bunch
@@ -307,7 +307,7 @@ void WakeFieldProcess::CalculateWakeT()
     // Now estimate the transverse bunch wake at the slice
     // boundaries in the same way we did for the longitudinal wake.
 
-    double a0 = dz*(currentBunch->GetTotalCharge())*ElectronCharge*Volt;
+    double a0 = dz*(fabs(currentBunch->GetTotalCharge()))*ElectronCharge*Volt;
     wake_x = vector<double>(bunchSlices.size(),0.0);
     wake_y = vector<double>(bunchSlices.size(),0.0);
     for(i=0; i<bunchSlices.size(); i++) {
