@@ -1,3 +1,5 @@
+// A.Wolski 19/11/01
+
 #include "AcceleratorModel/AcceleratorModel.h"
 #include "AcceleratorModel/StdComponent/SectorBend.h"
 #include "TLAS/LinearAlgebra.h"
