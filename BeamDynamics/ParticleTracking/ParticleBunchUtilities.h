@@ -45,7 +45,7 @@
 //
 size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins, 
 					   std::vector<ParticleBunch::iterator>& pbins,
-					   vector<double>& hd);
+					   vector<double>& hd, vector<double>& hdp, vector<double>* c = 0);
 
 // Return the distribution of particles for the coordinate u.
 // The distribution is returned as a binned histogram, with

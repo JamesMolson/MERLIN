@@ -1,6 +1,8 @@
 // WakeFieldProcess.h
 //
-//
+// Modified by A.Wolski 12/2/2003
+// to include the derivative of the charge distribution
+// for handling CSR wake fields.
 
 #ifndef _h_WakeFieldProcess
 #define _h_WakeFieldProcess
@@ -32,6 +34,8 @@ public:
 
 	void DumpSliceCentroids(ostream&) const;
 
+	void SetFilter(int n, int m, int d);
+
 private:
 
 	void ApplyWakefield(double ds);
@@ -54,6 +58,8 @@ private:
 
 	std::vector<ParticleBunch::iterator> bunchSlices;
 	std::vector<double> Qd;
+	std::vector<double> Qdp;
+	std::vector<double>* filter;
 	std::vector<double> wake_z;
 	std::vector<double> wake_x;
 	std::vector<double> wake_y;
@@ -63,5 +69,6 @@ private:
 	bool recalc;
 };
 
+void savgol(vector<double>& c, int nl, int nr, int ld, int m);
 
 #endif

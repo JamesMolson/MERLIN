@@ -9,6 +9,7 @@
 #include "NumericalUtils/PhysicalUnits.h"
 #include "NumericalUtils/utils.h"
 #include "IO/MerlinIO.h"
+#include "TLAS/TLASimp.h"
 
 #include <stdexcept>
 #include <sstream>
@@ -57,14 +58,18 @@ namespace {
 };
 
 
-
 WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns)
 : ParticleBunchProcess("WAKEFIELD",prio),imploc(atExit),nbins(nb),nsig(ns),currentWake(0),
-	wake_x(0),wake_y(0),wake_z(0),Qd(),recalc(true),inc_tw(true)
-{}
+	wake_x(0),wake_y(0),wake_z(0),Qd(),Qdp(),filter(0),recalc(true),inc_tw(true)
+{
+	SetFilter(14,2,1);
+}
 
 WakeFieldProcess::~WakeFieldProcess()
-{}
+{
+	if(filter)
+		delete filter;
+}
 
 size_t WakeFieldProcess::CalculateQdist()
 {
@@ -79,7 +84,10 @@ size_t WakeFieldProcess::CalculateQdist()
 
 	bunchSlices.clear();
 	Qd.clear();
-	size_t lost = ParticleBinList(*currentBunch,zmin,zmax,nbins,bunchSlices,Qd);
+	Qdp.clear();
+
+	// Qdp contains the slope of the charge distribution, smoothed using a filter
+	size_t lost = ParticleBinList(*currentBunch,zmin,zmax,nbins,bunchSlices,Qd,Qdp,filter);
 	
 #ifndef NDEBUG
 	ofstream os("qdist.dat");
@@ -90,6 +98,25 @@ size_t WakeFieldProcess::CalculateQdist()
 	return lost;
 }
 
+// Smoothing filter takes the form of a set of coefficients
+// calculated using the Savitzky-Golay technique
+// n gives the width of the window on either side of the reference point
+// m gives the order of the polynomial fitted to the points within the window
+// d gives the order of the derivative required
+// For CSR wake we need the first derivative
+void WakeFieldProcess::SetFilter(int n, int m, int d)
+{
+	if(filter)
+		delete filter;
+
+	filter = new vector<double>;
+	savgol(*filter, n, n, d, m);
+
+#ifndef NDEBUG
+	ofstream os("filter.dat");
+	copy(filter->begin(),filter->end(),ostream_iterator<double>(os,"\n"));
+#endif
+}
 
 void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
 {
@@ -120,8 +147,7 @@ void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
 		active = false;
 
 		// check if we have a sector bend. If so, then
-		// the bunch length will change and we need to
-		// rebin
+		// the bunch length will change and we need to rebin
 		if(dynamic_cast<SectorBend*>(&component))
 			recalc = true;
 	}
@@ -180,13 +206,15 @@ void WakeFieldProcess::ApplyWakefield(double ds)
 			
 			double dxp =  inc_tw? ds*(wake_x[nslice]+gx*zz)/p0 : 0;
 			double dyp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
-			
+//			cout<<dyp<<endl;
+
 			p->xp() = (p->xp()+dxp)/(1+ddp);
 			p->yp() = (p->yp()+dyp)/(1+ddp);
 		}
 		z+=dz;
 	}
-	currentBunch->AdjustRefMomentum(bload/currentBunch->size());
+	if(!currentWake->Is_CSR())
+		currentBunch->AdjustRefMomentum(bload/currentBunch->size());
 //	currentBunch->AdjustRefMomentumToMean();
 }
 
@@ -224,12 +252,30 @@ void WakeFieldProcess::CalculateWakeL()
 	//
 	// Note that the distribution Qd is estimated at the
 	// centre of each slice, not the slice boundary.
+	//
+	// CSR wake differs from classical wakes in two respects:
+	// 1) wake from the tail of the bunch affects the head
+	// 2) amplitude of wake depends on slope of charge distribution
+	//    rather than directly on the distribution
+	// Code to handle CSR wake added by A.Wolski 12/2/2003
 
-	for(int i=0; i<bunchSlices.size(); i++) {
-		for(int j=i; j<bunchSlices.size()-1; j++) {
-			wake_z[i] += Qd[j]*(currentWake->Wlong((j-i+0.5)*dz));
+	if(currentWake->Is_CSR())
+	{
+		for(int i=0; i<bunchSlices.size(); i++) {
+			for(int j=1; j<i; j++) {
+				wake_z[i] += Qdp[j]*(currentWake->Wlong((j-i+0.5)*dz))/dz;
+			}
+			wake_z[i]*=a0;
 		}
-		wake_z[i]*=a0;
+	}
+	else
+	{
+		for(int i=0; i<bunchSlices.size(); i++) {
+			for(int j=i; j<bunchSlices.size()-1; j++) {
+				wake_z[i] += Qd[j]*(currentWake->Wlong((j-i+0.5)*dz));
+			}
+			wake_z[i]*=a0;
+		}
 	}
 
 #ifndef NDEBUG
@@ -278,7 +324,6 @@ void WakeFieldProcess::DumpSliceCentroids(ostream& os) const
 	}
 }
 		
-
 void WakeFieldProcess::InitialiseProcess (Bunch& bunch)
 {
 	ParticleBunchProcess::InitialiseProcess(bunch);
@@ -286,3 +331,47 @@ void WakeFieldProcess::InitialiseProcess (Bunch& bunch)
 	recalc = true;
 }
 
+// Calculate the Savitsky-Golay smoothing filter
+// Adapted from Numerical Recipes in C
+// This routine need only be executed once,
+// when the WakeFieldProcess is initialized.
+void savgol(vector<double>& c, int nl, int nr, int ld, int m)
+{
+	Matrix<double> a(m+1,m+1);
+
+	for(int i=0; i<=m; i++)
+	for(int j=0; j<=i; j++)
+	{
+		double sum = 0.0;
+
+		for(int k=-nl; k<=nr; k++)
+			sum += pow( k, i) * pow( k, j);
+
+		a(i,j) = sum;
+		a(j,i) = sum;
+	}
+
+	vector<int> indx;
+	double d;
+	ludcmp(a,indx,d);
+
+	Vector<double> b(m+1);
+	for(int j=0; j<=m; j++)
+		b(j) = 0.0;
+	b(ld) = 1.0;
+
+	lubksb(a,indx,b);
+
+	c.clear();
+
+	for(int k=-nl; k<=nr; k++)
+	{
+		double sum = b(0);
+		double fac = 1.0;
+
+		for(int mm=1; mm<=m; mm++)
+			sum += b(mm) * (fac *= k);
+
+		c.push_back(sum);
+	}
+}

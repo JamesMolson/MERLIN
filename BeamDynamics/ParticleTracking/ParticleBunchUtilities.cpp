@@ -59,9 +59,12 @@ namespace {
 // Returns the number of particles removed from tails
 // i.e. z<zmin || z>=zmax
 //
+// hdp contains the derivative of the distribution
+// calculated using the Savitzky-Golay filter c
+// If c is empty, then the derivative will be zero.
 size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins, 
 					   vector<ParticleBunch::iterator>& pbins,
-					   vector<double>& hd)
+					   vector<double>& hd, vector<double>& hdp, vector<double>* c)
 {
 	double dz = (zmax-zmin)/double(nbins);
 	vector<ParticleBunch::iterator> bins;
@@ -98,13 +101,27 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins
 //	bins.push_back(p); // should be end()
 
 	// normalise distribution
-	double a = 1/total/dz;
-	for(n=0; n<nbins; n++)
-		hbins[n]*=a;
+	// and apply filter
 
+	vector<double> fbins(nbins,0);
+	vector<double> fpbins(nbins,0);
+
+	double a = 1/total/dz;
+	int w = c ? (c->size()-1)/2 : 0;
+	size_t m;
+
+	for(n=0; n<nbins; n++)
+	{
+		fbins[n] = hbins[n]*a;
+		if(c)
+			for(m=_MAX(0,int(n)-w); m<=_MIN(nbins,int(n)+w); m++)
+				fpbins[n] += hbins[m]*(*c)[m-n+w]*a;
+	}
 
 	pbins.swap(bins);
-	hd.swap(hbins);
+	hd.swap(fbins);
+	hdp.swap(fpbins);
+
 	return lost;
 }
 
