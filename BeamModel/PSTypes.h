@@ -367,7 +367,9 @@ class PSvector
 
 //## Uses: <unnamed>%36BDD9F30230;PSvector { -> }
 
-typedef std::list< PSvector > PSvectorArray;
+
+//typedef std::list< PSvector > PSvectorArray;
+typedef std::vector< PSvector > PSvectorArray;
 
 //## begin PSmoments.instantiation preserve=no
 template class MVCMatrix< double,6 >;
