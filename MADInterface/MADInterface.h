@@ -152,7 +152,7 @@ class MADInterface
 	  AcceleratorModel* GetModel();
 
   protected:
-  private:
+//private:
     // Data Members for Class Attributes
 
       //## Attribute: energy%39576D72010E
@@ -162,7 +162,7 @@ class MADInterface
 
       //## Attribute: ifs%39576D79038E
       //## begin MADInterface::ifs%39576D79038E.attr preserve=no  private: ifstream {UA} 
-      ifstream *ifs;
+      ifstream ifs;
       //## end MADInterface::ifs%39576D79038E.attr
 
       //## Attribute: log%39577AB001EA
@@ -205,7 +205,7 @@ class MADInterface
       std::set<std::string> driftTypes;
       //## end MADInterface::driftTypes%3C0C99C701B1.attr
 
-  private: //## implementation
+//private: //## implementation
 
     //## Other Operations (specified)
       //## Operation: ConstructNewFrame%3965BAAA0119

@@ -159,7 +159,7 @@ namespace {
 //## Operation: MADInterface%39576D8603D4
 MADInterface::MADInterface (const std::string& madFileName, double P0)
   //## begin MADInterface::MADInterface%39576D8603D4.initialization preserve=yes
-  : energy(P0),ifs(madFileName.empty() ? 0 : new ifstream(madFileName.c_str())),
+  : energy(P0),ifs(madFileName.c_str()),
   log(MerlinIO::std_out),logFlag(false),flatLattice(false),honMadStructs(false),
   incApertures(false),inc_sr(false),ctor(0),prmMap(0)
   //## end MADInterface::MADInterface%39576D8603D4.initialization
@@ -167,7 +167,7 @@ MADInterface::MADInterface (const std::string& madFileName, double P0)
   //## begin MADInterface::MADInterface%39576D8603D4.body preserve=yes
 		
 	if(ifs) {
-		if(!(*ifs)) {
+		if(!ifs) {
 			MERLIN_ERR<<"ERROR openning file "<<madFileName<<endl;
 			abort();
 		}
@@ -184,15 +184,15 @@ MADInterface::MADInterface (const std::string& madFileName, double P0)
 
 void MADInterface::Initialise()
 {	
-	check_column_heading((*ifs),"*");
-	check_column_heading((*ifs),"NAME");
-	check_column_heading((*ifs),"KEYWORD");
+	check_column_heading(ifs,"*");
+	check_column_heading(ifs,"NAME");
+	check_column_heading(ifs,"KEYWORD");
 	
 	if(prmMap!=0)
 		delete prmMap;
 
 	string s;
-	getline((*ifs),s);
+	getline(ifs,s);
 	prmMap = new MADKeyMap(s);
 }
 
@@ -201,8 +201,8 @@ void MADInterface::AppendModel (const string& fname, double Pref)
 	if(ifs)
 		delete ifs;
 
-	ifs =  new ifstream(fname.c_str());
-	if(!(*ifs)) {
+	ifs =  ifstream(fname.c_str());
+	if(!ifs) {
 		MERLIN_ERR<<"ERROR openning file "<<fname<<endl;
 		delete ifs;
 		abort();
@@ -214,10 +214,10 @@ void MADInterface::AppendModel (const string& fname, double Pref)
 		ctor->NewModel();
 	}
 	
-	StripHeader((*ifs));
+	StripHeader(ifs);
 	
 	energy = Pref;
-	while((*ifs))
+	while(ifs)
 		ReadComponent();	
 }
 
@@ -258,9 +258,9 @@ AcceleratorModel* MADInterface::ConstructModel ()
 	
 	// reset the stream pointer
 	// ifs.seekg(0);
-	StripHeader((*ifs));
+	StripHeader(ifs);
 	
-	while(*ifs)
+	while(ifs)
 		z+=ReadComponent();
 	
 	if(logFlag && log) {
@@ -360,7 +360,7 @@ void MADInterface::EndFrame (const string& name)
 double MADInterface::ReadComponent ()
 {
   //## begin MADInterface::ReadComponent%3965BACD01F6.body preserve=yes
-#define  _READ(value) if(!((*ifs)>>value)) return 0;
+#define  _READ(value) if(!(ifs>>value)) return 0;
 	
 	string name,type,aptype;
 	double len,angle,k1,k2,k3,h,tilt;
@@ -368,7 +368,7 @@ double MADInterface::ReadComponent ()
 	_READ(name);
 	_READ(type);
 	
-	prmMap->ReadRow((*ifs));
+	prmMap->ReadRow(ifs);
 	
 	name=StripQuotes(name);
 	type=StripQuotes(type);
