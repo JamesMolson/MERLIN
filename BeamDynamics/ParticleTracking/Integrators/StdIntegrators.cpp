@@ -116,27 +116,6 @@ namespace {
 				p.dp() += Vn*cos(phi0-k*p.ct());
 		}
 	};
-
-	// Functor to add second-order path length terms (T566)
-	// to sector bend tracking.
-
-	class SecondOrderPathLength {
-	public:
-		SecondOrderPathLength(double l, double h, double ps)
-			: t566(0),pScale(ps)
-		{
-			double phi = h*l;
-			t566 = (1-phi-cos(phi)+sin(phi))/h/3.0;
-		}
-		
-		void operator()(PSvector& p) const {
-			const double dp = pScale*(1+p.dp())-1.0;
-			p.ct() += t566*dp*dp;
-		}
-
-	private:
-		double t566,pScale;
-	};
 };
 //## end module%3AE02F8B005A.additionalDeclarations
 
@@ -248,7 +227,6 @@ double SectorBendPI::TrackStep (double ds)
 #endif
 
 	M.Apply(GetBunch().GetParticles(),P0);
-	for_each(GetBunch().begin(),GetBunch().end(),SecondOrderPathLength(len,h,P0/Pref));
 
 	// Now if we have split the magnet, we need to
 	// apply the kick approximation, and then
@@ -266,7 +244,6 @@ double SectorBendPI::TrackStep (double ds)
 		// through the linear second half
 		for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q));
 		M.Apply(GetBunch().GetParticles(),P0);
-		for_each(GetBunch().begin(),GetBunch().end(),SecondOrderPathLength(len,h,P0/Pref));
 
 		// Remember to set the components back
 		field.SetCoefficient(0,b0);
