@@ -160,13 +160,23 @@ double EquilibriumDistribution::IntegralEk5(ComplexVector& Ek, SectorBend* sb)
 	for(int nn=0; nn<nsteps; nn++)
 	{
 		double n = nn + 0.5;
-		Complex sbendTM52 = -(Complex(1,0)-cos(n * kdl)) * h / k / k;
+
+		// Need to calculate cos(n * kdl)
+		// but can't do it directly because of a bug in IBM VisualAge C++ Compiler!
+		// A.Wolski 29/11/01
+		double nkdl_re = n * kdl.real();
+		double nkdl_im = n * kdl.imag();
+		Complex cosnkdl = cos(nkdl_re) * cosh(nkdl_im) - Complex(0,1) * sin(nkdl_re) * sinh(nkdl_im);	
+
+		Complex sbendTM52 = -(Complex(1,0) - cosnkdl) * h / k / k;
 		Complex sbendTM51 = -sin(n * kdl) * h / k + h * tanE1 * sbendTM52;
 		Complex sbendTM56 = -pow(h/k,2) * (n * dl - sin(n * kdl) / k);
 
 		Complex Ek5l = sbendTM51 * Ek(0) + sbendTM52 * Ek(1) + Ek(4) + sbendTM56 * Ek(5);
 		intgrl += abs(Ek5l) * abs(Ek5l);
 	}
+
+
 	return intgrl * dl;
 }
 
