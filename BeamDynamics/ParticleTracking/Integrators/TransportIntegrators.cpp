@@ -316,7 +316,7 @@ namespace TRANSPORT {
 			if(splitMagnet) {
 				Complex b1 = field.GetCoefficient(1);
 				field.SetCoefficient(1,Complex(0));
-				for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q,phi));
+				for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q,-phi));
 				// Apply second half of map
 				ApplyMapToBunch(GetBunch(),M);
 				field.SetCoefficient(1,b1);
@@ -345,7 +345,7 @@ namespace TRANSPORT {
 			if(splitMagnet) {
 				Complex b2 = field.GetCoefficient(2);
 				field.SetCoefficient(2,Complex(0));
-				for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q,phi));
+				for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q,-phi));
 				// Apply second half of map
 				ApplyMapToBunch(GetBunch(),M);
 				field.SetCoefficient(2,b2);
