@@ -1,6 +1,6 @@
 // merlin_config.h
 // configuration and platform/compiler dependent information
-//
+// Currently only needed for MSVC++
 
 #ifndef _h_merlin_config
 #define _h_merlin_config
