@@ -6,12 +6,11 @@
 #define _h_WakeFieldProcess
 
 #include "BeamDynamics/ParticleTracking/ParticleBunchProcess.h"
-#include "Utility/StringPattern.h"
+#include "utility/StringPattern.h"
 
 #include <vector>
 
 class WakePotentials;
-class Interpolation;
 
 class WakeFieldProcess : public ParticleBunchProcess 
 {

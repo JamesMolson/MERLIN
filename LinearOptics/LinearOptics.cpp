@@ -29,7 +29,7 @@
 
 #include "LinearOptics/LinearOptics.h"
 #include "LinearOptics/LinearMatrixTracker.h"
-#include "Utility/StringPattern.h"
+#include "utility/StringPattern.h"
 #include <algorithm>
 #include <iterator>
 

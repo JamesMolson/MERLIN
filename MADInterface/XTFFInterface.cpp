@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <iterator>
 #include <stdexcept>
+#include <cctype>
 
 #include "AcceleratorModel/Components.h"
 #include "AcceleratorModel/Construction/AcceleratorModelConstructor.h"
@@ -506,7 +507,9 @@ int XTFFInterface::ParseHeader()
 
 void XTFFInterface::TreatTypeAsDrift(const string& dt)
 {
-	string dt1(4,' ');
-	transform(dt.begin(),dt.begin()+4,dt1.begin(),toupper);
-	driftTypes.insert(dt1);
+  char buff[5];
+  for(size_t i=0; i<4; i++)
+    buff[i]=toupper(dt[i]);
+  buff[4]=0;
+  driftTypes.insert(buff);
 }

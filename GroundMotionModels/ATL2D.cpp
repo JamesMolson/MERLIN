@@ -127,24 +127,25 @@ ATL2D::ATL2D (double anA, const AcceleratorSupportList& supports, const Point2D 
 
 	evecsT.redim(n,n);
 	evals.redim(n);
+	int row,col;
 
 	if(evecTFile && evalFile)
 	{
 		double element;
-		for(int row=0;   row<n; row++)
-		for(int col=row; col<n; col++)
+		for(row=0;   row<n; row++)
+		for(col=row; col<n; col++)
 		{
 			(*evecTFile)>>element;
 			evecsT(row,col) = evecsT(col,row) = element;
 		}
 
-		for(    row=0; row<n; row++)
+		for(row=0; row<n; row++)
 			(*evalFile)>>evals(row);
 	}
 	else
 	{
-		for(int row=0;   row<n; row++)
-		for(int col=row; col<n; col++)
+		for(row=0;   row<n; row++)
+		for(col=row; col<n; col++)
 			evecsT(row,col) = evecsT(col,row) = (Distance(col,refPoint) + Distance(row,refPoint) - Distance(row,col))/2.0;
 	
 		EigenSystemSymmetricMatrix(evecsT, evals);
@@ -261,15 +262,16 @@ bool ATL2D::SetVibration(const double vrms)
 void ATL2D::RecordEigenSystem(ofstream* evecTFile, ofstream* evalFile)
 {
 	const int n = evals.size();
+	int row,col;
 
-	for(int row=0;   row<n; row++)
+	for(row=0;   row<n; row++)
 	{
-		for(int col=row; col<n; col++)
+		for(col=row; col<n; col++)
 			(*evecTFile)<<std::setw(14)<<evecsT(row,col);
 		(*evecTFile)<<endl;
 	}
 
-	for(    row=0; row<n; row++)
+	for(row=0; row<n; row++)
 		(*evalFile)<<std::setw(14)<<evals(row)<<endl;
 }
 

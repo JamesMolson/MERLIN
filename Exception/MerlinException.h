@@ -39,7 +39,7 @@
 #define MerlinException_h 1
 
 //## begin module%3AE7F42C01FE.additionalIncludes preserve=no
-#include "merlin_config.h"
+//#include "merlin_config.h"
 //## end module%3AE7F42C01FE.additionalIncludes
 
 //## begin module%3AE7F42C01FE.includes preserve=yes

@@ -37,10 +37,11 @@
 #define Range_h 1
 
 //## begin module%3906B7C000DE.additionalIncludes preserve=no
-#include "merlin_config.h"
+//#include "merlin_config.h"
 //## end module%3906B7C000DE.additionalIncludes
 
 //## begin module%3906B7C000DE.includes preserve=yes
+#include <algorithm>
 #include <functional>
 //## end module%3906B7C000DE.includes
 

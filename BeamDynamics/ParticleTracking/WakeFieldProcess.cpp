@@ -8,7 +8,6 @@
 #include "NumericalUtils/PhysicalConstants.h"
 #include "NumericalUtils/PhysicalUnits.h"
 #include "NumericalUtils/utils.h"
-#include "NumericalUtils/Interpolation.h"
 #include "IO/MerlinIO.h"
 
 #include <stdexcept>
@@ -230,7 +229,8 @@ void WakeFieldProcess::CalculateWakeT()
 
 	vector<Point2D> xyc;
 	xyc.reserve(nbins);
-	for(size_t i=0; i<nbins; i++)
+	size_t i;
+	for(i=0; i<nbins; i++)
 		xyc.push_back(GetSliceCentroid(bunchSlices[i],bunchSlices[i+1]));
 
 	// Now estimate the transverse bunch wake at the slice

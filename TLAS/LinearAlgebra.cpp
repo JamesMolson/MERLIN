@@ -230,16 +230,17 @@ namespace TLAS {
 	void tred2(RealMatrix& a, RealVector& d, RealVector& e)
 	{
 		int n = a.nrows();
+		int i,j,k;
 		d.redim(n);
 		e.redim(n);
 
-		for(int i=n-1; i>0; i--)
+		for(i=n-1; i>0; i--)
 		{
 			double h = 0;
 			double scale = 0;
 			if(i>1)
 			{
-				for(int k=0; k<i; k++) scale += fabs(a(i,k));
+				for(k=0; k<i; k++) scale += fabs(a(i,k));
 				if(scale==0)
 					e(i) = a(i,i-1);
 				else
@@ -257,7 +258,7 @@ namespace TLAS {
 					a(i,i-1) = f - g;
 					f = 0.0;
 
-					for(int j=0; j<i; j++)
+					for(j=0; j<i; j++)
 					{
 						a(j,i) = a(i,j) / h;
 						g = 0.0;
@@ -293,7 +294,7 @@ namespace TLAS {
 		for(i=0; i<n; i++)
 		{
 			if(d(i))
-				for(int j=0; j<i; j++)
+				for(j=0; j<i; j++)
 				{
 					double g = 0.0;				
 					for(int k=0; k<i; k++) g += a(i,k) * a(k,j);
@@ -303,7 +304,7 @@ namespace TLAS {
 			d(i) = a(i,i);
 			a(i,i) = 1.0;
 
-			for(int j=0; j<i; j++) a(j,i) = a(i,j) = 0.0;
+			for(j=0; j<i; j++) a(j,i) = a(i,j) = 0.0;
 		}
 	}
 
@@ -321,10 +322,12 @@ namespace TLAS {
 	{
 		int m = 0;
 		int n = d.size();
-		for(int i=1; i<n; i++) e(i-1) = e(i);
+		int i,j,k,l;
+
+		for(i=1; i<n; i++) e(i-1) = e(i);
 		e(n-1) = 0.0;
 
-		for(int l=0; l<n; l++)
+		for(l=0; l<n; l++)
 		{
 			int iter = 0;
 			do
@@ -365,7 +368,7 @@ namespace TLAS {
 						d(i+1) = g + p;
 						g = c * r - b;
 
-						for(int k=0; k<n; k++)
+						for(k=0; k<n; k++)
 						{
 							f = z(k,i+1);
 							z(k,i+1) = s * z(k,i) + c * f;

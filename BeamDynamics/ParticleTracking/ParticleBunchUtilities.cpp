@@ -76,7 +76,9 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins
 	double z=zmin;
 
 	double total=0;
-	for(size_t n=0; n<nbins; n++) {
+	size_t n;
+
+	for(n=0; n<nbins; n++) {
 		bins.push_back(p);
 		z+=dz;
 		while(p!=bunch.end() && p->ct()<z) {
@@ -149,3 +151,4 @@ size_t ParticleBunchDistribution(ParticleBunch& bunch, PScoord u,
 	}
 	return lost;
 }
+
