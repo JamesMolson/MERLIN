@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3AE02F8B005A.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\Integrators\StdIntegrators.cpp
- * last modified 09/06/01 02:30:45 PM
+ * last modified 11/12/01 15:32:03
  */
 //## end module%3AE02F8B005A.cm
 
@@ -45,6 +45,8 @@
 #include "NumericalUtils/MatrixPrinter.h"
 //## end module%3AE02F8B005A.includes
 
+// TransportMatrix
+#include "BasicTransport/TransportMatrix.h"
 // StdIntegrators
 #include "BeamDynamics/ParticleTracking/Integrators/StdIntegrators.h"
 //## begin module%3AE02F8B005A.additionalDeclarations preserve=yes
@@ -115,6 +117,26 @@ namespace {
 		}
 	};
 
+	// Functor to add second-order path length terms (T566)
+	// to sector bend tracking.
+
+	class SecondOrderPathLength {
+	public:
+		SecondOrderPathLength(double l, double h, double ps)
+			: t566(0),pScale(ps)
+		{
+			double phi = h*l;
+			t566 = (1-phi-cos(phi)+sin(phi))/h/3.0;
+		}
+		
+		void operator()(PSvector& p) const {
+			const double dp = pScale*(1+p.dp())-1.0;
+			p.ct() += t566*dp*dp;
+		}
+
+	private:
+		double t566,pScale;
+	};
 };
 //## end module%3AE02F8B005A.additionalDeclarations
 
@@ -134,7 +156,6 @@ double DriftPI::TrackStep (double ds)
 }
 
 // Class TWRFStructurePI 
-
 
 
 //## Other Operations (implementation)
@@ -227,6 +248,7 @@ double SectorBendPI::TrackStep (double ds)
 #endif
 
 	M.Apply(GetBunch().GetParticles(),P0);
+	for_each(GetBunch().begin(),GetBunch().end(),SecondOrderPathLength(len,h,P0/Pref));
 
 	// Now if we have split the magnet, we need to
 	// apply the kick approximation, and then
@@ -244,6 +266,7 @@ double SectorBendPI::TrackStep (double ds)
 		// through the linear second half
 		for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q));
 		M.Apply(GetBunch().GetParticles(),P0);
+		for_each(GetBunch().begin(),GetBunch().end(),SecondOrderPathLength(len,h,P0/Pref));
 
 		// Remember to set the components back
 		field.SetCoefficient(0,b0);
@@ -375,7 +398,6 @@ double MonitorPI::TrackStep (double ds)
 // Class SWRFStructurePI 
 
 
-
 //## Other Operations (implementation)
 //## Operation: TrackStep%37318E3B02BC
 double SWRFStructurePI::TrackStep (double ds)
@@ -488,6 +510,32 @@ double ExactRectMultipolePI::TrackStep (double ds)
 
 	return IncrStep(ds);
   //## end ExactRectMultipolePI::TrackStep%3969B9120285.body
+}
+
+// Class SolenoidPI 
+
+
+//## Other Operations (implementation)
+//## Operation: TrackStep%3C16189C0173
+double SolenoidPI::TrackStep (double ds)
+{
+  //## begin SolenoidPI::TrackStep%3C16189C0173.body preserve=yes
+	CHK_ZERO(ds);
+	double P0 = GetBunch().GetReferenceMomentum();
+	double q = GetBunch().GetChargeSign();
+	double brho = P0/eV/SpeedOfLight;
+
+	double Bz = Component().GetBz();
+
+	if(fequal(Bz,0))
+		ApplyDrift(GetBunch().GetParticles(),ds);
+	else {
+		RMtrx M(2);
+		TransportMatrix::Solenoid(ds,q*Bz/brho,0,true,true,M.R);
+		M.Apply(GetBunch().GetParticles());
+	}
+	return IncrStep(ds);
+  //## end SolenoidPI::TrackStep%3C16189C0173.body
 }
 
 //## begin module%3AE02F8B005A.epilog preserve=yes

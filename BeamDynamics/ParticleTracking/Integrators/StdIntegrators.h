@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3AE02F8102BC.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\Integrators\StdIntegrators.h
- * last modified 09/06/01 02:30:44 PM
+ * last modified 11/12/01 15:32:02
  */
 //## end module%3AE02F8102BC.cm
 
@@ -49,8 +49,6 @@
 //## begin module%3AE02F8102BC.includes preserve=yes
 //## end module%3AE02F8102BC.includes
 
-// ParticleBunchIntegrator
-#include "BeamDynamics/ParticleTracking/ParticleBunchIntegrator.h"
 // SectorBend
 #include "AcceleratorModel/StdComponent/SectorBend.h"
 // RectMultipole
@@ -65,8 +63,12 @@
 #include "BasicTransport/MatrixMaps.h"
 // TransportMatrix
 #include "BasicTransport/TransportMatrix.h"
+// ParticleBunchIntegrator
+#include "BeamDynamics/ParticleTracking/ParticleBunchIntegrator.h"
 // Monitor
 #include "AcceleratorModel/StdComponent/Monitor.h"
+// Solenoid
+#include "AcceleratorModel/StdComponent/Solenoid.h"
 //## begin module%3AE02F8102BC.additionalDeclarations preserve=yes
 //## end module%3AE02F8102BC.additionalDeclarations
 
@@ -76,6 +78,8 @@
 //## Subsystem: Merlin::BeamDynamics::ParticleTracking::Integrators%3AE02F770032
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
+
+
 
 //## Uses: <unnamed>%3729FA770348;TParticleI { -> }
 
@@ -98,6 +102,8 @@ class DriftPI : public TParticleI< Drift  >  //## Inherits: <unnamed>%36EE4DE200
 //## Subsystem: Merlin::BeamDynamics::ParticleTracking::Integrators%3AE02F770032
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
+
+
 
 //## Uses: <unnamed>%36EE778F0287;implementation: RMtrx { -> }
 //## Uses: <unnamed>%36EE78610044;implementation: TransportMatrix { -> }
@@ -134,6 +140,8 @@ class TWRFStructurePI : public TParticleI< TWRFStructure  >  //## Inherits: <unn
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%36EE778B037C;implementation: RMtrx { -> }
 //## Uses: <unnamed>%36EE7860002F;implementation: TransportMatrix { -> }
 //## Uses: <unnamed>%3729FAA00096;TParticleI { -> }
@@ -165,6 +173,8 @@ class SectorBendPI : public TParticleI< SectorBend  >  //## Inherits: <unnamed>%
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: linear transport%36EE778E000F;implementation: RdpMtrx { -> }
 //## Uses: <unnamed>%36EE786200C8;implementation: TransportMatrix { -> }
 //## Uses: <unnamed>%3729FA9D019A;TParticleI { -> }
@@ -189,6 +199,8 @@ class RectMultipolePI : public TParticleI< RectMultipole  >  //## Inherits: <unn
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 //## Uses: <unnamed>%3729FAA9017C;TParticleI { -> }
 
 class MonitorPI : public TParticleI< Monitor  >  //## Inherits: <unnamed>%3729F78602BC
@@ -210,6 +222,8 @@ class MonitorPI : public TParticleI< Monitor  >  //## Inherits: <unnamed>%3729F7
 //## Subsystem: Merlin::BeamDynamics::ParticleTracking::Integrators%3AE02F770032
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
+
+
 
 //## Uses: <unnamed>%3729FC3C005A;TParticleI { -> }
 
@@ -248,12 +262,38 @@ class SWRFStructurePI : public TParticleI< SWRFStructure  >  //## Inherits: <unn
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 class ExactRectMultipolePI : public TParticleI< RectMultipole  >  //## Inherits: <unnamed>%3969B8B100EB
 {
   public:
 
     //## Other Operations (specified)
       //## Operation: TrackStep%3969B9120285
+      //	Tracks a single step ds through the current component.
+      virtual double TrackStep (double ds);
+
+  protected:
+  private:
+  private: //## implementation
+};
+
+//## Class: SolenoidPI%3C1618690184
+//## Category: Merlin::BeamDynamics::ParticleTracking::Integrators%3AE03092012C
+//## Subsystem: Merlin::BeamDynamics::ParticleTracking::Integrators%3AE02F770032
+//## Persistence: Transient
+//## Cardinality/Multiplicity: n
+
+
+
+//## Uses: <unnamed>%3C16188101C5;Solenoid { -> }
+
+class SolenoidPI : public TParticleI< Solenoid  >  //## Inherits: <unnamed>%3C161874039D
+{
+  public:
+
+    //## Other Operations (specified)
+      //## Operation: TrackStep%3C16189C0173
       //	Tracks a single step ds through the current component.
       virtual double TrackStep (double ds);
 
@@ -297,6 +337,8 @@ inline SWRFStructurePI::SWRFStructurePI (bool full_acc)
 
 
 // Class ExactRectMultipolePI 
+
+// Class SolenoidPI 
 
 //## begin module%3AE02F8102BC.epilog preserve=yes
 //## end module%3AE02F8102BC.epilog
