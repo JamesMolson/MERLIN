@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.2 $
+// $Date: 2004-12-17 00:54:25 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -21,6 +21,7 @@
 #include "RingDynamics/ClosedOrbit.h"
 #include "RingDynamics/TransferMatrix.h"
 #include "NumericalUtils/MatrixPrinter.h"
+#include "NumericalUtils/NumericalConstants.h"
 #include "TLAS/TLAS.h"
 #include "LatticeFunctions.h"
 
@@ -198,6 +199,12 @@ public:
 
         lfn->GetIndices(i, j, k);
 
+		if(i==0 && j==0) {
+			v = atan2( (*N)(2*k-2,2*k-1) , (*N)(2*k-2,2*k-2) )/twoPi;
+			if(k!=3 && v<-1.0e-9)
+				v += 1.0;
+		}
+
         if(i==0 && j==0 && k==0)
             v = s;
 
@@ -271,14 +278,33 @@ double LatticeFunctionTable::DoCalculate(double cscale)
         Symplectify(M);
     EigenSystem(M, eigenvalues, eigenvectors);
 
+	int row, col;
+
     RealMatrix N(6);
-    int row;
+	RealMatrix R(6);
     for(row=0; row<6; row++) {
-        for(int col=0; col<3; col++) {
+        for(col=0; col<3; col++) {
             N(row,2*col)   = sqrt(2.)*eigenvectors(col,row).real();
             N(row,2*col+1) = sqrt(2.)*eigenvectors(col,row).imag();
+			R(row,2*col)   = 0.0;
+			R(row,2*col+1) = 0.0;
         }
     }
+
+	for(row=0; row<3; row++) {
+		int i = 2*row;
+		int j = 2*row + 1;
+		double theta =-atan2(N(i,j),N(i,i));
+
+		R(i,i) = R(j,j) = cos(theta);
+		R(i,j) = sin(theta);
+		R(j,i) =-sin(theta);
+	}
+
+	N = N*R;
+
+//	ofstream nfile("DataFiles/NormMatrix.dat");
+//	MatrixForm(N,nfile,OPFormat().precision(6).fixed());
 
     ParticleBunch* particle = new ParticleBunch(p0, 1.0);
     particle->push_back(p);
