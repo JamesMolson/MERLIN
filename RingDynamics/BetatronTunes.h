@@ -14,3 +14,4 @@ private:
 	double FindTune(vector<double>& data);
 	void FFT(vector<double>& data);
 };
+

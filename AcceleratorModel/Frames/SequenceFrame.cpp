@@ -255,7 +255,7 @@ void SequenceFrame::ConsolidateConstruction ()
 	// We assume that the origin of the sequence geometry is at 
 	// the arc centre.
 
-	double s;
+	double s=0;
 	switch(itsSeqGeom->omode) {
 	case originAtEntrance:
 		s=0;
@@ -412,7 +412,7 @@ Transform3D SequenceGeometry::GetGeometryTransform (double s0, double s) const t
 		std::swap(s,s0);
 
 	SequenceFrame::FrameList::const_iterator fi = theFrameList->begin();
-	double l;
+	double l=0;
 
 	// First identify in which sub-frame s0 is
 	for(;fi!=theFrameList->end();fi++) {

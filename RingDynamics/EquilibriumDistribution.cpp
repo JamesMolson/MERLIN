@@ -26,8 +26,10 @@ void EquilibriumDistribution::FindA2()
 	AcceleratorModel::BeamlineIterator beginBL = (*theModel).GetBeamline().begin();
 	AcceleratorModel::BeamlineIterator endBL = (*theModel).GetBeamline().end();
 
+	int k; // used twice, but MS doesn't following ANSI scoping rules
+
 	double SumE5[3];
-	for(int k=0; k<3; k++)
+	for(k=0; k<3; k++)
 		SumE5[k] = 0.0;
 	
 
@@ -100,12 +102,16 @@ void EquilibriumDistribution::FindA2()
 		SectorBend* sb = dynamic_cast<SectorBend*>(&(*itrBL)->GetComponent());
 		if(sb && sb->GetB0())
 		{
-			(*theModel).GetBeamline(n1,n2-1).Track(DoTrack(myPSM,particle));
+		        // ANSI C++ forbids passing non-const references
+		        // to temporaries - NJW
+		        DoTrack dotrack(myPSM,particle);
+			(*theModel).GetBeamline(n1,n2-1).Track(dotrack);
+			// (*theModel).GetBeamline(n1,n2-1).Track(DoTrack(myPSM,particle));
 			n1 = n2;
 			
 			const Particle& p_ref = particle.GetParticles().back();
 			
-			for(int k=0; k<3; k++)
+			for(k=0; k<3; k++)
 			{
 				newEigenvector = 0;
 

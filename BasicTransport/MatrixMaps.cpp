@@ -335,7 +335,7 @@ LinMtrxBase::LinMtrxBase (const RealMatrix& RR, double P0)
 {
   //## begin LinMtrxBase::LinMtrxBase%924960085.body preserve=yes
 #ifndef NDEBUG
-	int n=R.nrows()/2;
+	size_t n=R.nrows()/2;
 	assert((R.ncols()==2*n)&&(n==1||n==2||n==3));
 #endif
   //## end LinMtrxBase::LinMtrxBase%924960085.body

@@ -27,8 +27,9 @@ void BetatronTunes::FindTunes(PSvector& aPSvector, int ntrack)
 		tracker.Run(false);
 		Particle& p1 = tracker.GetTrackedBunch().FirstParticle();
 
-		if( _isnan(p1.x()) || _isnan(p1.y()) ) break;
-
+		//		if( _isnan(p1.x()) || _isnan(p1.y()) ) break;
+		// _isnan failed to compiler using gcc 3.1 - NJW
+		if(fabs(p1.x())>1.0e+03 || fabs(p1.y())>1.0e+03) break;
 		xData.push_back( p1.x() );
 		xData.push_back( p1.xp() );
 		yData.push_back( p1.y() );
@@ -70,8 +71,11 @@ double BetatronTunes::FindTune(vector<double>& data)
 	double peak_correction = sign*sqrt(k/(1+k));
 
 	double tune = 2*(peak_position + peak_correction)/data.size();
-	if(_isnan(tune))
-		tune = 0.0;
+
+	// _isnan not recongnised by GCC under unix
+	// need better fix here - NJW
+	//	if(_isnan(tune))
+	//		tune = 0.0;
 
 	return tune;
 }
@@ -126,3 +130,4 @@ void BetatronTunes::FFT(vector<double>& data)
 	}
 
 }
+

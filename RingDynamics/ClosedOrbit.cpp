@@ -20,7 +20,8 @@ void ClosedOrbit::FindClosedOrbit(PSvector& p, int ncpt)
 	const double dscale = 1.0e-9;
 
 	ParticleBunch particle(p0,1.0);
-	for(int k=0; k<cpt+1; k++)
+	int k=0;
+	for(k=0; k<cpt+1; k++)
 		particle.push_back(p);
 
 	// Use high level ParticleTracker class for tracking.
@@ -54,7 +55,8 @@ void ClosedOrbit::FindClosedOrbit(PSvector& p, int ncpt)
 
 		ParticleBunch::iterator pp;
 
-		for(pp=particle.begin(),k=0; pp!=particle.end(); pp++,k++)
+		k=0;
+		for(pp=particle.begin(); pp!=particle.end(); pp++,k++)
 		{
 			*pp = p;
 			if(k>0)

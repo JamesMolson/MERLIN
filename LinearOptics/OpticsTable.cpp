@@ -130,7 +130,7 @@ OpticsTable::OpticsTable (const AcceleratorModel::Beamline bl, const BeamData& i
 //## Operation: OpticsTable%399BE92B01D7
 OpticsTable::OpticsTable ()
   //## begin OpticsTable::OpticsTable%399BE92B01D7.initialization preserve=yes
-  : defaultFmtSpec(),iBeam(),os(0),theBeamline(0,0),theColumns()
+  : defaultFmtSpec(),iBeam(),os(0),theBeamline(),theColumns()
   //## end OpticsTable::OpticsTable%399BE92B01D7.initialization
 {
   //## begin OpticsTable::OpticsTable%399BE92B01D7.body preserve=yes
@@ -290,9 +290,8 @@ OpticsTable::Location OpticsTable::GetOutputSpec (const string& id)
   //## begin OpticsTable::GetOutputSpec%399BEEC10115.body preserve=yes
 	if(itsOutputSpecs.empty())
 		return atExit;
-
-	for(set<OutputSpec>::const_iterator opi = itsOutputSpecs.begin(); 
-		opi!=itsOutputSpecs.end() && !(*opi).id.Match(id); ++opi){};
+	set<OutputSpec>::const_iterator opi = itsOutputSpecs.begin(); 
+	for(;opi!=itsOutputSpecs.end() && !(*opi).id.Match(id); ++opi){};
 	
 	return opi!=itsOutputSpecs.end() ? (*opi).loc : noOutput;
   //## end OpticsTable::GetOutputSpec%399BEEC10115.body

@@ -31,3 +31,4 @@ void TwissParameters::FindTwiss(int ncpt)
 	TwissY.alpha = (M(2,2) - M(3,3))/2./sinmuy;
 	TwissY.gamma = -M(3,2) / sinmuy;
 }
+

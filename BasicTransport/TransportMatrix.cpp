@@ -401,8 +401,8 @@ RealMatrix& TransportMatrix::SWRFCavity (int ncells, double g, double f, double 
 		
 	InitR(R);
 
-	double root2 = sqrt(2);
-	double root8 = sqrt(8);
+	double root2 = sqrt(2.0);
+	double root8 = sqrt(8.0);
 
 	double lambda = SpeedOfLight/f;
 	double length = ncells*lambda/2;

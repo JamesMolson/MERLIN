@@ -133,7 +133,7 @@ Complex MultipoleField::GetKn (int np, double rigidity) const
 {
   //## begin MultipoleField::GetKn%924687010.body preserve=yes
 	assert(rigidity!=0);
-	return np<expansion.size() ? (B0/rigidity)*factorial(np)*expansion[np] : Complex(0);
+	return static_cast<size_t>(np)<expansion.size() ? (B0/rigidity)*factorial(np)*expansion[np] : Complex(0);
   //## end MultipoleField::GetKn%924687010.body
 }
 
@@ -141,7 +141,7 @@ Complex MultipoleField::GetKn (int np, double rigidity) const
 Complex MultipoleField::GetField2D (double x, double y, int exclude) const
 {
   //## begin MultipoleField::GetField2D%868454707.body preserve=yes
-	if(IsNullField() || (++exclude)>expansion.size())
+	if(IsNullField() || (++exclude)>static_cast<int>(expansion.size()))
 		return Complex(0);
 	
 	const Complex z0(x,y);
@@ -197,12 +197,12 @@ void MultipoleField::RotateY180 ()
 	// n-odd	-		+
 	// n-even	+		-
 	bool even=false;
-	for(int n=0; n<expansion.size(); n++, even=!even) {
+	for(size_t n=0; n<expansion.size(); n++, even=!even) {
 		Complex& z = expansion[n];
 		if(even)
-			z.imag(-z.imag());
+			z=Complex(z.real(),-z.imag());
 		else
-			z.real(-z.real());
+			z=Complex(-z.real(),z.imag());
 	}
   //## end MultipoleField::RotateY180%884089493.body
 }

@@ -24,8 +24,11 @@ void StableOrbits::SelectStable(ParticleBunch* aBunch, int nturns, double limit)
 	{
 		cout<<"Tracking turn "<<turn_count<<": ";
 		cout<<trackingBunch->size()<<" particles remaining.    "<<cr;
-		(*theModel).GetBeamline().Track(DoTrack(myPSM,*trackingBunch));
-
+		// ANSI C++ forbids non-const references to temporaries -NJW
+		//(*theModel).GetBeamline().Track(DoTrack(myPSM,*trackingBunch));
+		DoTrack dotrack(myPSM,*trackingBunch);
+		(*theModel).GetBeamline().Track(dotrack);
+		
 		ParticleBunch::iterator p = trackingBunch->begin();
 		ParticleBunch::iterator q = aBunch->begin();
 

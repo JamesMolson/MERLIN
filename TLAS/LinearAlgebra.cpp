@@ -31,20 +31,20 @@ namespace {
 		Vector<int> indxr(n);
 		Vector<int> ipiv(n);
 		
-		int icol, irow;
+		int icol, irow,i,j,k;
 		double minpiv=1.0e9;
 		double big;
 		T dum, pivinv;
 		
-		for(int j=0; j<n; j++)
+		for(j=0; j<n; j++)
 			ipiv(j)=0;
 		
-		for(int i=0; i<n; i++)
+		for(i=0; i<n; i++)
 		{
 			big = 0.0;
 			for(j=0; j<n; j++)
 				if(ipiv(j) != 1)
-					for(int k=0; k<n; k++)
+					for(k=0; k<n; k++)
 					{
 						if(ipiv(k)==0)
 						{
@@ -116,7 +116,7 @@ namespace TLAS {
 			
 			//Guess an eigenvector
 			ComplexVector b(0.0,6);
-			b(2*pln) = Complex(1/sqrt(2));
+			b(2*pln) = Complex(1/sqrt(2.0));
 			b(2*pln+1) = b(2*pln);
 			
 			//Iterate!
@@ -124,16 +124,19 @@ namespace TLAS {
 			
 			double prox = 1.0;
 			int iter = 0;
+			Subscript n=0;
+			Subscript row=0;
+
 			while(prox>1.0e-22 && iter<100)
 			{
-				for(Subscript n=0; n<6; n++) 
+				for(n=0; n<6; n++) 
 					mp(n,n) = m(n,n) - lambda;
 				
 				ComplexMatrix minv(mp);
 				prox = Inverse(minv);
 				
 				ComplexVector y(6);
-				for(Subscript row=0; row<6; row++)
+				for(row=0; row<6; row++)
 				{
 					Complex sum=0.0;
 					for(Subscript col=0; col<6; col++)
@@ -157,7 +160,7 @@ namespace TLAS {
 			//Now normalise to Transpose[Conjugate[b]].s.b = I
 			Complex bnorm = 0.;
 			
-			for(Subscript row=0; row<6; row++) {
+			for(row=0; row<6; row++) {
 				for(Subscript col=0; col<6; col++) {
 					bnorm += Complex(real(b(row)),-imag(b(row))) * Complex(0,-s(row,col)) * b(col);
 				}
@@ -188,7 +191,7 @@ namespace TLAS {
 		}
 		
 		RealMatrix Ipa(I + a);
-#ifndef DEBUG
+#ifndef NDEBUG
 		MatrixForm(Ipa,debug_os);
 #endif
 		Inverse(Ipa);
@@ -224,3 +227,4 @@ namespace TLAS {
 	}
 	
 }; // end namespace TLAS
+

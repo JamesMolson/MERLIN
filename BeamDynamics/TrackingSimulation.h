@@ -408,7 +408,7 @@ class BunchTracker : public TrackingSimulation  //## Inherits: <unnamed>%3AE6D17
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
-    typedef P::bunch_type bunch_type;
+    typedef typename P::bunch_type bunch_type;
 
     //## Class: transport_process%3AE6D23C02D0
     //## Category: Merlin::BeamDynamics%3AE6C3A80398

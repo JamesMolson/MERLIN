@@ -105,7 +105,7 @@ namespace TLAS {
 
 	private:
 
-		Init(const Matrix<T>& M, T threshold);
+		void Init(const Matrix<T>& M, T threshold);
 
 		Matrix<T> u,v;
 		Vector<T> w;
@@ -131,7 +131,7 @@ namespace TLAS {
 	}
 
 	template<class T>
-	SVDMatrix<T>::Init(const Matrix<T>& M, T threshold)
+	void SVDMatrix<T>::Init(const Matrix<T>& M, T threshold)
 	{
 		if(M.nrows()<M.ncols()) {
 			u.redim(M.ncols(),M.ncols());
@@ -152,13 +152,13 @@ namespace TLAS {
 		
 		T wmin = threshold!=T(0) ? threshold*(*max_element(w.begin(),w.end())) : threshold;
 		int zerocount=0;
-		for(int i=0; i<w.size(); i++)
+		for(size_t i=0; i<w.size(); i++)
 			if(w[i]<=wmin) {
 				w[i]=T(0);
 				wflgs[i]=false;
 				zerocount++;
 			}
-		if(zerocount==w.size())
+		if(zerocount==static_cast<int>(w.size()))
 			throw SingularValuesAllZero();
 	}
 	
@@ -263,7 +263,7 @@ namespace TLAS {
 	Matrix<T>& InvertMatrix(Matrix<T>& m)
 	{
 		if(m.nrows()!=m.ncols())
-			throw NonSquareMatrix;
+			throw NonSquareMatrix();
 
 		LUMatrix<T> lu(m);
 		for(int i = 0; i<m.ncols(); i++) {

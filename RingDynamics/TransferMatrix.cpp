@@ -9,9 +9,9 @@ void TransferMatrix::FindTM(RealMatrix& M, PSvector& orbit, int ncpt)
 {
 	const double dscale = 1.0e-9;
 	ParticleBunch particle(p0,1.0);
+	int n=0;
 
-
-	for(int n=0; n<6; n++)
+	for(n=0; n<6; n++)
 	{
 		Particle p = orbit;
 		p[n]+=dscale;

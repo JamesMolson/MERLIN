@@ -202,8 +202,6 @@ void CollimateParticleProcess::DoCollimation ()
   //## begin CollimateParticleProcess::DoCollimation%935667566.body preserve=yes
 	const Aperture *ap = currentComponent->GetAperture();
 
-	size_t np0 = currentBunch->size();
-
 	PSvectorArray lost;
 	list<size_t>  lost_i;
 		

@@ -39,6 +39,7 @@
 //## Source file: C:\C++\Merlin\LinearOptics\LinearMatrixTracker.cpp
 
 //## begin module%3992D0F201A8.includes preserve=yes
+#include "NumericalUtils/utils.h"
 //## end module%3992D0F201A8.includes
 
 // Integrator
@@ -535,7 +536,7 @@ double SWRFStructureRmtrxI::TrackStep (double ds)
 	}
 	
 	double lambda = field.GetWavelength();
-	int ncells = 2*ds/lambda;
+	int ncells = Round(2*ds/lambda);
 
 	// We can only cope here with a integer number of cells
 	assert(fequal(ds,ncells*lambda/2));

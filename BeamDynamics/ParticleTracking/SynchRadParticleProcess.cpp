@@ -81,7 +81,7 @@ namespace {
 			double u = 0;
 
 			if(photgen) {
-				int nphot = RandomNG::poisson(6.17938614443*B*dL);
+				int nphot = static_cast<int>(RandomNG::poisson(6.17938614443*B*dL));
 				for(int n=0; n<nphot; n++) 
 					u += photgen(uc);
 			}
