@@ -209,7 +209,7 @@ class AcceleratorComponent : public ModelElement  //## Inherits: <unnamed>%3AC45
 //## Operation: AcceleratorComponent%36EFC9DE0200
 inline AcceleratorComponent::AcceleratorComponent (const string& aName)
   //## begin AcceleratorComponent::AcceleratorComponent%36EFC9DE0200.initialization preserve=yes
-  : ModelElement(aName),itsField(0),itsGeometry(0),itsAperture(0)
+  : ModelElement(aName),itsField(0),itsGeometry(0),itsAperture(0),wakes(0)
   //## end AcceleratorComponent::AcceleratorComponent%36EFC9DE0200.initialization
 {
   //## begin AcceleratorComponent::AcceleratorComponent%36EFC9DE0200.body preserve=yes
@@ -219,7 +219,7 @@ inline AcceleratorComponent::AcceleratorComponent (const string& aName)
 //## Operation: AcceleratorComponent%371352AB000A
 inline AcceleratorComponent::AcceleratorComponent (const string& aName, AcceleratorGeometry* aGeom, EMField* aField)
   //## begin AcceleratorComponent::AcceleratorComponent%371352AB000A.initialization preserve=yes
-  : ModelElement(aName),itsField(aField),itsGeometry(aGeom),itsAperture(0)
+  : ModelElement(aName),itsField(aField),itsGeometry(aGeom),itsAperture(0),wakes(0)
   //## end AcceleratorComponent::AcceleratorComponent%371352AB000A.initialization
 {
   //## begin AcceleratorComponent::AcceleratorComponent%371352AB000A.body preserve=yes
