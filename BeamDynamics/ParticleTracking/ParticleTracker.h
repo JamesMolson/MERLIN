@@ -118,6 +118,9 @@ class ParticleTracker : public TrackingSimulation  //## Inherits: <unnamed>%3AE8
 			  SetInitialBunchCtor(MakeBunchCtor(pbunch0,del));
 	  }
 
+	  // Overrides the current bunch constructor and
+	  // tracks the supplied bunch.
+	  ParticleBunch* Track(ParticleBunch*);
 
       //## Operation: SetInitialParticle%3AE95C37038E
       //	Sets the initial particle for single-particle tracking.

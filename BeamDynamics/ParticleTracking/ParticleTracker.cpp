@@ -150,3 +150,14 @@ void ParticleTracker::UseFullAcceleration (bool fullacc)
 
 //## begin module%3AE80804015E.epilog preserve=yes
 //## end module%3AE80804015E.epilog
+
+ParticleBunch* ParticleTracker::Track(ParticleBunch* aBunch)
+{
+	if(bunch!=0)
+		delete bunch;
+
+	bunch=aBunch;
+	Run(false);
+	bunch=0;
+	return aBunch;
+}
