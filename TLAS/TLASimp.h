@@ -144,9 +144,9 @@ namespace TLAS {
 		else
 			u.copy(M);
 		
-		// adjust for weights
+		// adjust for weights: multiply each column vector by wts
 		for(Subscript ir=0; ir<u.ncols(); ir++)
-			u.row(ir) *= wts(ir);
+			u.column(ir) *= wts;
 
 		w.redim(u.ncols());
 		wflgs = std::vector<bool>(u.ncols(),true);
