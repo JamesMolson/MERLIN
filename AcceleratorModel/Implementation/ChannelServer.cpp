@@ -41,6 +41,7 @@
 
 //## begin module%3AC877460082.includes preserve=yes
 #include <cassert>
+#include "IO/MerlinIO.h"
 //## end module%3AC877460082.includes
 
 // Channels
@@ -131,8 +132,10 @@ size_t ChannelServer::GetROChannels (const string& chID, std::vector<ROChannel*>
 	elements.reserve(8);
 	
 	FindElements(chpath.eid(),elements);
-	if(elements.empty())
+	if(elements.empty()) {
+		MerlinIO::warning()<<"ChannelServer: No elements matching "<<chpath.eid()<<" found"<<endl;
 		return 0;
+	}
 
 	set<ChannelCtor*> ctors;
 	string etype="";
@@ -143,8 +146,10 @@ size_t ChannelServer::GetROChannels (const string& chID, std::vector<ROChannel*>
 		if(etype!=(*ei)->GetType()) {
 			etype=(*ei)->GetType();
 			FindCtors(etype,chpath.key,ctors);
-			if(ctors.empty())
+			if(ctors.empty()) {
+				MerlinIO::warning()<<"ChannelServer: No channel constructors for "<<chpath.type<<" found"<<endl;
 				break;
+			}
 		}
 		
 		// Now construct the channels
@@ -167,8 +172,10 @@ size_t ChannelServer::GetRWChannels (const string& chID, std::vector<RWChannel*>
 	elements.reserve(8);
 	
 	FindElements(chpath.eid(),elements);
-	if(elements.empty())
+	if(elements.empty()) {
+		MerlinIO::warning()<<"ChannelServer: No elements matching "<<chpath.eid()<<" found"<<endl;
 		return 0;
+	}
 
 	set<ChannelCtor*> ctors;
 	string etype="";
@@ -179,8 +186,10 @@ size_t ChannelServer::GetRWChannels (const string& chID, std::vector<RWChannel*>
 		if(etype!=(*ei)->GetType()) {
 			etype=(*ei)->GetType();
 			FindCtors(etype,chpath.key,ctors);
-			if(ctors.empty())
+			if(ctors.empty()) {
+				MerlinIO::warning()<<"ChannelServer: No channel constructors for "<<chpath.type<<" found"<<endl;
 				break;
+			}
 		}
 		
 		// Now construct the channels
