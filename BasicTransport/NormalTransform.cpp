@@ -150,5 +150,13 @@ BeamData& SigmaMatrixToBeamData(const PSmoments& S0, BeamData& t)
 	t.sig_z  = S.std(ps_CT);
 	t.sig_dp = S.std(ps_DP);
 
+	// centroid
+	t.x0  = S0[0];
+	t.xp0 = S0[1];
+	t.y0  = S0[2];
+	t.yp0 = S0[3];
+    t.ct0 = S0[4];
+	t.p0  = S0[5]; // not actually the energy, but dp/p!
+
 	return t;
 }

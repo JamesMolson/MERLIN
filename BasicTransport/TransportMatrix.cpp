@@ -1,32 +1,32 @@
 //## begin module%36BDEBDB001E.cm preserve=no
 /*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 2.0 (1999)
- * 
- * file BasicTransport\TransportMatrix.cpp
- * last modified 02/25/00  03:10:44
- */
+* Merlin C++ Class Library for Charged Particle Accelerator Simulations
+* 
+* Class library version 2.0 (1999)
+* 
+* file BasicTransport\TransportMatrix.cpp
+* last modified 02/25/00  03:10:44
+*/
 //## end module%36BDEBDB001E.cm
 
 //## begin module%36BDEBDB001E.cp preserve=no
 /*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- * Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
+* This file is derived from software bearing the following
+* restrictions:
+*
+* MERLIN C++ class library for 
+* Charge Particle Accelerator Simulations
+* Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
+*
+* Permission to use, copy, modify, distribute and sell this
+* software and its documentation for any purpose is hereby
+* granted without fee, provided that the above copyright notice
+* appear in all copies and that both that copyright notice and
+* this permission notice appear in supporting documentation.
+* No representations about the suitability of this software for
+* any purpose is made. It is provided "as is" without express
+* or implied warranty.
+*/
 //## end module%36BDEBDB001E.cp
 
 //## Module: TransportMatrix%36BDEBDB001E; Package body
@@ -37,6 +37,7 @@
 #include <cmath>
 #include "NumericalUtils/PhysicalConstants.h"
 #include "NumericalUtils/MatrixPrinter.h"
+#include "NumericalUtils/utils.h"
 //## end module%36BDEBDB001E.includes
 
 // TransportMatrix
@@ -46,26 +47,26 @@
 
 //## begin module%36BDEBDB001E.additionalDeclarations preserve=yes
 namespace {
-
+	
 	// utility functions for matrix calculations
-
+	
 	inline RealMatrix& InitR(RealMatrix& R)
 	{
 		R=IdentityMatrix(R.nrows());
 		return R;
 	}
-
+	
 	// Note that the following routines assume that
 	// R is the identity on entrance.
-
+	
 	void SROT(double cosphi, double sinphi, RealMatrix& R)
 	{
-		assert(cosphi*cosphi==sinphi*sinphi && R.nrows()>3);
+		//assert(fequal(cosphi*cosphi,sinphi*sinphi) && R.nrows()>3);
 		R(0,0)=R(1,1)=R(2,2)=R(3,3)=cosphi;
 		R(0,2)=R(1,3)= -sinphi;
 		R(2,0)=R(3,1)= sinphi;
 	}
-
+	
 	void SBR(double length, double h, double Kx, RealMatrix& R)
 	{
 		// check for zero length element
@@ -73,7 +74,7 @@ namespace {
 			return;
 		
 		assert(R.nrows()>3);
-
+		
 		double Ky = -Kx;
 		Kx += h*h;
 		
@@ -158,6 +159,53 @@ namespace {
 				}
 		}
 	}
+	
+	// solenoid R matrix including end field effects
+	// this matrix is symplectic
+
+	void SolR(double l, double ks, RealMatrix& rs)
+	{
+		double theta=ks/2.*l;
+		double c=cos(theta);
+		double s=sin(theta);
+		double c2=c*c;
+		double sc=s*c;
+		double s2=s*s;
+		
+		rs(0,0)=c2;
+		rs(1,1)=c2;
+		rs(2,2)=c2;
+		rs(3,3)=c2;
+		
+		if(fequal(theta,0.)) {
+			rs(0,1)=0;
+			rs(2,3)=0;
+		} else {
+			rs(0,1)=2.*sc/ks;
+			rs(2,3)=2.*sc/ks;
+		}
+		
+		rs(0,2)=sc;
+		rs(1,3)=sc;
+		rs(2,0)=-sc;
+		rs(3,1)=-sc;
+		
+		if(fequal(theta,0)) {
+			rs(0,3)=0;
+			rs(2,1)=0;
+		} 
+		else {
+			rs(0,3)= 2.*s2/ks;
+			rs(2,1)=-2.*s2/ks;
+		}
+		
+		rs(1,0)=-ks*sc/2;
+		rs(3,2)=-ks*sc/2;
+		
+		rs(1,2)=-ks*s2/2;
+		rs(3,0)= ks*s2/2;
+	}
+	
 }; // end of anonymous namespace		
 //## end module%36BDEBDB001E.additionalDeclarations
 
@@ -169,30 +217,30 @@ namespace {
 //## Operation: Drift%882199461
 RealMatrix TransportMatrix::Drift (double length, RealMatrix& R)
 {
-  //## begin TransportMatrix::Drift%882199461.body preserve=yes
+	//## begin TransportMatrix::Drift%882199461.body preserve=yes
 	InitR(R);
 	R(0,1)=length;
 	if(R.nrows()>2) R(2,3)=length;
 	return R;
-  //## end TransportMatrix::Drift%882199461.body
+	//## end TransportMatrix::Drift%882199461.body
 }
 
 //## Operation: SectorBend%882199462
 RealMatrix& TransportMatrix::SectorBend (double length, double h, double Kx, RealMatrix& R)
 {
-  //## begin TransportMatrix::SectorBend%882199462.body preserve=yes
+	//## begin TransportMatrix::SectorBend%882199462.body preserve=yes
 	SBR(length,h,Kx,InitR(R));
 	return R;
-  //## end TransportMatrix::SectorBend%882199462.body
+	//## end TransportMatrix::SectorBend%882199462.body
 }
 
 //## Operation: SectorBendT%951487844
 RealMatrix& TransportMatrix::SectorBendT (double l, double h, double K1, RealMatrix& T)
 {
-  //## begin TransportMatrix::SectorBendT%951487844.body preserve=yes
+	//## begin TransportMatrix::SectorBendT%951487844.body preserve=yes
 	// Currently only the chromatic part of the 6x6 matrix is supported
 	InitR(T);
-
+	
 	if(l==0 || (K1==0 && h==0))
 		return T;
 	
@@ -200,7 +248,7 @@ RealMatrix& TransportMatrix::SectorBendT (double l, double h, double K1, RealMat
 	double Kx = h2+K1;
 	double Ky = -K1;
 	double hk=2*h2+K1;
-
+	
 	double kx = Kx>0 ? sqrt(Kx) : sqrt(-Kx);
 	double ky = Ky>0 ? sqrt(Ky) : sqrt(-Ky);
 	
@@ -229,7 +277,7 @@ RealMatrix& TransportMatrix::SectorBendT (double l, double h, double K1, RealMat
 		T(0,1)=hk*(phix*coshphix-sinhphix)/(2*kx*kx*kx);
 		T(1,0)=hk*(phix*coshphix+sinhphix)/kx/2;
 	}
-
+	
 	// Vertical plane (as for QuadrupoleT)
 	if(Ky>0) {// focusing
 		double phiy = l*ky;
@@ -247,7 +295,7 @@ RealMatrix& TransportMatrix::SectorBendT (double l, double h, double K1, RealMat
 		T(2,3) = (sinhphiy/ky-l*coshphiy)/2;
 		T(3,2) = -ky*(phiy*coshphiy+sinhphiy)/2;
 	}
-
+	
 	// Dispersion/time terms
 	if(Kx==0) {
 		double phi = h*l;
@@ -272,41 +320,41 @@ RealMatrix& TransportMatrix::SectorBendT (double l, double h, double K1, RealMat
 		T(1,5) = h*(hk*phi*coshphi+K1*sinhphi)/(2*pow(kx,3));
 		T(4,5) = h2*(2*K1*phi-hk*phi*coshphi+(2*h2-K1)*sinhphi)/(2*pow(kx,5));
 	}
-
+	
 	return T;
-  //## end TransportMatrix::SectorBendT%951487844.body
+	//## end TransportMatrix::SectorBendT%951487844.body
 }
 
 //## Operation: QuadrupoleR%908350738
 RealMatrix& TransportMatrix::QuadrupoleR (double length, double Kx, RealMatrix& R)
 {
-  //## begin TransportMatrix::QuadrupoleR%908350738.body preserve=yes
+	//## begin TransportMatrix::QuadrupoleR%908350738.body preserve=yes
 	SBR(length,0,Kx,InitR(R));
 	return R;
-  //## end TransportMatrix::QuadrupoleR%908350738.body
+	//## end TransportMatrix::QuadrupoleR%908350738.body
 }
 
 //## Operation: QuadrupoleT%908350739
 RealMatrix& TransportMatrix::QuadrupoleT (double length, double Kx, RealMatrix& T)
 {
-  //## begin TransportMatrix::QuadrupoleT%908350739.body preserve=yes
+	//## begin TransportMatrix::QuadrupoleT%908350739.body preserve=yes
 	InitR(T);
-
+	
 	if(length==0 || Kx==0)
 		return T;
-
+	
 	double k = Kx>0 ? sqrt(Kx) : sqrt(-Kx);
 	double phi = length*k;
 	double cosphi = cos(phi);
 	double sinphi = sin(phi);
 	double coshphi = cosh(phi);
 	double sinhphi = sinh(phi);
-
-
+	
+	
 	T(0,0) = T(1,1) = phi*sinphi/2;
 	T(0,1) = (sinphi/k-length*cosphi)/2;
 	T(1,0) = k*(phi*cosphi+sinphi)/2;
-
+	
 	T(2,2) = T(3,3) = -phi*sinhphi/2;
 	T(2,3) = (sinhphi/k-length*coshphi)/2;
 	T(3,2) = -k*(phi*coshphi+sinhphi)/2;
@@ -317,64 +365,93 @@ RealMatrix& TransportMatrix::QuadrupoleT (double length, double Kx, RealMatrix& 
 		swap(T(1,0),T(3,2));
 		swap(T(1,1),T(3,3));
 	}
-
+	
 	return T;
-  //## end TransportMatrix::QuadrupoleT%908350739.body
+	//## end TransportMatrix::QuadrupoleT%908350739.body
 }
 
 //## Operation: Srot%884688471
 RealMatrix& TransportMatrix::Srot (double cosphi, double sinphi, RealMatrix& R)
 {
-  //## begin TransportMatrix::Srot%884688471.body preserve=yes
+	//## begin TransportMatrix::Srot%884688471.body preserve=yes
 	InitR(R);
 	SROT(cosphi,sinphi,R);
 	return R;
-  //## end TransportMatrix::Srot%884688471.body
+	//## end TransportMatrix::Srot%884688471.body
 }
 
 //## Operation: SrotR4%908464076
 RealMatrix& TransportMatrix::SrotR4 (double cosphi, double sinphi, RealMatrix& R)
 {
-  //## begin TransportMatrix::SrotR4%908464076.body preserve=yes
+	//## begin TransportMatrix::SrotR4%908464076.body preserve=yes
 	InitR(R);
 	SROT(cosphi,sinphi,R);
 	return R;
-  //## end TransportMatrix::SrotR4%908464076.body
+	//## end TransportMatrix::SrotR4%908464076.body
 }
 
 //## Operation: PoleFaceRot%882199465
 RealMatrix& TransportMatrix::PoleFaceRot (double h, double theta, double fint, double hgap, RealMatrix& R)
 {
-  //## begin TransportMatrix::PoleFaceRot%882199465.body preserve=yes
+	//## begin TransportMatrix::PoleFaceRot%882199465.body preserve=yes
 	InitR(R);
-  const double sinTheta = sin(theta);
-  const double phi = 2.0*fint*hgap*h*(1+sinTheta*sinTheta)/cos(theta);  
-  R(1,0) = h*tan(theta);
-  R(3,2) =-h*tan(theta-phi);
-  return R;
-  //## end TransportMatrix::PoleFaceRot%882199465.body
+	const double sinTheta = sin(theta);
+	const double phi = 2.0*fint*hgap*h*(1+sinTheta*sinTheta)/cos(theta);  
+	R(1,0) = h*tan(theta);
+	R(3,2) =-h*tan(theta-phi);
+	return R;
+	//## end TransportMatrix::PoleFaceRot%882199465.body
 }
+
 
 //## Operation: Solenoid%882199466
 RealMatrix& TransportMatrix::Solenoid (double length, double K0, double K1, bool entrFringe, bool exitFringe, RealMatrix& R)
 {
-  //## begin TransportMatrix::Solenoid%882199466.body preserve=yes
+	//## begin TransportMatrix::Solenoid%882199466.body preserve=yes
 	InitR(R);
+	SolR(length,K0,R);
 	return R;
-  //## end TransportMatrix::Solenoid%882199466.body
+
+	/**********
+	double K = K0/2.0;
+	double phi = K*length;
+	double C = cos(phi);
+	double S = sin(phi);
+	
+	R(0,0)=R(1,1)=R(2,2)=R(3,3)=C*C;
+	
+	R(0,1)= S*C/K;
+	R(0,2)= S*C;
+	R(0,3)= S*S/K;
+	
+	R(1,0)=-K*S*C;
+	R(1,2)=-K*S*S;
+	R(1,3)= S*C;
+	
+	R(2,0)=-S*C;
+	R(2,1)=-S*S/K;
+	R(2,3)= S*C/K;
+	
+	R(3,0)= K*S*S;
+	R(3,1)=-S*C;
+	R(3,2)=-K*S*C;
+	
+	return R;
+	***/
+	//## end TransportMatrix::Solenoid%882199466.body
 }
 
 //## Operation: TWRFCavity%882199467
 RealMatrix& TransportMatrix::TWRFCavity (double length, double g, double f, double phi, double E0, RealMatrix& R)
 {
-  //## begin TransportMatrix::TWRFCavity%882199467.body preserve=yes
+	//## begin TransportMatrix::TWRFCavity%882199467.body preserve=yes
 	using namespace PhysicalConstants;
 	
 	InitR(R);
-
+	
 	const double dE=length*g;
 	const double dEcosPhi = dE*cos(phi);
-
+	
 	if(dEcosPhi==0) {
 		// no acceleration - return drift matrix
 		R(0,1)=R(2,3)=length;
@@ -383,50 +460,50 @@ RealMatrix& TransportMatrix::TWRFCavity (double length, double g, double f, doub
 		R(0,1)=R(2,3)=length*E0*log(1+dEcosPhi/E0)/dEcosPhi;
 		R(1,1)=R(3,3)=E0/(E0+dEcosPhi);
 	}
-
+	
 	if(R.nrows()==6) {
 		const double k = twoPi*f/SpeedOfLight;
 		R(5,4)=k*dE*sin(phi)/(E0+dEcosPhi);
 		R(5,5)=E0/(E0+dEcosPhi);
 	}
 	return R;
-  //## end TransportMatrix::TWRFCavity%882199467.body
+	//## end TransportMatrix::TWRFCavity%882199467.body
 }
 
 //## Operation: SWRFCavity%903606812
 RealMatrix& TransportMatrix::SWRFCavity (int ncells, double g, double f, double phi, double E0, RealMatrix& R)
 {
-  //## begin TransportMatrix::SWRFCavity%903606812.body preserve=yes
+	//## begin TransportMatrix::SWRFCavity%903606812.body preserve=yes
 	using namespace PhysicalConstants;
-		
+	
 	InitR(R);
-
+	
 	double root2 = sqrt(2.0);
 	double root8 = sqrt(8.0);
-
+	
 	double lambda = SpeedOfLight/f;
 	double length = ncells*lambda/2;
-
+	
 	double cosPhi = cos(phi);
 	double E1=E0+g*length*cosPhi;
 	
 	double alpha = log(E1/E0)/cosPhi/root8;
 	double cosAlpha = cos(alpha);
 	double sinAlpha = sin(alpha);
-
+	
 	R(0,0) = R(2,2) = cosAlpha - root2*cosPhi*sinAlpha;
 	R(0,1) = R(2,3) = root8*E0*sinAlpha/g;
 	R(1,0) = R(3,2) = -g*(2+cos(2*phi))*sinAlpha/E1/root8;
 	R(1,1) = R(3,3) = E0*(cosAlpha+root2*cosPhi*sinAlpha)/E1;
-
+	
 	return R;
-  //## end TransportMatrix::SWRFCavity%903606812.body
+	//## end TransportMatrix::SWRFCavity%903606812.body
 }
 
 //## Operation: Arb3DXForm%903606813
 RealMatrix& TransportMatrix::Arb3DXForm (const RealMatrix& R3d, const RealVector& X, RealMatrix& R, RealVector& dX)
 {
-  //## begin TransportMatrix::Arb3DXForm%903606813.body preserve=yes
+	//## begin TransportMatrix::Arb3DXForm%903606813.body preserve=yes
 	// linear approximation for a general 3-D Euclidean transformation
 	// for TRANSPORT canonical variables.
 	// Given a general 3-D rotation matrix r (3x3) and a translation u, then we can
@@ -436,7 +513,7 @@ RealMatrix& TransportMatrix::Arb3DXForm (const RealMatrix& R3d, const RealVector
 	
 	// Note that the expressions where derived 
 	// (and generated) using Mathematica.
-
+	
 	const double r11 = R3d(0,0);
 	const double r12 = R3d(0,1);
 	const double r13 = R3d(0,2);
@@ -449,7 +526,7 @@ RealMatrix& TransportMatrix::Arb3DXForm (const RealMatrix& R3d, const RealVector
 	const double x = X[0];
 	const double y = X[1];
 	const double z = X[2];
-
+	
 	const double A1 = 1/r33;
 	const double A0 = A1*A1;
 	const double A2 = -(r31*x);
@@ -459,7 +536,7 @@ RealMatrix& TransportMatrix::Arb3DXForm (const RealMatrix& R3d, const RealVector
 	const double A6 = A1*A5;
 	
 	R.copy(IdentityMatrix(6));
-
+	
 	R(0,0) = r11 - A1*r13*r31;
 	R(0,1) = -(A1*A5*r11) + A0*A5*r13*r31;
 	R(0,2) = r12 - A1*r13*r32;
@@ -477,16 +554,16 @@ RealMatrix& TransportMatrix::Arb3DXForm (const RealMatrix& R3d, const RealVector
 	R(4,4) = r33;
 	
 	dX.redim(6);
-
+	
 	dX[0]= -r11*x-r12*y-r13*z-r13*A6;
 	dX[1]=  A1*r13;
 	dX[2]= -r21*x-r22*y-r23*z-r23*A6;
 	dX[3]=  A1*r23;
 	dX[4]=  A5;
 	dX[5]=  0;
-
+	
 	return R;
-  //## end TransportMatrix::Arb3DXForm%903606813.body
+	//## end TransportMatrix::Arb3DXForm%903606813.body
 }
 
 //## begin module%36BDEBDB001E.epilog preserve=yes
