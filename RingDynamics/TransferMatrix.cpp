@@ -7,19 +7,21 @@ TransferMatrix::TransferMatrix(AcceleratorModel* aModel, double refMomentum, boo
 
 void TransferMatrix::FindTM(RealMatrix& M, PSvector& orbit, int ncpt)
 {
-	const double dscale = 1.0e-9;
+	const double dscale = 1.0e-6;
 	ParticleBunch particle(p0,1.0);
-	int n=0;
 
-	for(n=0; n<6; n++)
+	for(int n=0; n<6; n++)
 	{
 		Particle p = orbit;
-		p[n]+=dscale;
+		p[n] += dscale;
+		particle.push_back(p);
+		p[n] -= 2.*dscale;
 		particle.push_back(p);
 	}
 
 	ParticleTracker tracker(theModel->GetRing(ncpt),&particle,false);
 	tracker.UseFullAcceleration(false);
+	tracker.UseExactChromaticity(false);
 
 	if(radiation) {
 		SynchRadParticleProcess* srproc = new SynchRadParticleProcess(1,50); //Must split dipole with radiation A.Wolski 1/10/01
@@ -30,9 +32,14 @@ void TransferMatrix::FindTM(RealMatrix& M, PSvector& orbit, int ncpt)
 	tracker.Run();
 
 	ParticleBunch::const_iterator p = tracker.GetTrackedBunch().begin();
+	ParticleBunch::const_iterator q = p;
+	q++;
 
-
-	for(n=0; p!=tracker.GetTrackedBunch().end(); p++,n++)
-		for(int m=0; m<6; m++) 
-			M(m,n) = ((*p)[m] - orbit[m]) / dscale;
+	for(n=0; n<6; p++,q++,n++)
+	{
+		for(int m=0; m<6; m++)
+			M(m,n) = ((*p)[m] - (*q)[m]) / (2.*dscale);
+		p++;
+		q++;
+	}
 }

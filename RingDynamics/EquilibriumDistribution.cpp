@@ -21,7 +21,7 @@ void EquilibriumDistribution::FindA2()
 {
 	using RingDynamicsImpl::DoTrack;
 
-	const double dscale = 1.0e-9;
+	const double dscale = 1.0e-6;
 
 	AcceleratorModel::BeamlineIterator beginBL = (*theModel).GetBeamline().begin();
 	AcceleratorModel::BeamlineIterator endBL = (*theModel).GetBeamline().end();
@@ -60,23 +60,23 @@ void EquilibriumDistribution::FindA2()
 
 	//Need to fix the R53 and R54 terms, which are not calculated correctly
 	//for a distorted closed orbit (tracking problem!)
-	M(4,2) = -( -M(2,2)*M(3,1)*M(4,0) + M(2,1)*M(3,2)*M(4,0)
-				+M(2,2)*M(3,0)*M(4,1) - M(2,0)*M(3,2)*M(4,1)
-				+M(2,5)*M(3,2)*M(4,4) - M(2,2)*M(3,5)*M(4,4)
-				-M(2,4)*M(3,2)*M(4,5) + M(2,2)*M(3,4)*M(4,5) )
-				/(M(2,3)*M(3,2)-M(2,2)*M(3,3));
+//	M(4,2) = -( -M(2,2)*M(3,1)*M(4,0) + M(2,1)*M(3,2)*M(4,0)
+//				+M(2,2)*M(3,0)*M(4,1) - M(2,0)*M(3,2)*M(4,1)
+//				+M(2,5)*M(3,2)*M(4,4) - M(2,2)*M(3,5)*M(4,4)
+//				-M(2,4)*M(3,2)*M(4,5) + M(2,2)*M(3,4)*M(4,5) )
+//				/(M(2,3)*M(3,2)-M(2,2)*M(3,3));
 
-	M(4,3) =  ( -M(3,3)*M(2,1)*M(4,0) + M(3,3)*M(2,0)*M(4,1)
-				-M(3,3)*M(2,5)*M(4,4) + M(3,3)*M(2,4)*M(4,5)
-				+M(2,3)*M(3,1)*M(4,0) - M(2,3)*M(3,0)*M(4,1)
-				+M(2,3)*M(3,5)*M(4,4) - M(2,3)*M(3,4)*M(4,5) )
-				/(M(2,3)*M(3,2)-M(2,2)*M(3,3));
+//	M(4,3) =  ( -M(3,3)*M(2,1)*M(4,0) + M(3,3)*M(2,0)*M(4,1)
+//				-M(3,3)*M(2,5)*M(4,4) + M(3,3)*M(2,4)*M(4,5)
+//				+M(2,3)*M(3,1)*M(4,0) - M(2,3)*M(3,0)*M(4,1)
+//				+M(2,3)*M(3,5)*M(4,4) - M(2,3)*M(3,4)*M(4,5) )
+//				/(M(2,3)*M(3,2)-M(2,2)*M(3,3));
 
-	rmatrix<<"\n\nAfter symplectic adjustment\n\n"<<endl;
-	MatrixForm(M,rmatrix,OPFormat().precision(12).fixed());
-	
 	//Just make sure the matrix is symplectic
 	Symplectify(M);
+	rmatrix<<"\n\nAfter symplectic adjustment\n\n"<<endl;
+	MatrixForm(M,rmatrix,OPFormat().precision(12).fixed());
+
 	EigenSystem(M, eigenvalues, eigenvectors);
 
 	ParticleBunch particle(p0, 1.0);

@@ -16,7 +16,7 @@ Dispersion::Dispersion(AcceleratorModel* aModel, double refMomentum)
 
 void Dispersion::FindDispersion(int n)
 {
-	double dscale = 1e-9;
+	double dscale = 1e-6;
 
 	ClosedOrbit co(theModel, p0, true, false);
 
@@ -36,7 +36,7 @@ void Dispersion::FindDispersion(int n)
 
 void Dispersion::FindRMSDispersion(ofstream* file)
 {
-	double dscale = 1e-9;
+	double dscale = 1e-6;
 
 	ClosedOrbit co(theModel, p0, true, false);
 

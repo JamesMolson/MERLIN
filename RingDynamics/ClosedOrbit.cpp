@@ -17,7 +17,7 @@ ClosedOrbit::ClosedOrbit(AcceleratorModel* aModel, double refMomentum, bool isTr
 void ClosedOrbit::FindClosedOrbit(PSvector& p, int ncpt)
 {
 	const int cpt = transverseOnly ? 4 : 6;
-	const double dscale = 1.0e-9;
+	const double dscale = 1.0e-6;
 
 	ParticleBunch particle(p0,1.0);
 	int k=0;
@@ -88,6 +88,7 @@ void ClosedOrbit::FindClosedOrbit(PSvector& p, int ncpt)
 //		cout<<"Distance from closed orbit..."<<w<<endl;
 //		cout<<"dp = "<<p[5]<<endl;
 	}
+
 }
 
 void ClosedOrbit::FindRMSOrbit(PSvector& p)
