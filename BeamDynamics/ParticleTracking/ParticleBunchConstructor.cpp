@@ -1,11 +1,16 @@
+//## begin module%1.4%.codegen_version preserve=yes
+//   Read the documentation to learn more about C++ code generator
+//   versioning.
+//## end module%1.4%.codegen_version
+
 //## begin module%37C533BD01A0.cm preserve=no
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
- * Class library version 2.0 (2000)
+ * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleBunchConstructor.cpp
- * last modified 26/04/01 10:44:50
+ * last modified 03/12/01 16:50:10
  */
 //## end module%37C533BD01A0.cm
 
@@ -16,9 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -33,85 +37,76 @@
 
 //## Module: ParticleBunchConstructor%37C533BD01A0; Package body
 //## Subsystem: Merlin::BeamDynamics::ParticleTracking%3729F894017C
-//## Source file: D:\dev\Merlin\BeamDynamics\ParticleTracking\ParticleBunchConstructor.cpp
+//## Source file: C:\C++\Merlin\BeamDynamics\ParticleTracking\ParticleBunchConstructor.cpp
 
 //## begin module%37C533BD01A0.includes preserve=yes
 #include "BasicTransport/NormalTransform.h"
 #include <memory>
 //## end module%37C533BD01A0.includes
 
-// ParticleBunchConstructor
-#include "BeamDynamics/ParticleTracking/ParticleBunchConstructor.h"
 // RandomNG
 #include "Random/RandomNG.h"
-//## begin module%37C533BD01A0.declarations preserve=no
-//## end module%37C533BD01A0.declarations
-
+// ParticleBunchConstructor
+#include "BeamDynamics/ParticleTracking/ParticleBunchConstructor.h"
 //## begin module%37C533BD01A0.additionalDeclarations preserve=yes
 //## end module%37C533BD01A0.additionalDeclarations
 
 
 // Class ParticleBunchConstructor 
 
-
-
-
-
-
-
-//## Operation: ParticleBunchConstructor%925486244
+//## Operation: ParticleBunchConstructor%3729D40C0000
 ParticleBunchConstructor::ParticleBunchConstructor (const BeamData& beam, size_t npart, DistributionType dist)
-  //## begin ParticleBunchConstructor::ParticleBunchConstructor%925486244.initialization preserve=yes
-: np(npart),dtype(dist),cutOff(0),beamdat(beam),itsFilter(0),M(NormalTransform(beam))
-  //## end ParticleBunchConstructor::ParticleBunchConstructor%925486244.initialization
+  //## begin ParticleBunchConstructor::ParticleBunchConstructor%3729D40C0000.initialization preserve=yes
+: np(npart),dtype(dist),cutOff(0),beamdat(beam),itsFilter(0),M(NormalTransform(beam)),force_c(false)
+  //## end ParticleBunchConstructor::ParticleBunchConstructor%3729D40C0000.initialization
 {
-  //## begin ParticleBunchConstructor::ParticleBunchConstructor%925486244.body preserve=yes
-  //## end ParticleBunchConstructor::ParticleBunchConstructor%925486244.body
+  //## begin ParticleBunchConstructor::ParticleBunchConstructor%3729D40C0000.body preserve=yes
+  //## end ParticleBunchConstructor::ParticleBunchConstructor%3729D40C0000.body
 }
 
 
-//## Operation: ~ParticleBunchConstructor%935667557
+//## Operation: ~ParticleBunchConstructor%37C53614010B
 ParticleBunchConstructor::~ParticleBunchConstructor ()
 {
-  //## begin ParticleBunchConstructor::~ParticleBunchConstructor%935667557.body preserve=yes
+  //## begin ParticleBunchConstructor::~ParticleBunchConstructor%37C53614010B.body preserve=yes
 	if(itsFilter)
 		delete itsFilter;
-  //## end ParticleBunchConstructor::~ParticleBunchConstructor%935667557.body
+  //## end ParticleBunchConstructor::~ParticleBunchConstructor%37C53614010B.body
 }
 
 
 
 //## Other Operations (implementation)
-//## Operation: SetBunchData%925486245
+//## Operation: SetBunchData%3729D1110050
 void ParticleBunchConstructor::SetBunchData (const BeamData& beam)
 {
-  //## begin ParticleBunchConstructor::SetBunchData%925486245.body preserve=yes
+  //## begin ParticleBunchConstructor::SetBunchData%3729D1110050.body preserve=yes
 	beamdat = beam;
 	M.R = NormalTransform(beam);
-  //## end ParticleBunchConstructor::SetBunchData%925486245.body
+  //## end ParticleBunchConstructor::SetBunchData%3729D1110050.body
 }
 
-//## Operation: SetNumParticles%925486246
+//## Operation: SetNumParticles%3729D12201EA
 void ParticleBunchConstructor::SetNumParticles (size_t npart)
 {
-  //## begin ParticleBunchConstructor::SetNumParticles%925486246.body preserve=yes
+  //## begin ParticleBunchConstructor::SetNumParticles%3729D12201EA.body preserve=yes
 	assert(npart>0);
 	np=npart;
-  //## end ParticleBunchConstructor::SetNumParticles%925486246.body
+  //## end ParticleBunchConstructor::SetNumParticles%3729D12201EA.body
 }
 
-//## Operation: SetDistributionCutoff%958127065
+//## Operation: SetDistributionCutoff%391BDB120320
 void ParticleBunchConstructor::SetDistributionCutoff (double cut)
 {
-  //## begin ParticleBunchConstructor::SetDistributionCutoff%958127065.body preserve=yes
+  //## begin ParticleBunchConstructor::SetDistributionCutoff%391BDB120320.body preserve=yes
 	cutOff = fabs(cut);
-  //## end ParticleBunchConstructor::SetDistributionCutoff%958127065.body
+  //## end ParticleBunchConstructor::SetDistributionCutoff%391BDB120320.body
 }
 
-//## Operation: ConstructBunch%925486247
+//## Operation: ConstructBunch%3729CF89015E
 Bunch* ParticleBunchConstructor::ConstructBunch () const
 {
-  //## begin ParticleBunchConstructor::ConstructBunch%925486247.body preserve=yes
+  //## begin ParticleBunchConstructor::ConstructBunch%3729CF89015E.body preserve=yes
 	PSvectorArray pbunch;
 	PSvector p;
 		
@@ -135,6 +130,9 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 	
 	size_t i;
 	
+
+	PSvector xm(0); // used for calculating mean
+
 	switch(dtype) {
 	case normalDistribution:
 		
@@ -163,6 +161,18 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 				pbunch.push_back(p);
 				i++;
 			}
+
+			xm += p;
+		}
+		if(force_c) {
+			// Note when we force the mean value
+			// to the centroid, the first particle 
+			// is (in general) no longer the centroid
+			// particle
+			xm/=np;
+			xm-=pbunch.front();
+			for(PSvectorArray::iterator pp=pbunch.begin(); pp!=pbunch.end(); pp++)
+				(*pp)-=xm;
 		}
 		break;
 	case flatDistribution:
@@ -185,20 +195,27 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 		}
 		break;
 	};
-	
+
 	return new ParticleBunch(beamdat.p0,beamdat.charge,pbunch);
-  //## end ParticleBunchConstructor::ConstructBunch%925486247.body
+  //## end ParticleBunchConstructor::ConstructBunch%3729CF89015E.body
+}
+
+//## Operation: ForceCentroid%3C0B9C0700BC
+void ParticleBunchConstructor::ForceCentroid (bool fc)
+{
+  //## begin ParticleBunchConstructor::ForceCentroid%3C0B9C0700BC.body preserve=yes
+	force_c = fc;
+  //## end ParticleBunchConstructor::ForceCentroid%3C0B9C0700BC.body
 }
 
 // Class ParticleBunchFilter 
 
-
-//## Operation: ~ParticleBunchFilter%935667559
+//## Operation: ~ParticleBunchFilter%37C5331D02C2
 ParticleBunchFilter::~ParticleBunchFilter ()
 {
-  //## begin ParticleBunchFilter::~ParticleBunchFilter%935667559.body preserve=yes
+  //## begin ParticleBunchFilter::~ParticleBunchFilter%37C5331D02C2.body preserve=yes
 	// Nothing to do
-  //## end ParticleBunchFilter::~ParticleBunchFilter%935667559.body
+  //## end ParticleBunchFilter::~ParticleBunchFilter%37C5331D02C2.body
 }
 
 

@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3981E4490352.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleBunch.cpp
- * last modified 09/04/01 04:41:11 PM
+ * last modified 03/12/01 16:41:27
  */
 //## end module%3981E4490352.cm
 
@@ -46,12 +46,12 @@
 #include <iterator>
 //## end module%3981E4490352.includes
 
-// ParticleBunch
-#include "BeamDynamics/ParticleTracking/ParticleBunch.h"
 // Transform3D
 #include "EuclideanGeometry/Transform3D.h"
 // PSvectorTransform3D
 #include "BasicTransport/PSvectorTransform3D.h"
+// ParticleBunch
+#include "BeamDynamics/ParticleTracking/ParticleBunch.h"
 
 
 //## begin module%3981E4490352.additionalDeclarations preserve=yes
@@ -128,11 +128,6 @@ namespace {
 
 
 // Class ParticleBunch 
-
-
-
-
-
 
 //## Operation: ParticleBunch%3729CB29024E
 ParticleBunch::ParticleBunch (double P0, double Q, PSvectorArray& particles)
@@ -301,6 +296,18 @@ void ParticleBunch::Output (std::ostream& os) const
 	os.precision(oldp);
 	os.flags(oflg);
   //## end ParticleBunch::Output%3729CB500280.body
+}
+
+//## Operation: SetCentroid%3C0B9CB50293
+void ParticleBunch::SetCentroid (const Particle& x0)
+{
+  //## begin ParticleBunch::SetCentroid%3C0B9CB50293.body preserve=yes
+	PSvector x;
+	GetCentroid(x);
+	x-=x0;
+	for(PSvectorArray::iterator p = begin(); p!=end(); p++)
+		*p-=x;
+  //## end ParticleBunch::SetCentroid%3C0B9CB50293.body
 }
 
 //## begin module%3981E4490352.epilog preserve=yes

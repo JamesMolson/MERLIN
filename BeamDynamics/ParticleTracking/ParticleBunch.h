@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%3981E43F01CC.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\BeamDynamics\ParticleTracking\ParticleBunch.h
- * last modified 09/04/01 04:41:09 PM
+ * last modified 03/12/01 16:41:26
  */
 //## end module%3981E43F01CC.cm
 
@@ -67,6 +67,8 @@ class Transform3D;
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
+
+
 typedef PSvector Particle;
 
 //## Class: ParticleBunch%36E7A9C400ED
@@ -76,6 +78,8 @@ typedef PSvector Particle;
 //## Subsystem: Merlin::BeamDynamics::ParticleTracking%3729F894017C
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
+
+
 
 //## Uses: <unnamed>%372AF35800C8;PSvectorTransform3D { -> }
 //## Uses: <unnamed>%3981E3D00082;Particle { -> }
@@ -93,6 +97,8 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
+
+
     typedef PSvectorArray::iterator iterator;
 
     //## Class: const_iterator%3981E8090118
@@ -100,6 +106,8 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
     //## Subsystem: Merlin::BeamDynamics::ParticleTracking%3729F894017C
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
+
+
 
     typedef PSvectorArray::const_iterator const_iterator;
 
@@ -183,25 +191,25 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
       void SetMacroParticleCharge (double q);
 
       //## Operation: begin%3981E564014A
-      iterator begin ();
+      ParticleBunch::iterator begin ();
 
       //## Operation: end%3981E5880352
-      iterator end ();
+      ParticleBunch::iterator end ();
 
       //## Operation: push_back%3981E59602EE
       void push_back (const Particle& p);
 
       //## Operation: begin%3981E6470262
-      const_iterator begin () const;
+      ParticleBunch::const_iterator begin () const;
 
       //## Operation: end%3981E6A202DA
-      const_iterator end () const;
+      ParticleBunch::const_iterator end () const;
 
       //## Operation: size%3981E7E5038E
       size_t size () const;
 
       //## Operation: erase%3981E94201D6
-      iterator erase (iterator p);
+      ParticleBunch::iterator erase (ParticleBunch::iterator p);
 
       //## Operation: GetParticles%3981EEBC0118
       PSvectorArray& GetParticles ();
@@ -216,9 +224,12 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
       //## Operation: FirstParticle%3B94E7E80154
       Particle& FirstParticle ();
 
+      //## Operation: SetCentroid%3C0B9CB50293
+      //	Sets the centroid of the particle bunch to be exactly x0.
+      void SetCentroid (const Particle& x0);
+
   public:
   protected:
-      PSvectorArray pArray;
   private:
     // Data Members for Class Attributes
 
@@ -233,6 +244,7 @@ class ParticleBunch : public Bunch  //## Inherits: <unnamed>%3729CEDF00FA
       //## Association: Merlin::BeamDynamics::ParticleTracking::<unnamed>%3981E5250032
       //## Role: ParticleBunch::pArray%3981E5250034
       //## begin ParticleBunch::pArray%3981E5250034.role preserve=no  private: PSvectorArray { -> 1VHgAN}
+      PSvectorArray pArray;
       //## end ParticleBunch::pArray%3981E5250034.role
 
   private: //## implementation
