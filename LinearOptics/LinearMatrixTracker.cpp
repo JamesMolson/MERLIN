@@ -482,7 +482,11 @@ double SolenoidRmtrxI::TrackStep (double ds)
 	double Bz = Component().GetBz();
 	RealMatrix RS(IdentityMatrix(6));
 
-	TransportMatrix::Solenoid(ds,Bz/brho,0,true,true,RS);
+	if(fequal(Bz,0))
+		ApplyDrift(ds,*R1,*R2);
+	else
+		TransportMatrix::Solenoid(ds,Bz/brho,0,true,true,RS);
+
 	(*R1)=RS*(*R1);
 	(*R2)=RS*(*R2);
 
