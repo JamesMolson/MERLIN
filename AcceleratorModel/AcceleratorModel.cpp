@@ -70,8 +70,8 @@ namespace {
 	struct MatchName {
 		StringPattern pattern;
 		MatchName(const string& pat) : pattern(pat) {}
-		bool operator()(const ModelElement* frm) {
-			return pattern(frm->GetQualifiedName());
+		bool operator()(const ComponentFrame* frm) {
+			return pattern((*frm).GetComponent().GetQualifiedName());
 		}
 	};
 
@@ -200,15 +200,20 @@ AcceleratorModel::Beamline AcceleratorModel::GetReversedBeamline ()
 }
 
 //## Operation: ExtractComponents%39080C8A00CC
-int AcceleratorModel::ExtractComponents (const string& pat, vector<ComponentFrame*>& results)
+int AcceleratorModel::ExtractComponents (const string& pat, vector<ComponentFrame*>& frames)
 {
   //## begin AcceleratorModel::ExtractComponents%39080C8A00CC.body preserve=yes
+	vector<ComponentFrame*> results;
 	if(pat=="*") // copy everything!
 		copy(lattice.begin(),lattice.end(),back_inserter(results));
-	else
-		copy_if(lattice.begin(),lattice.end(),back_inserter(results),MatchName(pat));
-
-	return results.size();
+	else {
+		MatchName mname(pat);
+		for(BeamlineIterator bi=lattice.begin(); bi!=lattice.end(); bi++)
+			if(mname(*bi))
+				results.push_back(*bi);
+	}
+	frames.swap(results);
+	return frames.size();
   //## end AcceleratorModel::ExtractComponents%39080C8A00CC.body
 }
 
