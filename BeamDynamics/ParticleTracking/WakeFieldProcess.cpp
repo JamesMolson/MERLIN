@@ -59,7 +59,7 @@ namespace {
 
 
 WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns)
-: ParticleBunchProcess("WAKEFIELD",prio),nbins(nb),nsig(ns),currentWake(0),s(0),
+: ParticleBunchProcess("WAKEFIELD",prio),imploc(atExit),nbins(nb),nsig(ns),currentWake(0),
 	wake_x(0),wake_y(0),wake_z(0),Qd(),recalc(true),inc_tw(true)
 {}
 
@@ -93,16 +93,28 @@ size_t WakeFieldProcess::CalculateQdist()
 
 void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
 {
-	TWRFStructure* cavity = dynamic_cast<TWRFStructure*>(&component);
-	WakePotentials* wake = cavity!=0 ? cavity->GetWakePotentials() : 0;
-	
+//	TWRFStructure* cavity = dynamic_cast<TWRFStructure*>(&component);
+//	WakePotentials* wake = cavity!=0 ? cavity->GetWakePotentials() : 0;
+
+	WakePotentials* wake = component.GetWakePotentials();
+
 	if(currentBunch!=0 && wake!=0) {
-		s = component.GetLength();
+		clen = component.GetLength();
+		switch(imploc) {
+		case atCentre:
+			impulse_s = clen/2.0;
+			break;
+		case atExit:
+			impulse_s = clen;
+			break;
+		}
+		current_s = 0;
 		active = true;
 		if(recalc || wake!=currentWake) {
 			currentWake = wake;
 			Init();
 		}
+		
 	}
 	else {
 		active = false;
@@ -115,8 +127,16 @@ void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
 	}
 }
 
+void WakeFieldProcess::DoProcess(double ds)
+{
+	current_s+=ds;
+	if(fequal(current_s,impulse_s)) {
+		ApplyWakefield(clen);
+		active = false;
+	}
+}
 
-void WakeFieldProcess::DoProcess (double ds)
+void WakeFieldProcess::ApplyWakefield(double ds)
 {
 	// here we apply the wake field for 
 	// the step ds
@@ -172,7 +192,7 @@ void WakeFieldProcess::DoProcess (double ds)
 
 double WakeFieldProcess::GetMaxAllowedStepSize () const
 {
-	return s;
+	return impulse_s-current_s;
 }
 
 void WakeFieldProcess::Init()
@@ -183,7 +203,7 @@ void WakeFieldProcess::Init()
 		// Even though we have truncated particles, we still keep the
 		// the bunch charge constant
 		currentBunch->SetMacroParticleCharge(Qt/(currentBunch->size()));
-//		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
+		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
 	}
 
 	// Calculate the long. bunch wake.
@@ -206,7 +226,7 @@ void WakeFieldProcess::CalculateWakeL()
 	// centre of each slice, not the slice boundary.
 
 	for(int i=0; i<bunchSlices.size(); i++) {
-		for(int j=i; j<bunchSlices.size(); j++) {
+		for(int j=i; j<bunchSlices.size()-1; j++) {
 			wake_z[i] += Qd[j]*(currentWake->Wlong((j-i+0.5)*dz));
 		}
 		wake_z[i]*=a0;
@@ -240,7 +260,7 @@ void WakeFieldProcess::CalculateWakeT()
 	wake_x = vector<double>(bunchSlices.size(),0.0);
 	wake_y = vector<double>(bunchSlices.size(),0.0);
 	for(i=0; i<bunchSlices.size(); i++) {
-		for(int j=i; j<bunchSlices.size(); j++) {
+		for(int j=i; j<bunchSlices.size()-1; j++) {
 			double wxy = Qd[j]*(currentWake->Wtrans((j-i+0.5)*dz));
 			wake_x[i] += wxy*xyc[j].x;
 			wake_y[i] += wxy*xyc[j].y;

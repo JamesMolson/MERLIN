@@ -16,6 +16,8 @@ class WakeFieldProcess : public ParticleBunchProcess
 {
 public:
 	
+	enum ImpulseLocation {atCentre,atExit};
+
 	WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0);
 	~WakeFieldProcess();
 	
@@ -24,12 +26,21 @@ public:
 	virtual void DoProcess (double ds);
 	virtual double GetMaxAllowedStepSize () const;
 	
+	void ApplyImpulseAt(ImpulseLocation loc) { imploc=loc; }
+
 	void IncludeTransverseWake(bool flg) { inc_tw = flg; }
 
 	void DumpSliceCentroids(ostream&) const;
 
 private:
-	
+
+	void ApplyWakefield(double ds);
+
+	ImpulseLocation imploc;
+	double current_s;
+	double impulse_s;
+	double clen;
+
 	size_t nbins;
 	double nsig;
 	bool inc_tw;
@@ -49,7 +60,6 @@ private:
 
 	double zmin,zmax,dz;
 	
-	double s;
 	bool recalc;
 };
 
