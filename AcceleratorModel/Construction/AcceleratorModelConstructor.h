@@ -123,18 +123,19 @@ class AcceleratorModelConstructor
       //## Operation: AppendComponent%956820800
       //	Append the specified component a distance d meters
       //	downstream of the last component.
-      template<class T> void AppendComponent (T& acc, double d = 0)
+      template<class T> T* AppendComponent (T& acc, double d = 0)
       {
         //## begin AcceleratorModelConstructor::AppendComponent%956820800.body preserve=yes
 		if(d!=0) 
 			AppendDrift(d);
 		AppendComponentFrame(new TComponentFrame<T>(acc));
+		return &acc;
         //## end AcceleratorModelConstructor::AppendComponent%956820800.body
       }
 
-	  template<class T> void AppendComponent(T* acc, double d=0)
+	  template<class T> T* AppendComponent(T* acc, double d=0)
 	  {
-		 AppendComponent(*acc,d);
+		 return AppendComponent(*acc,d);
 	  }
 
 	  // Append an entire SequenceFrame (or derivative) to the current model.
