@@ -165,12 +165,11 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 			
 		}
 		if(force_c) {
-			// Note when we force the mean value
-			// to the centroid, the first particle 
-			// is (in general) no longer the centroid
-			// particle
 			xm/=np;
-			for(PSvectorArray::iterator pp=pbunch.begin(); pp!=pbunch.end(); pp++)
+			xm-=pbunch.front();
+			PSvectorArray::iterator pp=pbunch.begin();
+			pp++;
+			for(;pp!=pbunch.end(); pp++)
 				(*pp)-=xm;
 		}
 		break;
