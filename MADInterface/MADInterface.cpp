@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-18 22:07:52 $
-// $Revision: 1.10 $
+// $Date: 2005-03-29 08:40:54 $
+// $Revision: 1.11 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -34,6 +34,8 @@
 #include "MADInterface/MADKeyMap.h"
 // MADInterface
 #include "MADInterface/MADInterface.h"
+#include "MADInterface/ConstructSrot.h"
+
 using namespace std;
 using namespace PhysicalConstants;
 using namespace PhysicalUnits;
@@ -464,6 +466,11 @@ double MADInterface::ReadComponent ()
             ctor->AppendComponent(*rfsctruct);
             component=rfsctruct;
         }
+        else if(type=="CRABRF") {
+            TransverseRFStructure* crabcav = new TransverseRFStructure(name,len,0,0);
+            ctor->AppendComponent(*crabcav);
+            component=crabcav;
+        }
         else if(type=="MONITOR") {
             if(name.substr(0,4)=="BPM_") {
                 BPM* bpm = new BPM("BPM"+name.substr(4));
@@ -497,6 +504,10 @@ double MADInterface::ReadComponent ()
         }
         else if(type=="MATRIX") // just ignore for now.
             component=0;
+        else if(type=="SROT") {
+            ctor->AppendComponentFrame(ConstructSrot(prmMap->GetParameter("L"),name));
+            component=0;
+        }
         else {
             MERLIN_ERR<<"ERROR: undefined type: "<<type<<endl;
             abort();

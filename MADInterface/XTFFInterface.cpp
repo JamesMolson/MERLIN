@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.9 $
+// $Date: 2005-03-29 08:40:54 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +27,8 @@
 #include "AcceleratorModel/Apertures/SimpleApertures.h"
 #include "AcceleratorModel/Supports/SupportStructure.h"
 #include "NumericalUtils/PhysicalConstants.h"
+#include "MADInterface/ConstructSrot.h"
+#include "Exception/MerlinException.h"
 
 using namespace PhysicalConstants;
 using namespace PhysicalUnits;
@@ -131,7 +133,7 @@ void ParseXTFF(istream& is, Data& data)
 #define VKICK  7
 #define XGAP   6
 #define YGAP   7
-
+#define SROT   7
 
 Drift* ConstructDrift(const Data& data)
 {
@@ -293,6 +295,24 @@ TWRFStructure* ConstructCavity(const Data& data)
     return new TWRFStructure(data.label,len,freq,volt/len,phase);
 }
 
+TransverseRFStructure* ConstructCrabCavity(const Data& data, char c)
+{
+    double len = data[L];
+    double volt = data[VOLT]*MV;
+    double phase = twoPi*data[LAG];
+    double freq = data[FREQ]*MHz;
+    double roll;
+
+    switch(c) {
+    case 'H': roll = 0; break;
+    case 'V': roll = pi/2.0; break;
+    default: 
+        throw MerlinException("Cannot deduce orientation for crab cavity");
+        break;
+    }
+    return new TransverseRFStructure(data.label,len,freq,volt/len,phase,roll);
+}
+
 BPM* ConstructBPM(const Data& data)
 {
     return new BPM(data.label,data[L]);
@@ -361,8 +381,12 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
         c = mc->AppendComponent(ConstructOctupole(dat));
     else if(dat.keywrd=="DECA")
         c = mc->AppendComponent(ConstructDecapole(dat));
-    else if(dat.keywrd=="LCAV")
-        c = mc->AppendComponent(ConstructCavity(dat));
+    else if(dat.keywrd=="LCAV") {
+        if(dat.label.substr(0,4)=="CRAB")
+            c = mc->AppendComponent(ConstructCrabCavity(dat,(dat.label)[4]));
+        else
+            c = mc->AppendComponent(ConstructCavity(dat));
+    }
     else if(dat.keywrd=="SOLE")
         c = mc->AppendComponent(ConstructSolenoid(dat));
     else if(dat.keywrd=="HKIC")
@@ -395,6 +419,10 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
         c = mc->AppendComponent(ConstructDrift(dat));
         if(incApertures)
             c->SetAperture(new RectangularAperture(2*dat[XGAP],2*dat[YGAP]));
+    }
+    else if(dat.keywrd=="SROT") {
+        mc->AppendComponentFrame(ConstructSrot(dat[SROT],dat.label));
+        c=0;
     }
     else {
         cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
@@ -437,20 +465,32 @@ XTFFInterface::~XTFFInterface()
 
 pair<AcceleratorModel*,BeamData*> XTFFInterface::Parse()
 {
-    if(mc!=0)
-        delete mc;
-
-    mc = new AcceleratorModelConstructor();
-
     if(beam0!=0)
         delete beam0;
-
     beam0 = new BeamData();
-
     int nelm = ParseHeader();
 
+    return Parse1(nelm);
+}
+
+pair<AcceleratorModel*,BeamData*> XTFFInterface::Parse(double P_ref)
+{
+    if(beam0!=0)
+        delete beam0;
+    beam0 = new BeamData();
+    int nelm = ParseHeader();
+    energy = P_ref;
+    return Parse1(nelm);
+}
+
+pair<AcceleratorModel*,BeamData*> XTFFInterface::Parse1(int nelm)
+{
     if(logos)
         (*logos)<<"Initial beam energy: "<<energy<<" GeV"<<endl;
+
+    if(mc!=0)
+        delete mc;
+    mc = new AcceleratorModelConstructor();
 
     mc->NewModel();
     z_total=0;

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.5 $
+// $Date: 2005-03-29 08:40:54 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +41,7 @@ public:
     ~XTFFInterface();
 
     pair<AcceleratorModel*,BeamData*> Parse();
+    pair<AcceleratorModel*,BeamData*> Parse(double P_ref);
 
     // Construct apertures if flag is true (default)
     void IncludeApertures(bool flag) { incApertures = flag; }
@@ -58,6 +59,7 @@ private:
 
     void ConstructComponent(XTFF_Data&);
     int ParseHeader();
+    pair<AcceleratorModel*,BeamData*> Parse1(int);
 
     std::set<string> driftTypes;
 
