@@ -233,10 +233,10 @@ void CollimateParticleProcess::DoCollimation ()
 	}
 
 	nlost+=lost.size();
+	DoOutput(lost,lost_i);
+
 	if(double(nlost)/double(nstart)>=lossThreshold)
 		throw ExcessiveParticleLoss(currentComponent->GetQualifiedName(),lossThreshold,nlost,nstart);
-
-	DoOutput(lost,lost_i);
   //## end CollimateParticleProcess::DoCollimation%935667566.body
 }
 

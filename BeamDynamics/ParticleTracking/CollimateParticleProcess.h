@@ -173,6 +173,10 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
       //	% of the initial particle number (default = 100%).
       void SetLossThreshold (double losspc);
 
+	  // Set the log stream for the process. A NULL pointer
+	  // turns logging off.
+	  void SetLogStream(std::ostream* anOs);
+
   protected:
   private:
     // Data Members for Class Attributes
@@ -288,6 +292,11 @@ inline void CollimateParticleProcess::CreateParticleLossFiles (bool flg, string 
 	createLossFiles = flg;
 	file_prefix = fprefix;
   //## end CollimateParticleProcess::CreateParticleLossFiles%951318005.body
+}
+
+inline void CollimateParticleProcess::SetLogStream(std::ostream* anOs)
+{
+	os=anOs;
 }
 
 //## begin module%3AE7DE2600BE.epilog preserve=yes
