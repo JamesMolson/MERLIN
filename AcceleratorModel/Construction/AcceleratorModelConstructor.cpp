@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2005-03-29 08:33:05 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -178,7 +178,8 @@ void AcceleratorModelConstructor::AppendComponentFrame (ComponentFrame* cf)
 {
     assert(currentModel);
     currentModel->theElements->Add(cf);
-    currentModel->theElements->Add(&(cf->GetComponent()));
+    if(cf->IsComponent())
+        currentModel->theElements->Add(&(cf->GetComponent()));
     (*currentModel).lattice.push_back(cf);
     (frameStack.top())->AppendFrame(*cf);
 }

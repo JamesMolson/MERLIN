@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2005-03-29 08:33:05 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -71,6 +71,9 @@ public:
         return AppendComponent(*acc,d);
     }
 
+    // Append an arbitrary ComponentFrame
+    void AppendComponentFrame (ComponentFrame* cf);
+
     // Append an entire SequenceFrame (or derivative) to the current model.
     // This function allows complex structures (eg. girders) which have
     // been externally constructed to placed in the current model
@@ -104,8 +107,6 @@ private:
 
     AcceleratorModel* currentModel;
     FrameStack frameStack;
-
-    void AppendComponentFrame (ComponentFrame* cf);
 };
 
 

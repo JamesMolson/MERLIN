@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-20 16:58:59 $
-// $Revision: 1.6 $
+// $Date: 2005-03-29 08:33:05 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,16 @@ void PerformTracking(ProcessStepManager& aStepper, Bunch& aBunch, bool includeX,
         ComponentFrame* frame = *first;
         if(includeX)
             aBunch.ApplyTransformation(frame->GetEntrancePlaneTransform());
-        aStepper.Track(frame->GetComponent());
+
+        if(const Transform3D* t=frame->GetEntranceGeometryPatch())
+            aBunch.ApplyTransformation(*t);
+
+        if(frame->IsComponent())
+            aStepper.Track(frame->GetComponent());
+
+        if(const Transform3D* t=frame->GetExitGeometryPatch())
+            aBunch.ApplyTransformation(*t);
+
         if(includeX)
             aBunch.ApplyTransformation(frame->GetExitPlaneTransform());
         if(simop)

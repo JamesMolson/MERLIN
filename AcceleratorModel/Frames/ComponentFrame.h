@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2005-03-29 08:33:05 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +40,20 @@ public:
     AcceleratorComponent& GetComponent ();
     const AcceleratorComponent& GetComponent () const;
 
+    // Returns true if this is an empty frame
+    bool IsComponent() const {
+        return theComponent!=0;
+    }
+
+    // Returns the (design) geometry patches for this component
+    // frame.
+    virtual const Transform3D* GetEntranceGeometryPatch() const {
+        return 0;
+    }
+    virtual const Transform3D* GetExitGeometryPatch() const {
+        return 0;
+    }
+
     //	Causes any cached state to be invalidated. The cached
     //	state should be re-calculated if and when required.
     virtual void Invalidate () const;
@@ -59,6 +73,8 @@ public:
 
 protected:
 
+    ComponentFrame(AcceleratorComponent* ac, const string& id = "");
+
     AcceleratorComponent* theComponent;
 
     //	Should  never be called.
@@ -75,13 +91,19 @@ inline ComponentFrame::ComponentFrame (const ComponentFrame& rhs)
 : LatticeFrame(rhs),theComponent(rhs.theComponent)
 {}
 
+inline ComponentFrame::ComponentFrame(AcceleratorComponent* ac, const string& id)
+: LatticeFrame(id),theComponent(ac)
+{}
+
 inline AcceleratorComponent& ComponentFrame::GetComponent ()
 {
+    if(theComponent==0) throw "bad_component";
     return *theComponent;
 }
 
 inline const AcceleratorComponent& ComponentFrame::GetComponent () const
 {
+    if(theComponent==0) throw "bad_component";
     return *theComponent;
 }
 
