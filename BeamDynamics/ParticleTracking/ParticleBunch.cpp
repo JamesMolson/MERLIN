@@ -123,6 +123,19 @@ namespace {
 	{
 		return p1.ct()>p2.ct();
 	}
+
+	template<class T>
+		inline void SortArray(std::vector<T>& array) 
+	{ 
+		sort(array.begin(),array.end());
+	}
+
+	template<class T> 
+	inline void SortArray(std::list<T>& array)
+	{
+		array.sort();
+	}
+
 };
 //## end module%3981E4490352.additionalDeclarations
 
@@ -290,7 +303,8 @@ bool ParticleBunch::ApplyTransformation (const Transform3D& t)
 void ParticleBunch::SortByCT ()
 {
   //## begin ParticleBunch::SortByCT%3981E5C90154.body preserve=yes
-	pArray.sort();
+//	pArray.sort();
+	SortArray(pArray);
   //## end ParticleBunch::SortByCT%3981E5C90154.body
 }
 
