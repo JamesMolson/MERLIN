@@ -1,88 +1,117 @@
-#include "BeamDynamics/ParticleTracking/ParticleTracker.h"
-#include "BetatronTunes.h"
 #include <algorithm>
+#include <fstream>
+
+#include "BeamDynamics/ParticleTracking/ParticleTracker.h"
+#include "NumericalUtils/NumericalConstants.h"
+
+#include "BetatronTunes.h"
 
 using namespace std;
 
 BetatronTunes::BetatronTunes(AcceleratorModel* aModel, double refMomentum)
 	: theModel(aModel), p0(refMomentum) {}
 
-void BetatronTunes::FindTunes(PSvector& aPSvector, int ntrack)
+void BetatronTunes::FindTunes(PSvector& aPSvector, int ntrack, bool diffusion)
 {
-//	const int ntrack = 256;
-	vector<double> xData;
-	xData.reserve(ntrack * 2);
-	xData.push_back( aPSvector.x() );
-	xData.push_back( aPSvector.xp() );
+	vector<double> xData1;
+	xData1.reserve(ntrack * 2);
 
-	vector<double> yData;
-	yData.reserve(ntrack * 2);
-	yData.push_back( aPSvector.y() );
-	yData.push_back( aPSvector.yp() );
+	vector<double> yData1;
+	yData1.reserve(ntrack * 2);
 
-	ParticleTracker tracker(theModel->GetRing(),aPSvector,p0);
+	vector<double> xData2;
+	xData2.reserve(ntrack * 2);
 
-	for(int nturn=0; nturn<ntrack-1; nturn++)
+	vector<double> yData2;
+	yData2.reserve(ntrack * 2);
+
+	PSvector p = aPSvector;
+
+	double p1 = p0*(1.+p.dp() );
+	p.dp() = 0.;
+
+	ParticleTracker tracker(theModel->GetRing(),p,p1);
+	tracker.AssumeFlatLattice(true);
+	tracker.UseExactChromaticity(true);
+
+	vector<double>* xData = &xData1;
+	vector<double>* yData = &yData1;
+
+	bool stable = true;
+	int trackn = diffusion ? ntrack*2 : ntrack;
+	for(int nturn=0; nturn<trackn; nturn++)
 	{
 		tracker.Run(false);
 		Particle& p1 = tracker.GetTrackedBunch().FirstParticle();
 
-		//		if( _isnan(p1.x()) || _isnan(p1.y()) ) break;
-		// _isnan failed to compiler using gcc 3.1 - NJW
-		if(fabs(p1.x())>1.0e+03 || fabs(p1.y())>1.0e+03) break;
-		xData.push_back( p1.x() );
-		xData.push_back( p1.xp() );
-		yData.push_back( p1.y() );
-		yData.push_back( p1.yp() );
+		if( _isnan(p1.x()) || _isnan(p1.y()) )
+		{
+			stable = false;
+			break;
+		}
+
+		double hanningFilter = sin( pi*double(nturn+1)/double(ntrack) );
+		hanningFilter *= hanningFilter;
+
+		if(nturn==ntrack)
+		{
+			xData = &xData2;
+			yData = &yData2;
+		}
+
+		xData->push_back( p1.x()  * hanningFilter );
+		xData->push_back( p1.xp() * hanningFilter );
+		yData->push_back( p1.y()  * hanningFilter );
+		yData->push_back( p1.yp() * hanningFilter );
 	}
 
-	Qx = (xData.size()==2*ntrack) ? FindTune(xData) : 0;
-	Qy = (yData.size()==2*ntrack) ? FindTune(yData) : 0;
+	Qx = stable ? FindTune(xData1) : 0;
+	Qy = stable ? FindTune(yData1) : 0;
+
+	double Qx2 = (diffusion & stable) ? FindTune(xData2) : 0;
+	double Qy2 = (diffusion & stable) ? FindTune(yData2) : 0;
+
+	dQx = Qx2 - Qx;
+	dQy = Qy2 - Qy;
 }
 
 double BetatronTunes::FindTune(vector<double>& data)
 {
 	vector<double> spectrum;
-	spectrum.reserve(data.size()/2);
+	int nvals = data.size()/2;
+	spectrum.reserve(nvals);
 
 	FFT(data);
 	double peak_height = 0.0;
 	int peak_position = 0;
 
-	for(int i=0; i<data.size()/2; i+=2)
+	for(int i=0; i<2*nvals; i+=2)
 	{
-		double amp = sqrt(data[i]*data[i] + data[i+1]*data[i+1]);
-		spectrum.push_back(amp);
-		if(amp > peak_height)
+		double vamp = sqrt(data[i]*data[i] + data[i+1]*data[i+1]);
+		spectrum.push_back(vamp);
+		if(vamp > peak_height)
 		{
-			peak_height = amp;
+			peak_height = vamp;
 			peak_position = i/2;
 		}
 	}
 
-	double left_peak = spectrum[peak_position-1];
-	double right_peak = spectrum[peak_position+1];
+	double norm = sqrt(nvals);
+	double centr_peak = spectrum[peak_position]/norm;
+	double right_peak = spectrum[peak_position+1]/norm;
 
-	double sign = 1.0;
-	if(left_peak > right_peak)
-		sign = -1.0;
+	double peak_correction = 
+		nvals
+		* asin( amp( centr_peak, right_peak, cos(twoPi/nvals) ) * sin(twoPi/double(nvals)) )
+		/ twoPi;
 
-	double k = left_peak*right_peak/pow(spectrum[peak_position],2);
-	double peak_correction = sign*sqrt(k/(1+k));
-
-	double tune = 2*(peak_position + peak_correction)/data.size();
-
-	// _isnan not recongnised by GCC under unix
-	// need better fix here - NJW
-	//	if(_isnan(tune))
-	//		tune = 0.0;
-
-	return tune;
+	return (peak_position + peak_correction)/nvals;
 }
 
 void BetatronTunes::FFT(vector<double>& data)
 {
-	int n = data.size();
+	int nn=data.size()/2;
+	int n = nn << 1;
 	int j = 1;
 	for(int i=1; i<n; i+=2)
 	{
@@ -92,7 +121,7 @@ void BetatronTunes::FFT(vector<double>& data)
 			swap(data[j],data[i]);
 		}
 
-		int m = n >> 1;
+		int m = nn;
 		while(m >= 2 && j > m)
 		{
 			j -= m;
@@ -105,7 +134,7 @@ void BetatronTunes::FFT(vector<double>& data)
 	while(n > mmax)
 	{
 		int istep = mmax << 1;
-		double theta = 6.28318530717959 / mmax;
+		double theta = twoPi / mmax;
 		double wtemp = sin(theta/2.);
 		double wpr = -2.0 * wtemp * wtemp;
 		double wpi = sin(theta);
@@ -131,3 +160,10 @@ void BetatronTunes::FFT(vector<double>& data)
 
 }
 
+double BetatronTunes::amp(double a, double b, double c)
+{
+	double a1 = -(a+b*c)*(a-b);
+	double b1 = b * sqrt( c*c*(a+b)*(a+b) - 2.*a*b*(2*c*c-c-1.) );
+	double c1 = a*a + b*b + 2.*a*b*c;
+	return (a1+b1)/c1;
+}
