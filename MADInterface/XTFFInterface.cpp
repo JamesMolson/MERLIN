@@ -1,7 +1,7 @@
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
- * Class library version 2.0 (2002)
+ * Class library version 3.0 (2003)
  * 
  * file Merlin/MADInterface/XTFFInterface.cpp
  * last modified 01/23/02 10.35
@@ -13,7 +13,7 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 2001 by The Merlin Collaboration.
+ * Copyright (c) 2003 by The Merlin Collaboration.
  * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
@@ -49,81 +49,80 @@ using namespace std;
 
 // data structure for XTFF data
 struct XTFFInterface::XTFF_Data {
-	std::string keywrd;
-	std::string label;
-	std::string type;
-	std::string fdn;
-	double realdat[11];		
-	double operator[](size_t n) const { return realdat[n];}
+    std::string keywrd;
+    std::string label;
+    std::string type;
+    std::string fdn;
+    double realdat[11];
+    double operator[](size_t n) const { return realdat[n];}
 };
-
 
 namespace {
 
-	typedef XTFFInterface::XTFF_Data Data;
-	
-	double energy;      // current energy
-	double beamload;	// energy loss due to beamloading
+    typedef XTFFInterface::XTFF_Data Data;
 
-	double z_total; // current total length
-	double Qt;      // charge for beamloading
+    double energy;      // current energy
+    double beamload;        // energy loss due to beamloading
 
-	// skip n input lines
-	void SkipLines(istream& is, int n)
-	{
-		string dummy;
-		while(is && n--)
-			getline(is,dummy);
-	}
-	
-	// return real value in columnds c1-c2
-	double RealValue(const string& dat, int c1, int c2)
-	{
-		return atof(dat.substr(c1-1,c2-c1+1).c_str());
-	}
-	
-	// return string value in cols c1-c2
-	string StringValue(const string& dat, int c1, int c2)
-	{
-		string rv = dat.substr(c1-1,c2-c1+1);
-		int n = rv.find_first_of(' ');
-		return n==string::npos ? rv : rv.substr(0,n);
-	}
-	
-	
-	// Parse single element record 
-	void ParseXTFF(istream& is, Data& data)
-	{
-		string ipline;
-		
-		// first line
-		getline(is,ipline);
-		data.keywrd = StringValue(ipline,1,4);
-		data.label = StringValue(ipline,5,20);
-		data.type = StringValue(ipline,98,113);
-		
-		data.realdat[0] = RealValue(ipline,21,32);
-		data.realdat[1] = RealValue(ipline,33,48);
-		data.realdat[2] = RealValue(ipline,49,64);
-		data.realdat[3] = RealValue(ipline,65,80);
-		data.realdat[4] = RealValue(ipline,81,96);
-		data.realdat[5] = RealValue(ipline,115,130);
-		
-		// second line
-		getline(is,ipline);
-		
-		data.realdat[6] = RealValue(ipline,1,16);
-		data.realdat[7] = RealValue(ipline,17,32);
-		data.realdat[8] = RealValue(ipline,33,48);
-		data.realdat[9] = RealValue(ipline,49,64);
-		data.realdat[10] = RealValue(ipline,65,80);
-		
-		if(ipline.length()>82)
-			data.fdn = StringValue(ipline,82,105);
-	}
-	
-	// parameter keyword array locations
-	
+    double z_total; // current total length
+    double Qt;      // charge for beamloading
+
+    // skip n input lines
+    void SkipLines(istream& is, int n)
+    {
+        string dummy;
+        while(is && n--)
+            getline(is,dummy);
+    }
+
+    // return real value in columnds c1-c2
+    double RealValue(const string& dat, int c1, int c2)
+    {
+        return atof(dat.substr(c1-1,c2-c1+1).c_str());
+    }
+
+    // return string value in cols c1-c2
+    string StringValue(const string& dat, int c1, int c2)
+    {
+        string rv = dat.substr(c1-1,c2-c1+1);
+        int n = rv.find_first_of(' ');
+        return n==string::npos ? rv : rv.substr(0,n);
+    }
+
+
+    // Parse single element record
+    void ParseXTFF(istream& is, Data& data)
+    {
+        string ipline;
+
+        // first line
+        getline(is,ipline);
+        data.keywrd = StringValue(ipline,1,4);
+        data.label = StringValue(ipline,5,20);
+        data.type = StringValue(ipline,98,113);
+
+        data.realdat[0] = RealValue(ipline,21,32);
+        data.realdat[1] = RealValue(ipline,33,48);
+        data.realdat[2] = RealValue(ipline,49,64);
+        data.realdat[3] = RealValue(ipline,65,80);
+        data.realdat[4] = RealValue(ipline,81,96);
+        data.realdat[5] = RealValue(ipline,115,130);
+
+        // second line
+        getline(is,ipline);
+
+        data.realdat[6] = RealValue(ipline,1,16);
+        data.realdat[7] = RealValue(ipline,17,32);
+        data.realdat[8] = RealValue(ipline,33,48);
+        data.realdat[9] = RealValue(ipline,49,64);
+        data.realdat[10] = RealValue(ipline,65,80);
+
+        if(ipline.length()>82)
+            data.fdn = StringValue(ipline,82,105);
+    }
+
+    // parameter keyword array locations
+
 #define L      0
 #define ANGLE  1
 #define K1     2
@@ -148,403 +147,401 @@ namespace {
 #define XGAP   6
 #define YGAP   7
 
-	
-	Drift* ConstructDrift(const Data& data)
-	{
-		return new Drift(data.label,data[L]);
-	}
-	
-	SectorBend* ConstructSectorBend(const Data& data)
-	{
-		double len   = data[L];
-		double angle = data[ANGLE];
-		double k1    = data[K1];
-		double k2    = data[K2];
-		double e1    = data[E1];
-		double e2    = data[E2];
-		double tilt  = data[TILT];
-		double brho  = energy/eV/SpeedOfLight;
-		double hg    = data[HGAP];
-		double h = angle/len;
-		
-		SectorBend* bend = new SectorBend(data.label,len,h,brho*h);
-		
-		if(k1!=0)  // mixed function dipole
-			bend->SetB1(brho*k1);
-		
-		if(tilt!=0)
-			(*bend).GetGeometry().SetTilt(tilt);
-		
-		// add pole-face rotation information
-		SectorBend::PoleFace* entrPF = (e1!=0)? new SectorBend::PoleFace(e1,0,hg) : 0;
-		SectorBend::PoleFace* exitPF = (e2!=0)? new SectorBend::PoleFace(e2,0,hg) : 0;
-		bend->SetPoleFaceInfo(entrPF,exitPF);
-		
-		return bend;
-	}
-	
-	SectorBend* ConstructRectBend(const Data& data)
-	{
-		double len   = data[L];
-		double angle = data[ANGLE];
-		double k1    = data[K1];
-		double k2    = data[K2];
-		double e1    = angle/2;
-		double e2    = angle/2;
-		double tilt  = data[TILT];
-		double brho  = energy/eV/SpeedOfLight;
-		double hg    = data[HGAP];
 
-		double h=0;
-		if(angle!=0) {
-			h = 2*sin(angle/2)/len;
-			len = angle/h;
-		}
-		
-		
-		SectorBend* bend = new SectorBend(data.label,len,h,brho*h);
-		
-		if(k1!=0)  // mixed function dipole
-			bend->SetB1(brho*k1);
-		
-		if(tilt!=0)
-			(*bend).GetGeometry().SetTilt(tilt);
-		
-		// add pole-face rotation information
-		SectorBend::PoleFace* entrPF = (e1!=0)? new SectorBend::PoleFace(e1,0,hg) : 0;
-		SectorBend::PoleFace* exitPF = (e2!=0)? new SectorBend::PoleFace(e2,0,hg) : 0;
-		bend->SetPoleFaceInfo(entrPF,exitPF);
-		
-		return bend;
-	}
+    Drift* ConstructDrift(const Data& data)
+    {
+        return new Drift(data.label,data[L]);
+    }
 
-	Quadrupole* ConstructQuadrupole(const Data& data)
-	{
-		double len   = data[L];
-		double k1    = data[K1];
-		double tilt  = data[TILT];
-		assert(tilt==0);
-		double brho  = energy/eV/SpeedOfLight;
-		return new Quadrupole(data.label,len,brho*k1);
-	}
-	
-	SkewQuadrupole* ConstructSkewQuadrupole(const Data& data)
-	{
-		double len   = data[L];
-		double k1    = data[K1];
-		double tilt  = data[TILT];
-		double brho  = energy/eV/SpeedOfLight;
-		return new SkewQuadrupole(data.label,len,brho*k1);
-	}
-	
-	Sextupole* ConstructSextupole(const Data& data)
-	{
-		double len   = data[L];
-		double k2    = data[K2];
-		double tilt  = data[TILT];
-		assert(tilt==0);
-		double brho  = energy/eV/SpeedOfLight;
-		return new Sextupole(data.label,len,brho*k2);
-	}
-	
-	SkewSextupole* ConstructSkewSextupole(const Data& data)
-	{
-		double len   = data[L];
-		double k2    = data[K2];
-		double tilt  = data[TILT];
-		double brho  = energy/eV/SpeedOfLight;
-		return new SkewSextupole(data.label,len,brho*k2);
-	}
-	
-	Octupole* ConstructOctupole(const Data& data)
-	{
-		double len   = data[L];
-		double k3    = data[K3];
-		double tilt  = data[TILT];
-		assert(tilt==0);
-		double brho  = energy/eV/SpeedOfLight;
-		return new Octupole(data.label,len,brho*k3);
-	}
+    SectorBend* ConstructSectorBend(const Data& data)
+    {
+        double len   = data[L];
+        double angle = data[ANGLE];
+        double k1    = data[K1];
+        double k2    = data[K2];
+        double e1    = data[E1];
+        double e2    = data[E2];
+        double tilt  = data[TILT];
+        double brho  = energy/eV/SpeedOfLight;
+        double hg    = data[HGAP];
+        double h = angle/len;
 
-	Decapole* ConstructDecapole(const Data& data)
-	{
-		double len   = data[L];
-		double k4    = data[K4];
-		double tilt  = data[TILT];
-		assert(tilt==0);
-		double brho  = energy/eV/SpeedOfLight;
-		return new Decapole(data.label,len,brho*k4);
-	}
+        SectorBend* bend = new SectorBend(data.label,len,h,brho*h);
 
-	
-	XCor* ConstructXCor(const Data& data)
-	{
-		return new XCor(data.label,data[L]);
-	}
-	
-	YCor* ConstructYCor(const Data& data)
-	{
-		return new YCor(data.label,data[L]);
-	}
-	
-	TWRFStructure* ConstructCavity(const Data& data)
-	{
-		double len = data[L];
-		double volt = data[VOLT]*MV;
-		double phase = twoPi*data[LAG];
-		double freq = data[FREQ]*MHz;
-		double eloss = data[ELOSS]*Volt;
-		
-		// update energy
-		double bloading = eloss*Qt;
-		double dE = volt*cos(phase);
-/*
-		using std::setw;
-		cout<<setw(12)<<data.label.c_str();
-		cout<<setw(10)<<fixed<<setprecision(3)<<dE/MV;
-		cout<<setw(10)<<fixed<<setprecision(3)<<bloading/MV<<endl;
-*/
-		energy += (dE-bloading)/GeV;
-		beamload += bloading/GeV;
-		return new TWRFStructure(data.label,len,freq,volt/len,phase);
-	}
-	
-	BPM* ConstructBPM(const Data& data)
-	{
-		return new BPM(data.label,data[L]);
-	}
-	
-	RMSProfileMonitor* ConstructProfileMonitor(const Data& data)
-	{
-		return new RMSProfileMonitor(data.label,data[L]);
-	}
-	
-	Solenoid* ConstructSolenoid(const Data& data)
-	{
-		double brho = energy/eV/SpeedOfLight;
-		return new Solenoid(data.label,data[L],brho*data[KS]);
-	}
+        if(k1!=0)  // mixed function dipole
+            bend->SetB1(brho*k1);
 
-	Marker* ConstructMarker(const Data& data)
-	{
-		return new Marker(data.label);
-	}
-	
+        if(tilt!=0)
+            (*bend).GetGeometry().SetTilt(tilt);
+
+        // add pole-face rotation information
+        SectorBend::PoleFace* entrPF = (e1!=0)? new SectorBend::PoleFace(e1,0,hg) : 0;
+        SectorBend::PoleFace* exitPF = (e2!=0)? new SectorBend::PoleFace(e2,0,hg) : 0;
+        bend->SetPoleFaceInfo(entrPF,exitPF);
+
+        return bend;
+    }
+
+    SectorBend* ConstructRectBend(const Data& data)
+    {
+        double len   = data[L];
+        double angle = data[ANGLE];
+        double k1    = data[K1];
+        double k2    = data[K2];
+        double e1    = angle/2;
+        double e2    = angle/2;
+        double tilt  = data[TILT];
+        double brho  = energy/eV/SpeedOfLight;
+        double hg    = data[HGAP];
+
+        double h=0;
+        if(angle!=0) {
+            h = 2*sin(angle/2)/len;
+            len = angle/h;
+        }
+
+
+        SectorBend* bend = new SectorBend(data.label,len,h,brho*h);
+
+        if(k1!=0)  // mixed function dipole
+            bend->SetB1(brho*k1);
+
+        if(tilt!=0)
+            (*bend).GetGeometry().SetTilt(tilt);
+
+        // add pole-face rotation information
+        SectorBend::PoleFace* entrPF = (e1!=0)? new SectorBend::PoleFace(e1,0,hg) : 0;
+        SectorBend::PoleFace* exitPF = (e2!=0)? new SectorBend::PoleFace(e2,0,hg) : 0;
+        bend->SetPoleFaceInfo(entrPF,exitPF);
+
+        return bend;
+    }
+
+    Quadrupole* ConstructQuadrupole(const Data& data)
+    {
+        double len   = data[L];
+        double k1    = data[K1];
+        double tilt  = data[TILT];
+        assert(tilt==0);
+        double brho  = energy/eV/SpeedOfLight;
+        return new Quadrupole(data.label,len,brho*k1);
+    }
+
+    SkewQuadrupole* ConstructSkewQuadrupole(const Data& data)
+    {
+        double len   = data[L];
+        double k1    = data[K1];
+        double tilt  = data[TILT];
+        double brho  = energy/eV/SpeedOfLight;
+        return new SkewQuadrupole(data.label,len,brho*k1);
+    }
+
+    Sextupole* ConstructSextupole(const Data& data)
+    {
+        double len   = data[L];
+        double k2    = data[K2];
+        double tilt  = data[TILT];
+        assert(tilt==0);
+        double brho  = energy/eV/SpeedOfLight;
+        return new Sextupole(data.label,len,brho*k2);
+    }
+
+    SkewSextupole* ConstructSkewSextupole(const Data& data)
+    {
+        double len   = data[L];
+        double k2    = data[K2];
+        double tilt  = data[TILT];
+        double brho  = energy/eV/SpeedOfLight;
+        return new SkewSextupole(data.label,len,brho*k2);
+    }
+
+    Octupole* ConstructOctupole(const Data& data)
+    {
+        double len   = data[L];
+        double k3    = data[K3];
+        double tilt  = data[TILT];
+        assert(tilt==0);
+        double brho  = energy/eV/SpeedOfLight;
+        return new Octupole(data.label,len,brho*k3);
+    }
+
+    Decapole* ConstructDecapole(const Data& data)
+    {
+        double len   = data[L];
+        double k4    = data[K4];
+        double tilt  = data[TILT];
+        assert(tilt==0);
+        double brho  = energy/eV/SpeedOfLight;
+        return new Decapole(data.label,len,brho*k4);
+    }
+
+
+    XCor* ConstructXCor(const Data& data)
+    {
+        return new XCor(data.label,data[L]);
+    }
+
+    YCor* ConstructYCor(const Data& data)
+    {
+        return new YCor(data.label,data[L]);
+    }
+
+    TWRFStructure* ConstructCavity(const Data& data)
+    {
+        double len = data[L];
+        double volt = data[VOLT]*MV;
+        double phase = twoPi*data[LAG];
+        double freq = data[FREQ]*MHz;
+        double eloss = data[ELOSS]*Volt;
+
+        // update energy
+        double bloading = eloss*Qt;
+        double dE = volt*cos(phase);
+        /*
+                        using std::setw;
+                        cout<<setw(12)<<data.label.c_str();
+                        cout<<setw(10)<<fixed<<setprecision(3)<<dE/MV;
+                        cout<<setw(10)<<fixed<<setprecision(3)<<bloading/MV<<endl;
+        */
+        energy += (dE-bloading)/GeV;
+        beamload += bloading/GeV;
+        return new TWRFStructure(data.label,len,freq,volt/len,phase);
+    }
+
+    BPM* ConstructBPM(const Data& data)
+    {
+        return new BPM(data.label,data[L]);
+    }
+
+    RMSProfileMonitor* ConstructProfileMonitor(const Data& data)
+    {
+        return new RMSProfileMonitor(data.label,data[L]);
+    }
+
+    Solenoid* ConstructSolenoid(const Data& data)
+    {
+        double brho = energy/eV/SpeedOfLight;
+        return new Solenoid(data.label,data[L],brho*data[KS]);
+    }
+
+    Marker* ConstructMarker(const Data& data)
+    {
+        return new Marker(data.label);
+    }
+
 #define SKQ_TILT 0.78539816
 #define SKS_TILT 0.52359878
-	
-	inline bool is_skewquad(double tilt) { return fabs(tilt/SKQ_TILT-1.0)<1e-03;}
-	inline bool is_skewsext(double tilt) { return fabs(tilt/SKS_TILT-1.0)<1e-03;}
-	
-	
+
+    inline bool is_skewquad(double tilt) { return fabs(tilt/SKQ_TILT-1.0)<1e-03;}
+    inline bool is_skewsext(double tilt) { return fabs(tilt/SKS_TILT-1.0)<1e-03;}
+
+
 #define TYPEIS(kw) (dat.keywrd == #kw)
-	
+
 }; // end namespace
 
 void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 {
-	if(TYPEIS(HMON)||TYPEIS(VMON))
-		dat.keywrd = "MONI";
-//	else if(TYPEIS(MARK))
-//		dat.keywrd = "DRIF";
+    if(TYPEIS(HMON)||TYPEIS(VMON))
+        dat.keywrd = "MONI";
+    //      else if(TYPEIS(MARK))
+    //              dat.keywrd = "DRIF";
 
-	if(driftTypes.find(dat.keywrd)!=driftTypes.end()) {
-		cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
-		dat.keywrd = "DRIF";
-	}
+    if(driftTypes.find(dat.keywrd)!=driftTypes.end()) {
+        cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
+        dat.keywrd = "DRIF";
+    }
 
-	AcceleratorComponent* c;
+    AcceleratorComponent* c;
 
-	if(dat.keywrd=="DRIF")
-		c = mc->AppendComponent(ConstructDrift(dat));
-	else if(dat.keywrd=="QUAD") {
-		if(is_skewquad(dat[TILT]))
-			c = mc->AppendComponent(ConstructSkewQuadrupole(dat));
-		else
-			c = mc->AppendComponent(ConstructQuadrupole(dat));
-	}
-	else if(dat.keywrd=="SBEN")
-		c = mc->AppendComponent(ConstructSectorBend(dat));
-	else if(dat.keywrd=="RBEN")
-		c = mc->AppendComponent(ConstructRectBend(dat));
-	else if(dat.keywrd=="SEXT") {
-		if(is_skewsext(dat[TILT]))
-			c = mc->AppendComponent(ConstructSkewSextupole(dat));
-		else
-			c = mc->AppendComponent(ConstructSextupole(dat));
-	}
-	else if(dat.keywrd=="OCTU")
-		c = mc->AppendComponent(ConstructOctupole(dat));
-	else if(dat.keywrd=="DECA")
-		c = mc->AppendComponent(ConstructDecapole(dat));
-	else if(dat.keywrd=="LCAV")
-		c = mc->AppendComponent(ConstructCavity(dat));
-	else if(dat.keywrd=="SOLE")
-		c = mc->AppendComponent(ConstructSolenoid(dat));
-	else if(dat.keywrd=="HKIC")
-		c = mc->AppendComponent(ConstructXCor(dat));
-	else if(dat.keywrd=="VKIC")
-		c = mc->AppendComponent(ConstructYCor(dat));
-	else if(dat.keywrd=="MONI")
-		c = mc->AppendComponent(ConstructBPM(dat));
-	else if(dat.keywrd=="WIRE")
-		c = mc->AppendComponent(ConstructProfileMonitor(dat));
-	else if(dat.keywrd=="MARK") {
-		if(girders && dat.label.substr(0,2)=="G_") {
-			string girderName = dat.label.substr(2);
-			if(in_g) {
-				mc->EndFrame();
-				in_g=false;
-			}
-			else {
-				mc->NewFrame(new SequenceFrame(girderName));
-				in_g=true;
-			}
-			c=0;
-		}
-		else
-			c = mc->AppendComponent(ConstructMarker(dat));
-	}
-	else if(dat.keywrd=="RCOL") {
-		// construct a drift with a rectangular aperture
-		c = mc->AppendComponent(ConstructDrift(dat));
-		if(incApertures)
-			c->SetAperture(new RectangularAperture(2*dat[XGAP],2*dat[YGAP]));
-	}
-	else {
-		cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
-		c = mc->AppendComponent(ConstructDrift(dat));
-	}
+    if(dat.keywrd=="DRIF")
+        c = mc->AppendComponent(ConstructDrift(dat));
+    else if(dat.keywrd=="QUAD") {
+        if(is_skewquad(dat[TILT]))
+            c = mc->AppendComponent(ConstructSkewQuadrupole(dat));
+        else
+            c = mc->AppendComponent(ConstructQuadrupole(dat));
+    }
+    else if(dat.keywrd=="SBEN")
+        c = mc->AppendComponent(ConstructSectorBend(dat));
+    else if(dat.keywrd=="RBEN")
+        c = mc->AppendComponent(ConstructRectBend(dat));
+    else if(dat.keywrd=="SEXT") {
+        if(is_skewsext(dat[TILT]))
+            c = mc->AppendComponent(ConstructSkewSextupole(dat));
+        else
+            c = mc->AppendComponent(ConstructSextupole(dat));
+    }
+    else if(dat.keywrd=="OCTU")
+        c = mc->AppendComponent(ConstructOctupole(dat));
+    else if(dat.keywrd=="DECA")
+        c = mc->AppendComponent(ConstructDecapole(dat));
+    else if(dat.keywrd=="LCAV")
+        c = mc->AppendComponent(ConstructCavity(dat));
+    else if(dat.keywrd=="SOLE")
+        c = mc->AppendComponent(ConstructSolenoid(dat));
+    else if(dat.keywrd=="HKIC")
+        c = mc->AppendComponent(ConstructXCor(dat));
+    else if(dat.keywrd=="VKIC")
+        c = mc->AppendComponent(ConstructYCor(dat));
+    else if(dat.keywrd=="MONI")
+        c = mc->AppendComponent(ConstructBPM(dat));
+    else if(dat.keywrd=="WIRE")
+        c = mc->AppendComponent(ConstructProfileMonitor(dat));
+    else if(dat.keywrd=="MARK") {
+        if(girders && dat.label.substr(0,2)=="G_") {
+            string girderName = dat.label.substr(2);
+            if(in_g) {
+                mc->EndFrame();
+                in_g=false;
+            }
+            else {
+                mc->NewFrame(new SequenceFrame(girderName));
+                in_g=true;
+            }
+            c=0;
+        }
+        else
+            c = mc->AppendComponent(ConstructMarker(dat));
+    }
+    else if(dat.keywrd=="RCOL") {
+        // construct a drift with a rectangular aperture
+        c = mc->AppendComponent(ConstructDrift(dat));
+        if(incApertures)
+            c->SetAperture(new RectangularAperture(2*dat[XGAP],2*dat[YGAP]));
+    }
+    else {
+        cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
+        c = mc->AppendComponent(ConstructDrift(dat));
+    }
 
-	if(c && incApertures && dat[APER]!=0) {
-		c->SetAperture(new CircularAperture(dat[APER]));
-	}
+    if(c && incApertures && dat[APER]!=0) {
+        c->SetAperture(new CircularAperture(dat[APER]));
+    }
 
-	if(c) {
-		z_total += c->GetLength();
-		if(logos) {
-			(*logos)<<setw(10)<<left<<(*c).GetName().c_str();
-			(*logos)<<setw(16)<<left<<(*c).GetType().c_str();
-			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<z_total;
-			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<energy;
-			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<beamload;
-			(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<dat[ENERGY];
-			(*logos)<<endl;
-		}
-	}
+    if(c) {
+        z_total += c->GetLength();
+        if(logos) {
+            (*logos)<<setw(10)<<left<<(*c).GetName().c_str();
+            (*logos)<<setw(16)<<left<<(*c).GetType().c_str();
+            (*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<z_total;
+            (*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<energy;
+            (*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<beamload;
+            (*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<dat[ENERGY];
+            (*logos)<<endl;
+        }
+    }
 }
 
 XTFFInterface::XTFFInterface(const string& fname, double Nb, ostream* logstream)
-: ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream),incApertures(true),
-	girders(false),in_g(false)
+        : ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream),incApertures(true),
+        girders(false),in_g(false)
 {
-	if(!ifs) {
-		string msg = "cannot open file "+fname;
-		throw runtime_error(msg);
-	}
+    if(!ifs) {
+        string msg = "cannot open file "+fname;
+        throw runtime_error(msg);
+    }
 }
 
 XTFFInterface::~XTFFInterface()
 {
-	if(mc!=0) delete mc;
-	if(beam0!=0) delete beam0;
+    if(mc!=0) delete mc;
+    if(beam0!=0) delete beam0;
 }
 
 pair<AcceleratorModel*,BeamData*> XTFFInterface::Parse()
 {
-	if(mc!=0)
-		delete mc;
-	
-	mc = new AcceleratorModelConstructor();	
-	
-	if(beam0!=0)
-		delete beam0;
+    if(mc!=0)
+        delete mc;
 
-	beam0 = new BeamData();
+    mc = new AcceleratorModelConstructor();
 
-	int nelm = ParseHeader();
-	
-	if(logos)
-		(*logos)<<"Initial beam energy: "<<energy<<" GeV"<<endl;
+    if(beam0!=0)
+        delete beam0;
 
-	mc->NewModel();
-	z_total=0;
-	beamload=0;
+    beam0 = new BeamData();
 
-	while(ifs && nelm--) {
-		XTFF_Data dat;
-		ParseXTFF(ifs,dat);
-		ConstructComponent(dat);
-		SkipLines(ifs,3);
-	}
-	
-	if(logos) {
-		(*logos)<<endl;
-		mc->ReportStatistics(*logos);
-		(*logos)<<"\nFinal ";
-		if(Qt!=0)
-			(*logos)<<"(loaded) ";
-		(*logos)<<"beam energy: "<<energy<<" GeV"<<endl;
-	}
-	
-	BeamData* beam = beam0;
-	beam0=0;
+    int nelm = ParseHeader();
 
-	return make_pair(mc->GetModel(),beam);
+    if(logos)
+        (*logos)<<"Initial beam energy: "<<energy<<" GeV"<<endl;
+
+    mc->NewModel();
+    z_total=0;
+    beamload=0;
+
+    while(ifs && nelm--) {
+        XTFF_Data dat;
+        ParseXTFF(ifs,dat);
+        ConstructComponent(dat);
+        SkipLines(ifs,3);
+    }
+
+    if(logos) {
+        (*logos)<<endl;
+        mc->ReportStatistics(*logos);
+        (*logos)<<"\nFinal ";
+        if(Qt!=0)
+            (*logos)<<"(loaded) ";
+        (*logos)<<"beam energy: "<<energy<<" GeV"<<endl;
+    }
+
+    BeamData* beam = beam0;
+    beam0=0;
+
+    return make_pair(mc->GetModel(),beam);
 }
-
 
 int XTFFInterface::ParseHeader()
 {
-	string ipline;
+    string ipline;
 
-	// extract number of elements from first line
-	getline(ifs,ipline);
-	int n = RealValue(ipline,57,65);
+    // extract number of elements from first line
+    getline(ifs,ipline);
+    int n = RealValue(ipline,57,65);
 
-	// Skip next header line
-	getline(ifs,ipline);
+    // Skip next header line
+    getline(ifs,ipline);
 
-	XTFF_Data dat;
-	ParseXTFF(ifs,dat); // initial element
-	energy = beam0->p0 = dat[ENERGY];
-	beam0->charge = nb;
-	Qt = (beam0->charge)*ElectronCharge;
+    XTFF_Data dat;
+    ParseXTFF(ifs,dat); // initial element
+    energy = beam0->p0 = dat[ENERGY];
+    beam0->charge = nb;
+    Qt = (beam0->charge)*ElectronCharge;
 
-	// Now extract initial beam conditions from
-	// next three records
+    // Now extract initial beam conditions from
+    // next three records
 
-	double dummy; // used for mux,muy
+    double dummy; // used for mux,muy
 
+    ifs>>beam0->alpha_x;
+    ifs>>beam0->beta_x;
+    ifs>>dummy; // mux
+    ifs>>beam0->Dx;
+    ifs>>beam0->Dxp;
 
-	ifs>>beam0->alpha_x;
-	ifs>>beam0->beta_x;
-	ifs>>dummy; // mux
-	ifs>>beam0->Dx;
-	ifs>>beam0->Dxp;
+    ifs>>beam0->alpha_y;
+    ifs>>beam0->beta_y;
+    ifs>>dummy; // muy
+    ifs>>beam0->Dy;
+    ifs>>beam0->Dyp;
 
-	ifs>>beam0->alpha_y;
-	ifs>>beam0->beta_y;
-	ifs>>dummy; // muy
-	ifs>>beam0->Dy;
-	ifs>>beam0->Dyp;
+    ifs>>beam0->x0;
+    ifs>>beam0->xp0;
+    ifs>>beam0->y0;
+    ifs>>beam0->yp0;
 
-	ifs>>beam0->x0;
-	ifs>>beam0->xp0;
-	ifs>>beam0->y0;
-	ifs>>beam0->yp0;
+    // remove remainder of this line (suml)
+    getline(ifs,ipline);
 
-	// remove remainder of this line (suml)
-	getline(ifs,ipline);
-	
-	return n-1;
+    return n-1;
 }
 
 void XTFFInterface::TreatTypeAsDrift(const string& dt)
 {
-  char buff[5];
-  for(size_t i=0; i<4; i++)
-    buff[i]=toupper(dt[i]);
-  buff[4]=0;
-  driftTypes.insert(buff);
+    char buff[5];
+    for(size_t i=0; i<4; i++)
+        buff[i]=toupper(dt[i]);
+    buff[4]=0;
+    driftTypes.insert(buff);
 }

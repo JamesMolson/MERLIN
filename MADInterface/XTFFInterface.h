@@ -1,7 +1,7 @@
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
- * Class library version 2.0 (2002)
+ * Class library version 3.0 (2003)
  * 
  * file Merlin/MADInterface/XTFFInterface.h
  * last modified 01/23/02 10.35
@@ -13,7 +13,7 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 2001 by The Merlin Collaboration.
+ * Copyright (c) 2003 by The Merlin Collaboration.
  * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
@@ -41,58 +41,56 @@
 // BeamData
 #include "BeamModel/BeamData.h"
 
-
 class AcceleratorModelConstructor;
 
 //  class XTFFInterface
-//	Class used to construct a MERLIN model from a MAD TWISS TAPE
-//	output listing. XTFF (eXtended Tape File Format) contains
+//      Class used to construct a MERLIN model from a MAD TWISS TAPE
+//      output listing. XTFF (eXtended Tape File Format) contains
 //  SLAC extentions for cavities and acceleration.
 
 class XTFFInterface {
 public:
 
-	// Constructer taking the name of the .xtff file, the total bunch
-	// charge (particle per bunch) and an option log file. When a non-zero 
-	// bunch charge is specified, the constructor uses the ELOSS information
-	// for the cavities to calculate the reference (matched) energy for the
-	// magnet strengths.
-	XTFFInterface(const std::string& fname, double nb=0, ostream* log =0);
-	~XTFFInterface();
+    // Constructer taking the name of the .xtff file, the total bunch
+    // charge (particle per bunch) and an option log file. When a non-zero
+    // bunch charge is specified, the constructor uses the ELOSS information
+    // for the cavities to calculate the reference (matched) energy for the
+    // magnet strengths.
+    XTFFInterface(const std::string& fname, double nb=0, ostream* log =0);
+    ~XTFFInterface();
 
-	pair<AcceleratorModel*,BeamData*> Parse();
-	
-	// Construct apertures if flag is true (default)
-	void IncludeApertures(bool flag) { incApertures = flag; }
+    pair<AcceleratorModel*,BeamData*> Parse();
 
-	// Treat MAD type as DRIFT
-	void TreatTypeAsDrift(const string&);
+    // Construct apertures if flag is true (default)
+    void IncludeApertures(bool flag) { incApertures = flag; }
 
-	// Construct girders
-	void ConstructGirders(bool flg) { girders = flg; }
+    // Treat MAD type as DRIFT
+    void TreatTypeAsDrift(const string&);
 
-	// data structure for XTFF data
-	struct XTFF_Data;
-	
-private:	
+    // Construct girders
+    void ConstructGirders(bool flg) { girders = flg; }
 
-	void ConstructComponent(XTFF_Data&);
-	int ParseHeader();
+    // data structure for XTFF data
+    struct XTFF_Data;
 
-	std::set<string> driftTypes;
+private:
 
-	std::ifstream ifs;
-	AcceleratorModelConstructor* mc;
-	BeamData* beam0;
-	double nb;
-	ostream* logos;
-	bool incApertures;
+    void ConstructComponent(XTFF_Data&);
+    int ParseHeader();
 
-	// used for girder construction
-	bool girders;
-	bool in_g;
+    std::set<string> driftTypes;
+
+    std::ifstream ifs;
+    AcceleratorModelConstructor* mc;
+    BeamData* beam0;
+    double nb;
+    ostream* logos;
+    bool incApertures;
+
+    // used for girder construction
+    bool girders;
+    bool in_g;
 };
-
 
 #endif
 
