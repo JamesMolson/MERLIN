@@ -206,7 +206,7 @@ inline double RFAcceleratingField::GetWavelength () const
 {
   //## begin RFAcceleratingField::GetWavelength%986295710.body preserve=yes
 	using PhysicalConstants::SpeedOfLight;
-	return 1/SpeedOfLight/w;
+	return twoPi*SpeedOfLight/w;
   //## end RFAcceleratingField::GetWavelength%986295710.body
 }
 
@@ -214,7 +214,8 @@ inline double RFAcceleratingField::GetWavelength () const
 inline double RFAcceleratingField::GetK () const
 {
   //## begin RFAcceleratingField::GetK%986295711.body preserve=yes
-	return GetK()/twoPi;
+	using PhysicalConstants::SpeedOfLight;
+	return w/SpeedOfLight;
   //## end RFAcceleratingField::GetK%986295711.body
 }
 

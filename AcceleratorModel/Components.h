@@ -38,6 +38,8 @@
 #include "AcceleratorModel/ActiveMonitors/BPM.h"
 // Marker
 #include "AcceleratorModel/StdComponent/Marker.h"
+// Solenoid
+#include "AcceleratorModel/StdComponent/Solenoid.h"
 //## begin module%3734078C0370.declarations preserve=no
 //## end module%3734078C0370.declarations
 
