@@ -25,7 +25,7 @@ namespace {
 
 double HBSpectrumGen(double uc)
 {
-	return uc*SynRadC(0.0);
+	return uc*SynGenC(0.0);
 }
 
 double AWSpectrumGen(double uc)
