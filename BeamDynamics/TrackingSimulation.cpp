@@ -157,9 +157,9 @@ TrackingSimulation::~TrackingSimulation ()
 Bunch& TrackingSimulation::Run (bool genNewBunch)
 {
   //## begin TrackingSimulation::Run%396B6C450398.body preserve=yes
-	assert(ibunchCtor!=0);
 	
 	if(genNewBunch || bunch==0) {
+		assert(ibunchCtor!=0);
 		if(bunch!=0)
 			delete bunch;
 		bunch = ibunchCtor->ConstructBunch();
@@ -217,7 +217,7 @@ void TrackingSimulation::AssumeFlatLattice (bool flat)
 void TrackingSimulation::SetInitialBunchCtor (BunchConstructor* bctor)
 {
   //## begin TrackingSimulation::SetInitialBunchCtor%3AE6B66D02D0.body preserve=yes
-	assert(bctor!=0);
+//	assert(bctor!=0);
 	if(ibunchCtor!=0)
 		delete ibunchCtor;
 	ibunchCtor = bctor;

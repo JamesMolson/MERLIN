@@ -314,6 +314,7 @@ class AcceleratorModel
 			  return **last;
             //## end AcceleratorModel::Beamline::Last%3908052101AB.body
           }
+		
 
       protected:
       private:
@@ -461,6 +462,14 @@ class AcceleratorModel
 		  return results.size();
         //## end AcceleratorModel::ExtractTypedElements%3908145E036D.body
       }
+	  
+	  // Returns the indecies of components matching par in iarray 
+	  // for the entire beamline. iarray is overwritten by this function.
+	  // Function returns length of iarray.
+	  size_t GetIndecies(const std::string& pat, std::vector<Index>& iarray);
+
+	  // Same as above, but limits search to the specified (sub-)beamline.
+	  size_t GetIndecies(Beamline&, const std::string& pat, std::vector<Index>& iarray);
 
       //## Operation: GetROChannels%3A9BCC60006E
       //	Returns in channels all ROChannels matching chID.

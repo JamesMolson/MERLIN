@@ -59,11 +59,14 @@
 ROChannelArray::~ROChannelArray ()
 {
   //## begin ROChannelArray::~ROChannelArray%983187832.body preserve=yes
-	for_each(channels.begin(),channels.end(),deleter<ROChannel>());
+	DestroyChannels();
   //## end ROChannelArray::~ROChannelArray%983187832.body
 }
 
-
+void ROChannelArray::DestroyChannels()
+{
+	for_each(channels.begin(),channels.end(),deleter<ROChannel>());
+}
 
 //## Other Operations (implementation)
 //## Operation: ReadAll%983187834
@@ -123,7 +126,23 @@ RWChannelArray::RWChannelArray (const std::vector<RWChannel*>& chnls)
   //## end RWChannelArray::RWChannelArray%983187838.body
 }
 
+RWChannelArray::RWChannelArray(RWChannelArray& rhs)
+: ROChannelArray(rhs.Size())
+{
+	std::copy(rhs.channels.begin(),rhs.channels.end(),channels.begin());
+	rhs.channels.clear();
+}
+	
+RWChannelArray::RWChannelArray ()
+{}
 
+size_t RWChannelArray::SetChannels (const std::vector<RWChannel*>& chnls)
+{
+	DestroyChannels();
+	channels.resize(chnls.size());
+	std::copy(chnls.begin(),chnls.end(),channels.begin());
+	return channels.size();
+}
 
 //## Other Operations (implementation)
 //## Operation: WriteAll%983187840

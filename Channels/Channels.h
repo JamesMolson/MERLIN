@@ -137,7 +137,9 @@ class ROChannelArray
       //## Operation: ROChannelArray%983187831
       //	Constructor taking a vector of ROChannel objects.
       explicit ROChannelArray (const std::vector<ROChannel*>& chnls);
-
+	  ROChannelArray(ROChannelArray& rhs);
+	  ROChannelArray ();
+	
     //## Destructor (specified)
       //## Operation: ~ROChannelArray%983187832
       ~ROChannelArray ();
@@ -167,11 +169,16 @@ class ROChannelArray
       //	Returns the size of the array.
       size_t Size () const;
 
+	  // Initialisation
+	  size_t SetChannels(const std::vector<ROChannel*>& chnls);
+
   protected:
     //## Constructors (specified)
       //## Operation: ROChannelArray%983187837
       //	Protected constructing taking the size of the array.
       explicit ROChannelArray (size_t n);
+
+	  void DestroyChannels();
 
     // Data Members for Associations
 
@@ -203,6 +210,10 @@ class RWChannelArray : public ROChannelArray  //## Inherits: <unnamed>%3A9909C30
       //## Operation: RWChannelArray%983187838
       //	Constructor taking a vector of RWChannels.
       explicit RWChannelArray (const std::vector<RWChannel*>& chnls);
+	  RWChannelArray (RWChannelArray& rhs);
+	  RWChannelArray ();
+
+	  size_t SetChannels (const std::vector<RWChannel*>& chnls);
 
 
     //## Other Operations (specified)
@@ -293,6 +304,12 @@ inline ROChannelArray::ROChannelArray (const std::vector<ROChannel*>& chnls)
   //## end ROChannelArray::ROChannelArray%983187831.body
 }
 
+inline ROChannelArray::ROChannelArray(ROChannelArray& rhs)
+: channels()
+{
+	channels.swap(rhs.channels);
+}
+
 //## Operation: ROChannelArray%983187837
 inline ROChannelArray::ROChannelArray (size_t n)
   //## begin ROChannelArray::ROChannelArray%983187837.initialization preserve=yes
@@ -303,7 +320,15 @@ inline ROChannelArray::ROChannelArray (size_t n)
   //## end ROChannelArray::ROChannelArray%983187837.body
 }
 
+inline ROChannelArray::ROChannelArray ()
+{}
 
+inline size_t ROChannelArray::SetChannels(const std::vector<ROChannel*>& chnls)
+{
+	DestroyChannels();
+	channels = chnls;
+	return channels.size();
+}
 
 //## Other Operations (inline)
 //## Operation: Read%983187833

@@ -77,6 +77,13 @@ LinearFBSystem::LinearFBSystem (std::vector<ROChannel*>& sigs, std::vector<RWCha
   //## end LinearFBSystem::LinearFBSystem%988274709.body
 }
 
+LinearFBSystem::LinearFBSystem (ROChannelArray& sigs, RWChannelArray& acts, const RealMatrix& M)
+  : gain(1.0),signals(sigs),actuators(acts),setpoints(),cached_actuators(0),Mi(0),
+  actuatorQueue(0)
+{
+	setpoints.redim(signals.Size());
+	SetResponseMatrix(M);
+}
 
 //## Operation: ~LinearFBSystem%988274710
 LinearFBSystem::~LinearFBSystem ()

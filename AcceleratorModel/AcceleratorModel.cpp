@@ -286,5 +286,28 @@ void AcceleratorModel::ReportModelStatistics (std::ostream& os) const
   //## end AcceleratorModel::ReportModelStatistics%3CAC27C9039A.body
 }
 
+size_t AcceleratorModel::GetIndecies(const std::string& pat, 
+									 std::vector<AcceleratorModel::Index>& iarray)
+{
+	return GetIndecies(GetBeamline(),pat,iarray);
+}
+
+size_t AcceleratorModel::GetIndecies(AcceleratorModel::Beamline& bline, 
+									 const std::string& pat, 
+									 std::vector<AcceleratorModel::Index>& iarray)
+{
+	vector<Index> iarray1;
+	StringPattern pattern(pat);
+
+	Index n0 = distance(lattice.begin(),bline.begin());
+	for(BeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
+		string id = (*(*fi)).GetComponent().GetQualifiedName();
+		if(pattern(id))
+			iarray1.push_back(n0);
+	}
+	iarray.swap(iarray1);
+	return iarray.size();
+}
+		
 //## begin module%375C202C0276.epilog preserve=yes
 //## end module%375C202C0276.epilog

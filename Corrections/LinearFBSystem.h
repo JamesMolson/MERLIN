@@ -85,6 +85,7 @@ class LinearFBSystem
     //## Constructors (specified)
       //## Operation: LinearFBSystem%988274709
       LinearFBSystem (std::vector<ROChannel*>& sigs, std::vector<RWChannel*>& acts, const RealMatrix& M);
+      LinearFBSystem (ROChannelArray& sigs, RWChannelArray& acts, const RealMatrix& M);
 
     //## Destructor (specified)
       //## Operation: ~LinearFBSystem%988274710
