@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-17 00:54:25 $
-// $Revision: 1.3 $
+// $Date: 2004-12-20 21:49:08 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -199,7 +199,7 @@ public:
 
         lfn->GetIndices(i, j, k);
 
-		if(i==0 && j==0) {
+		if(i==0 && j==0 && k>0) {
 			v = atan2( (*N)(2*k-2,2*k-1) , (*N)(2*k-2,2*k-2) )/twoPi;
 			if(k!=3 && v<-1.0e-9)
 				v += 1.0;
