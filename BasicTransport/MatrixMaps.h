@@ -159,6 +159,8 @@ class RMtrx : public LinMtrxBase  //## Inherits: <unnamed>%36BDE6D901FE
       //	be square with dimension 2n, where n is 1,2 or 3.
       RMtrx (const RealMatrix& RR, double P0 = 0);
 
+      // Set the reference momentum
+	  void SetRefMomentum(double p) { Pref = p; }
 
     //## Other Operations (specified)
       //## Operation: Apply%918417780
