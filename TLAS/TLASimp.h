@@ -101,7 +101,11 @@ namespace TLAS {
 			return svbksb(u,w,v,y,x);
 		}
 		const std::vector<bool>& wflags() const { return wflgs; }
-				
+	
+		// Decomposed matrices
+		const Matrix<T>& U() const { return u; }
+		const Matrix<T>& V() const { return v; }
+		const Vector<T>& W() const { return w; }
 
 	private:
 
