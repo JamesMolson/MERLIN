@@ -98,7 +98,7 @@ class SectorBend : public ArcMultipoleField  //## Inherits: <unnamed>%371F0CC501
       public:
         //## Constructors (specified)
           //## Operation: PoleFace%924771638
-          PoleFace (double angle = 0, double f_int = 0.5, double hg = 0);
+          PoleFace (double angle = 0, double f_int = 0, double hg = 0);
 
         // Data Members for Class Attributes
 
