@@ -139,7 +139,7 @@ Bunch* ParticleBunchConstructor::ConstructBunch (int bunchIndex) const
 	p.y()=beamdat.y0;
 	p.yp()=beamdat.yp0;
 	p.dp()=0;
-	p.ct()=0;
+	p.ct()=beamdat.ct0;
 	pbunch.push_back(p);
 	
 	size_t i;
