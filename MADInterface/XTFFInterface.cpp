@@ -59,7 +59,7 @@ struct XTFFInterface::XTFF_Data {
 
 
 namespace {
-	
+
 	typedef XTFFInterface::XTFF_Data Data;
 	
 	double energy;      // current energy
@@ -183,6 +183,41 @@ namespace {
 		return bend;
 	}
 	
+	SectorBend* ConstructRectBend(const Data& data)
+	{
+		double len   = data[L];
+		double angle = data[ANGLE];
+		double k1    = data[K1];
+		double k2    = data[K2];
+		double e1    = angle/2;
+		double e2    = angle/2;
+		double tilt  = data[TILT];
+		double brho  = energy/eV/SpeedOfLight;
+		double hg    = data[HGAP];
+
+		double h=0;
+		if(angle!=0) {
+			h = 2*sin(angle/2)/len;
+			len = angle/h;
+		}
+		
+		
+		SectorBend* bend = new SectorBend(data.label,len,h,brho*h);
+		
+		if(k1!=0)  // mixed function dipole
+			bend->SetB1(brho*k1);
+		
+		if(tilt!=0)
+			(*bend).GetGeometry().SetTilt(tilt);
+		
+		// add pole-face rotation information
+		SectorBend::PoleFace* entrPF = (e1!=0)? new SectorBend::PoleFace(e1,0,hg) : 0;
+		SectorBend::PoleFace* exitPF = (e2!=0)? new SectorBend::PoleFace(e2,0,hg) : 0;
+		bend->SetPoleFaceInfo(entrPF,exitPF);
+		
+		return bend;
+	}
+
 	Quadrupole* ConstructQuadrupole(const Data& data)
 	{
 		double len   = data[L];
@@ -330,6 +365,8 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 	}
 	else if(dat.keywrd=="SBEN")
 		c = mc->AppendComponent(ConstructSectorBend(dat));
+	else if(dat.keywrd=="RBEN")
+		c = mc->AppendComponent(ConstructRectBend(dat));
 	else if(dat.keywrd=="SEXT") {
 		if(is_skewsext(dat[TILT]))
 			c = mc->AppendComponent(ConstructSkewSextupole(dat));
@@ -358,12 +395,10 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 			if(in_g) {
 				mc->EndFrame();
 				in_g=false;
-				cout<<"done"<<endl;
 			}
 			else {
 				mc->NewFrame(new SequenceFrame(girderName));
 				in_g=true;
-				cout<<"beginning girder "<<girderName<<"..."<<flush;
 			}
 			c=0;
 		}
