@@ -456,7 +456,10 @@ RealMatrix& TransportMatrix::TWRFCavity (double length, double g, double f, doub
 	const double Er = E1/E0;
 	const double logEr = log(Er);
 	
-	if(dEcosPhi==0) {
+	// Condition for zero acceleration modified by A.Wolski, 5 November 2003
+	// Loss of numerical accuracy can lead to dEcosPhi of order 1e-20
+	// in which case the transport matrix can have large erroneous terms.
+	if(fabs(dEcosPhi)<1.0e-16) {
 		R(0,1)=length;
 	}
 	else {
