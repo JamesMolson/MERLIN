@@ -164,6 +164,8 @@ class RmtrxIntegrator : public ComponentIntegrator  //## Inherits: <unnamed>%399
       static double qs;
       //## end RmtrxIntegrator::qs%3993C4060157.attr
 
+	  friend class LinearMatrixTracker;
+
   private: //## implementation
 };
 
@@ -203,6 +205,20 @@ class TRmtrxIntegrator : public RmtrxIntegrator  //## Inherits: <unnamed>%3992CB
 //## Uses: <unnamed>%3993CBDD0225;TRmtrxIntegrator { -> }
 
 class RectMultipoleRmtrxI : public TRmtrxIntegrator< RectMultipole  >  //## Inherits: <unnamed>%3992CD7F0180
+{
+  public:
+
+    //## Other Operations (specified)
+      //## Operation: TrackStep%3992CFC103BC
+      //	Tracks ds through the quadrupole component.
+      virtual double TrackStep (double ds);
+
+  protected:
+  private:
+  private: //## implementation
+};
+
+class SolenoidRmtrxI : public TRmtrxIntegrator< Solenoid  >  //## Inherits: <unnamed>%3992CD7F0180
 {
   public:
 
@@ -459,6 +475,19 @@ double RectMultipoleRmtrxI::TrackStep (double ds)
   //## end RectMultipoleRmtrxI::TrackStep%3992CFC103BC.body
 }
 
+double SolenoidRmtrxI::TrackStep (double ds)
+{
+  //## begin RectMultipoleRmtrxI::TrackStep%3992CFC103BC.body preserve=yes
+	_CHECK_STEP(ds);
+	double Bz = Component().GetBz();
+	RealMatrix RS(IdentityMatrix(6));
+
+	TransportMatrix::Solenoid(ds,Bz/brho,0,true,true,RS);
+	(*R1)=RS*(*R1);
+	(*R2)=RS*(*R2);
+
+	return IncrStep(ds);
+}
 // Class SectorBendRmtrxI 
 
 
@@ -606,6 +635,7 @@ LinearMatrixTracker::LinearMatrixTracker (double p0, double qsign, const RMtrx& 
   //## end LinearMatrixTracker::LinearMatrixTracker%3992CEEB03C8.initialization
 {
   //## begin LinearMatrixTracker::LinearMatrixTracker%3992CEEB03C8.body preserve=yes
+	Register(new SolenoidRmtrxI());
 	Register(new RectMultipoleRmtrxI());
 	Register(new SectorBendRmtrxI());
 	Register(new SWRFStructureRmtrxI());
@@ -631,3 +661,8 @@ void LinearMatrixTracker::ResetR2 ()
 
 //## begin module%3992D0F201A8.epilog preserve=yes
 //## end module%3992D0F201A8.epilog
+
+double LinearMatrixTracker::GetReferenceMomentum() const
+{
+	return RmtrxIntegrator::p0;
+}

@@ -43,6 +43,7 @@
 #include "BasicTransport/NormalTransform.h"
 #include "NumericalUtils/NumericalConstants.h"
 #include "NumericalUtils/PhysicalConstants.h"
+#include "NumericalUtils/PhysicalUnits.h"
 #include <cmath>
 //## end module%399BE04101FE.includes
 
@@ -59,6 +60,7 @@
 //## begin module%399BE04101FE.additionalDeclarations preserve=yes
 using namespace std;
 using namespace PhysicalConstants;
+using namespace PhysicalUnits;
 //## end module%399BE04101FE.additionalDeclarations
 
 
@@ -240,7 +242,7 @@ void OpticsTable::Calculate ()
 			tracker.Track();
 
 		const RMtrx& R = tracker.GetCurrentR2();
-		UpdateTwiss(R.Apply(S),R);
+		UpdateTwiss(R.Apply(S),R,tracker.GetReferenceMomentum());
 		z+= loc==atCentre ? l/2 : l;
 
 		if(loc==atCentre || loc==atExit) // takes care of both atCentre and atExit
@@ -250,7 +252,7 @@ void OpticsTable::Calculate ()
 			tracker.ResetR2();
 			tracker.TrackStep(l/2);
 			const RMtrx& R = tracker.GetCurrentR2();
-			UpdateTwiss(R.Apply(S),R);
+			UpdateTwiss(R.Apply(S),R,tracker.GetReferenceMomentum());
 			z+=l/2;
 		}
 	}
@@ -298,7 +300,7 @@ OpticsTable::Location OpticsTable::GetOutputSpec (const string& id)
 }
 
 //## Operation: UpdateTwiss%39ABB343006F
-void OpticsTable::UpdateTwiss (const PSmoments& S0, const RMtrx& R)
+void OpticsTable::UpdateTwiss (const PSmoments& S0, const RMtrx& R, double p0)
 {
   //## begin OpticsTable::UpdateTwiss%39ABB343006F.body preserve=yes
 	PSmoments S=S0;
@@ -329,6 +331,7 @@ void OpticsTable::UpdateTwiss (const PSmoments& S0, const RMtrx& R)
 	t.beta_y = S(2,2)/t.emit_y;
 	t.alpha_x = -S(0,1)/t.emit_x;
 	t.alpha_y = -S(2,3)/t.emit_y;
+	t.p0=p0;
 
 	// phase advances
 	double dphix = atan(R(1,2)/(R(1,1)*lastTwiss.beta_x-R(1,2)*lastTwiss.alpha_x));
@@ -374,8 +377,9 @@ void OpticsTable::OutputRow (const string& label, double z, double l)
 		case L:		value = l; break;
 		case EX:	value = lastTwiss.emit_x; break;
 		case EY:	value = lastTwiss.emit_y; break;
-		case GEX:	value = lastTwiss.emit_x*iBeam.p0/ElectronMassMeV; break;
-		case GEY:	value = lastTwiss.emit_y*iBeam.p0/ElectronMassMeV; break;
+		case GEX:	value = lastTwiss.emit_x*lastTwiss.p0/MeV/ElectronMassMeV; break;
+		case GEY:	value = lastTwiss.emit_y*lastTwiss.p0/MeV/ElectronMassMeV; break;
+		case ENERGY:value = lastTwiss.p0; break;
 		}
 
 		(*os)<<(*i).fmt(value);

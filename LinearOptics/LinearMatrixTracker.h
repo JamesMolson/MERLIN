@@ -92,6 +92,9 @@ class LinearMatrixTracker : public ComponentTracker  //## Inherits: <unnamed>%39
       //	Resets the R2 matrix to the Identity.
       void ResetR2 ();
 
+	  // Return the current reference momentum
+	  double GetReferenceMomentum () const;
+
   protected:
   private:
     // Data Members for Associations

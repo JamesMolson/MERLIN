@@ -21,6 +21,7 @@
 //## end module%399BE03801BF.additionalIncludes
 
 //## begin module%399BE03801BF.includes preserve=yes
+#include "BeamModel/PStypes.h"
 //## end module%399BE03801BF.includes
 
 #include <list>
@@ -80,7 +81,7 @@ class OpticsTable
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
-    typedef enum {BX,BY,AX,AY,PHIX,PHIY,DX,DXP,DY,DYP,Z,L,EX,EY,GEX,GEY} Key;
+    typedef enum {BX,BY,AX,AY,PHIX,PHIY,DX,DXP,DY,DYP,Z,L,EX,EY,GEX,GEY,ENERGY} Key;
 
     //## Class: Location%399BE64102F7
     //## Category: Merlin::LinearOptics%3992C77E011C
@@ -311,7 +312,7 @@ class OpticsTable
       Location GetOutputSpec (const string& id);
 
       //## Operation: UpdateTwiss%39ABB343006F
-      void UpdateTwiss (const PSmoments& S0, const RMtrx& R);
+      void UpdateTwiss (const PSmoments& S0, const RMtrx& R, double p0);
 
       //## Operation: OutputRow%39AD2A4900E6
       void OutputRow (const string& label, double z, double l);
