@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.7 $
+// $Date: 2005-03-29 08:24:22 $
+// $Revision: 1.8 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -185,7 +185,7 @@ void AcceleratorModel::ReportModelStatistics (std::ostream& os) const
 
     os<<"Arc length of beamline:     "<<globalFrame->GetGeometryLength()<<" meter"<<endl;
     os<<"Total number of components: "<<lattice.size()<<endl;
-    os<<"Total numner of elements:   "<<theElements->Size()<<endl;
+    os<<"Total number of elements:   "<<theElements->Size()<<endl;
     os<<endl;
     os<<"Model Element statistics\n";
     os<<"------------------------\n\n";
