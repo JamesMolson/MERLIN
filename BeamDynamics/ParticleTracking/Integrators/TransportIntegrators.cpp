@@ -292,7 +292,7 @@ namespace TRANSPORT {
 		//  - there is a quad field with higher-order multipoles
 		//  - there is a sextupole    "     "     "        "
 
-		bool splitMagnet = abs(ch)!=0 || (cK1!=Complex(0) && np>1) || (cK2!=0 && np>2);
+		bool splitMagnet = abs(ch)!=0 || (cK1!=Complex(0) && np>1) || np>2;
 		double len = splitMagnet ? ds/2 : ds;
 		
 		

@@ -63,8 +63,6 @@
 // Class ParticleBunchTracker 
 
 
-
-
 //## begin ParticleBunchTracker::defaultTracker%3B9E14E000A4.role preserve=no  private: static ParticleBunchTracker { -> RHAN}
 ParticleBunchTracker* ParticleBunchTracker::defaultTracker = 0;
 //## end ParticleBunchTracker::defaultTracker%3B9E14E000A4.role
@@ -139,11 +137,14 @@ void ParticleBunchTracker::UseExactChromaticity (bool flg)
 {
   //## begin ParticleBunchTracker::UseExactChromaticity%3969B6860292.body preserve=yes
 	// Here we simple replace the existing integrator
-	return;
 	if(flg)
 		Register(new ExactRectMultipolePI());
 	else
-		Register(new RectMultipolePI());
+#ifdef USE_TRANSPORT_INTEGRATORS
+	_REGI(TRANSPORT::RectMultipolePI);
+#else
+	_REGI(RectMultipolePI);
+#endif // USE_TRANSPORT_INTEGRATORS
   //## end ParticleBunchTracker::UseExactChromaticity%3969B6860292.body
 }
 
@@ -154,7 +155,11 @@ void ParticleBunchTracker::UseExactSectorBend (bool exactSB)
 	if(exactSB)
 		Register(new ExactSectorBendPI());
 	else
+#ifdef USE_TRANSPORT_INTEGRATORS
 		Register(new TRANSPORT::SectorBendPI());
+#else
+		Register(new SectorBendPI());
+#endif
   //## end ParticleBunchTracker::UseExactSectorBend%3AE7DC030014.body
 }
 

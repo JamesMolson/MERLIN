@@ -131,7 +131,7 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 	size_t i;
 	
 
-	PSvector xm(0); // used for calculating mean
+	PSvector xm = p; // used for calculating mean
 
 	switch(dtype) {
 	case normalDistribution:
@@ -159,10 +159,10 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 			
 			if(itsFilter==0 || itsFilter->Apply(p)) {
 				pbunch.push_back(p);
+				xm += p;
 				i++;
 			}
 
-			xm += p;
 		}
 		if(force_c) {
 			// Note when we force the mean value
@@ -170,7 +170,6 @@ Bunch* ParticleBunchConstructor::ConstructBunch () const
 			// is (in general) no longer the centroid
 			// particle
 			xm/=np;
-			xm-=pbunch.front();
 			for(PSvectorArray::iterator pp=pbunch.begin(); pp!=pbunch.end(); pp++)
 				(*pp)-=xm;
 		}
