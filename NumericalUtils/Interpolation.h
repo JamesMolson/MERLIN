@@ -41,11 +41,6 @@
 class Interpolation {
 public:
 
-	struct Data {
-		Data(double x1, double y1) : x(x1),y(y1) {}
-		double x,y;
-	};
-
 	// exception
 	class BadRange : public MerlinException {
 	public:
@@ -54,14 +49,29 @@ public:
 		FloatRange valid_range;
 	};
 
-	Interpolation(const std::vector<Data>& data);
+	// Implementation method for interpolation
+	class Method {
+	public:
+		virtual ~Method() {}
+		virtual double ValueAt(double x) const throw (BadRange) =0;
+	};
 
-	double operator()(double x) const throw (BadRange);
+	// Interpolation of equally spaced data points
+	Interpolation(const std::vector<double>& yvals, double xmin, double dx);
+
+	// Interpolation of arbitrary spaced data points
+	Interpolation(const std::vector<double>& xvals, const std::vector<double>& yvals);
+
+	~Interpolation();
+
+	double operator()(double x) const throw (BadRange) {
+		return itsMethod->ValueAt(x);
+	}
 
 private:
 
-	size_t LocateSegment(double x) const;
-	std::vector<Data> dat;
+
+	Method* itsMethod;
 };
 
 
