@@ -74,16 +74,16 @@ ParticleBunchTracker::ParticleBunchTracker (ParticleBunch& bunch)
   //## end ParticleBunchTracker::ParticleBunchTracker%36EE50EB026F.initialization
 {
   //## begin ParticleBunchTracker::ParticleBunchTracker%36EE50EB026F.body preserve=yes
-#ifdef USE_TRANSPORT_INTEGRATORS
+#ifdef USE_OLD_INTEGRATORS
+	_REGI(DriftPI);
+	_REGI(SectorBendPI);
+	_REGI(RectMultipolePI);
+#else
 	_REGI(TRANSPORT::DriftPI);
 	_REGI(TRANSPORT::SectorBendPI);
 	_REGI(TRANSPORT::RectMultipolePI);
 	_REGI(TRANSPORT::SWRFStructurePI);
-#else
-	_REGI(DriftPI);
-	_REGI(SectorBendPI);
-	_REGI(RectMultipolePI);
-#endif // USE_TRANSPORT_INTEGRATORS
+#endif // USE_OLD_INTEGRATORS
 
 	_REGI(MonitorPI);
 	_REGI(TWRFStructurePI);
@@ -140,11 +140,11 @@ void ParticleBunchTracker::UseExactChromaticity (bool flg)
 	if(flg)
 		Register(new ExactRectMultipolePI());
 	else
-#ifdef USE_TRANSPORT_INTEGRATORS
-	_REGI(TRANSPORT::RectMultipolePI);
-#else
+#ifdef USE_OLD_INTEGRATORS
 	_REGI(RectMultipolePI);
-#endif // USE_TRANSPORT_INTEGRATORS
+#else
+	_REGI(TRANSPORT::RectMultipolePI);
+#endif // USE_OLD_INTEGRATORS
   //## end ParticleBunchTracker::UseExactChromaticity%3969B6860292.body
 }
 
@@ -155,10 +155,10 @@ void ParticleBunchTracker::UseExactSectorBend (bool exactSB)
 	if(exactSB)
 		Register(new ExactSectorBendPI());
 	else
-#ifdef USE_TRANSPORT_INTEGRATORS
-		Register(new TRANSPORT::SectorBendPI());
-#else
+#ifdef USE_OLD_INTEGRATORS
 		Register(new SectorBendPI());
+#else
+		Register(new TRANSPORT::SectorBendPI());
 #endif
   //## end ParticleBunchTracker::UseExactSectorBend%3AE7DC030014.body
 }
@@ -168,12 +168,12 @@ void ParticleBunchTracker::UseFullAcceleration (bool fullacc)
 {
 	//## begin ParticleBunchTracker::UseFullAcceleration%3B9764AD039E.body preserve=yes
 	Register(new TWRFStructurePI(fullacc));
-#ifdef USE_TRANSPORT_INTEGRATORS
-	Register(new TRANSPORT::SWRFStructurePI(fullacc));
+#ifdef USE_OLD_INTEGRATORS
+	Register(new SWRFStructurePI(fullacc));
 #else
-	Register(new SWRFStructurePI(fullacc));
+	Register(new TRANSPORT::SWRFStructurePI(fullacc));
 #endif
-	Register(new SWRFStructurePI(fullacc));
+//	Register(new SWRFStructurePI(fullacc));
 	//## end ParticleBunchTracker::UseFullAcceleration%3B9764AD039E.body
 }
 
