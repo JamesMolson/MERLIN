@@ -36,6 +36,9 @@ namespace TLAS {
 	// Matrix symplectification
 	void Symplectify(RealMatrix& a);
 
+	// Eigensystem of a real symmetric matrix
+	void EigenSystemSymmetricMatrix(RealMatrix& m, RealVector& eigenvalues);
+
 }; // end namespace TLAS;
 
 using namespace TLAS;

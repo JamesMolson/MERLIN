@@ -18,6 +18,7 @@ namespace {
 	inline double ABS(const Complex& z) { return abs(z); }
 
 #define _SWAP(a,b) std::swap((a),(b))
+#define _SIGN(a,b) ((b>0) ? fabs(a) : -fabs(a))
 	
 	template<class T> double Inverse(Matrix<T>& a)
 	{
@@ -226,5 +227,171 @@ namespace TLAS {
 			*/
 	}
 	
+	void tred2(RealMatrix& a, RealVector& d, RealVector& e)
+	{
+		int n = a.nrows();
+		d.redim(n);
+		e.redim(n);
+
+		for(int i=n-1; i>0; i--)
+		{
+			double h = 0;
+			double scale = 0;
+			if(i>1)
+			{
+				for(int k=0; k<i; k++) scale += fabs(a(i,k));
+				if(scale==0)
+					e(i) = a(i,i-1);
+				else
+				{
+					for(k=0; k<i; k++)
+					{
+						a(i,k) /= scale;
+						h += a(i,k) * a(i,k);
+					}
+
+					double f = a(i,i-1);
+					double g = (f>=0.0) ? -sqrt(h) : sqrt(h);
+					e(i) = scale * g;
+					h -= f * g;
+					a(i,i-1) = f - g;
+					f = 0.0;
+
+					for(int j=0; j<i; j++)
+					{
+						a(j,i) = a(i,j) / h;
+						g = 0.0;
+						
+						for(k=0;  k<=j; k++) g += a(j,k) * a(i,k);
+						for(k=j+1; k<i; k++) g += a(k,j) * a(i,k);
+
+						e(j) = g / h;
+
+						f += e(j) * a(i,j);
+					}
+
+					double hh = f / (h+h);
+
+					for(j=0; j<i; j++)
+					{
+						f = a(i,j);
+						e(j) = g = e(j) - hh * f;
+
+						for(k=0; k<=j; k++) a(j,k) -= (f * e(k) + g * a(i,k));
+					}
+				}
+			}
+			else
+				e(i) = a(i,i-1);
+
+			d(i) = h;
+		}
+
+		d(0) = 0.0;
+		e(0) = 0.0;
+
+		for(i=0; i<n; i++)
+		{
+			if(d(i))
+				for(int j=0; j<i; j++)
+				{
+					double g = 0.0;				
+					for(int k=0; k<i; k++) g += a(i,k) * a(k,j);
+					for(    k=0; k<i; k++) a(k,j) -= g * a(k,i);
+				}
+
+			d(i) = a(i,i);
+			a(i,i) = 1.0;
+
+			for(int j=0; j<i; j++) a(j,i) = a(i,j) = 0.0;
+		}
+	}
+
+	double pythag(double a, double b)
+	{
+		double absa = fabs(a);
+		double absb = fabs(b);
+		if( absa > absb)
+			return absa * sqrt(1.0 + pow(absb/absa,2));
+		else
+			return (absb == 0.0) ? 0.0 : absb * sqrt(1.0 + pow(absa/absb,2));
+	}
+
+	void tqli(RealVector& d, RealVector& e, RealMatrix& z)
+	{
+		int m = 0;
+		int n = d.size();
+		for(int i=1; i<n; i++) e(i-1) = e(i);
+		e(n-1) = 0.0;
+
+		for(int l=0; l<n; l++)
+		{
+			int iter = 0;
+			do
+			{
+				for(m=l; m<n-1; m++)
+				{
+					double dd = fabs(d(m)) + fabs(d(m+1));
+					if(!e(m)) break;
+				}
+
+				if(m != l)
+				{
+					double g = (d(l+1) - d(l))/(2.0*e(l));
+					double r = pythag(g,1.0);
+					g = d(m) - d(l) + e(l) / (g + _SIGN(r,g));
+					double s = 1.0;
+					double c = 1.0;
+					double p = 0.0;
+
+					for(i=m-1; i>=l; i--)
+					{
+						double f = s * e(i);
+						double b = c * e(i);
+						r = pythag(f,g);
+						e(i+1) = r;
+						if(r==0.0)
+						{
+							d(i+1) -= p;
+							e(m) = 0.0;
+							break;
+						}
+
+						s = f / r;
+						c = g / r;
+						g = d(i+1) - p;
+						r = (d(i) - g) * s + 2.0 * c * b;
+						p = s * r;
+						d(i+1) = g + p;
+						g = c * r - b;
+
+						for(int k=0; k<n; k++)
+						{
+							f = z(k,i+1);
+							z(k,i+1) = s * z(k,i) + c * f;
+							z(k,i) = c * z(k,i) - s * f;
+						}
+					}
+
+					if(r==0.0 && i>=l) continue;
+
+					d(l) -= p;
+					e(l) = g;
+					e(m) = 0.0;
+				}
+			} while( (m!=l) && (iter++<30) );
+		}
+	}
+
+	void EigenSystemSymmetricMatrix(RealMatrix& m, RealVector& eigenvalues)
+	{
+		int n = m.nrows();
+		eigenvalues.redim(n);
+
+		RealVector e(n);
+		tred2(m, eigenvalues, e);
+		tqli(eigenvalues, e, m);
+	}
+
 }; // end namespace TLAS
 
