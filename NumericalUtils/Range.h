@@ -84,7 +84,7 @@ class RangeBase
 
 //## Uses: <unnamed>%3906B755012B;RangeBase::Result { -> F}
 
-template <class T, class C = std::less>
+template <class T, class C = std::less<T> >
 class Range : public RangeBase  //## Inherits: <unnamed>%3906B6A801B8
 {
   public:
@@ -162,7 +162,7 @@ inline Range<T,C>::Range (const T& lo, const T& hi)
   //## end Range::Range%861287601.initialization
 {
   //## begin Range::Range%861287601.body preserve=yes
-	if(C(max,min)) 
+	if(C()(max,min)) 
 		std::swap(min,max);
   //## end Range::Range%861287601.body
 }
@@ -233,6 +233,7 @@ inline RangeBase::Result Range<T,C>::Check (const T& x) const
 
 
 //## begin module%3906B7C000DE.epilog preserve=yes
+typedef Range< double > FloatRange;
 //## end module%3906B7C000DE.epilog
 
 
