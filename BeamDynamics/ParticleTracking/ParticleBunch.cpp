@@ -242,11 +242,12 @@ double ParticleBunch::AdjustRefMomentumToMean ()
 double ParticleBunch::AdjustRefMomentum (double dpp)
 {
   //## begin ParticleBunch::AdjustRefMomentum%3B94E5990346.body preserve=yes
-	for(iterator p=begin(); p!=end(); p++){
-		(*p).dp()-=dpp;
-		(*p).dp()/=1+dpp;
-	}
-	double P0 = (1+dpp)*GetReferenceMomentum();
+	double onePlusDpp = 1+dpp;
+
+	for(iterator p=begin(); p!=end(); p++)
+		p->dp() = (p->dp()-dpp)/onePlusDpp;
+
+	double P0 = onePlusDpp*GetReferenceMomentum();
 	SetReferenceMomentum(P0);
 	return P0;
   //## end ParticleBunch::AdjustRefMomentum%3B94E5990346.body
