@@ -135,7 +135,7 @@ void EquilibriumDistribution::FindA2()
 
 double EquilibriumDistribution::IntegralEk5(ComplexVector& Ek, SectorBend* sb)
 {
-	int nsteps = 100;
+	int nsteps = 200;
 	double h = sb->GetB0() * eV * SpeedOfLight / p0;
 	double dl = sb->GetLength() / nsteps;
 	double hdl = h * dl;

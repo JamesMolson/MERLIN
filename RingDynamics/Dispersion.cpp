@@ -80,7 +80,6 @@ void Dispersion::FindRMSDispersion(ofstream* file)
 		const Particle& p0 = *ip++;
 		const Particle& p1 = *ip;
 
-
 		for(int m=0; m<2; m++)
 		{
 			pres[m] = (p1[2*m] - p0[2*m])/2/dscale;
