@@ -44,6 +44,7 @@
 
 //## begin module%37146AE90096.includes preserve=yes
 #include "NumericalUtils/utils.h"
+#include "NumericalUtils/Range.h"
 //## end module%37146AE90096.includes
 
 // AcceleratorComponent
@@ -108,6 +109,17 @@ class ComponentIntegrator
       //	Returns true if the step ds is still within the geometry
       //	extents of the current component being tracked.
       bool IsValidStep (double ds) const;
+
+	  // Returns the range of allowed step sizes for this integrator.
+	  // Default returns [0,GetRemainingLength()]
+	  virtual FloatRange GetStepRange() const;
+
+	  bool AtEntrance() const {
+		  return S_int==0;
+	  }
+	  bool AtExit() const {
+		  return GetRemainingLength()==0;
+	  }
 
   protected:
 
@@ -220,6 +232,10 @@ inline double ComponentIntegrator::IncrStep (double ds)
   //## end ComponentIntegrator::IncrStep%925486266.body
 }
 
+inline FloatRange ComponentIntegrator::GetStepRange() const
+{
+	return FloatRange(0,GetRemainingLength());
+}
 // Class ComponentIntegrator 
 
 

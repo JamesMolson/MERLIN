@@ -1,4 +1,3 @@
-//## begin module%37C40288015E.cm preserve=no
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
@@ -6,11 +5,8 @@
  * 
  * file NumericalUtils\utils.h
  * last modified 25/08/99 16:49:53
- */
-//## end module%37C40288015E.cm
-
-//## begin module%37C40288015E.cp preserve=no
-/*
+ *
+ *
  * This file is derived from software bearing the following
  * restrictions:
  *
@@ -27,29 +23,14 @@
  * any purpose is made. It is provided "as is" without express
  * or implied warranty.
  */
-//## end module%37C40288015E.cp
-
-//## Module: utils%37C40288015E; Package specification
-//## Subsystem: NumericalUtils%37C40272014A
-//## Source file: D:\Dev\Merlin\NumericalUtils\utils.h
 
 #ifndef utils_h
 #define utils_h 1
 
-//## begin module%37C40288015E.additionalIncludes preserve=no
 #include "merlin_config.h"
-//## end module%37C40288015E.additionalIncludes
-
-//## begin module%37C40288015E.includes preserve=yes
 #include <ctime>
 #include <limits>
 #include <cmath>
-//## end module%37C40288015E.includes
-
-//## begin module%37C40288015E.declarations preserve=no
-//## end module%37C40288015E.declarations
-
-//## begin module%37C40288015E.additionalDeclarations preserve=yes
 
 inline bool fequal(double x, double y,
 				   double tol=std::numeric_limits<double>::epsilon())
@@ -79,11 +60,8 @@ double BesselI0(double x);
 double BesselI1(double x);
 double BesselIn(int n, double x);
 
-//## end module%37C40288015E.additionalDeclarations
-
-
-//## begin module%37C40288015E.epilog preserve=yes
-//## end module%37C40288015E.epilog
-
+// Gamma function
+double LogGamma(double);
+inline double Gamma(double x) { return exp(LogGamma(x)); }
 
 #endif

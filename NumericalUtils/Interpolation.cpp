@@ -139,7 +139,7 @@ Interpolation::BadRange::BadRange(double x, const FloatRange& r)
 : MerlinException(""),value(x),valid_range(r)
 {
 	ostringstream buf;
-	buf<<value<<" not in interpolation range ("<<r.min<<","<<r.max<<')';
+	buf<<value<<" not in interpolation range ("<<r.lower<<","<<r.upper<<')';
 	SetMsg(buf.str());
 }
 

@@ -41,6 +41,7 @@
 //## begin module%39576D6500C8.includes preserve=yes
 #include <cstdlib>
 #include "AcceleratorModel/Components.h"
+#include "AcceleratorModel/StdComponent/Spoiler.h"
 #include "IO/MerlinIO.h"
 #include "NumericalUtils/utils.h"
 //## end module%39576D6500C8.includes
@@ -412,6 +413,12 @@ double MADInterface::ReadComponent ()
 			Drift* aDrift = new Drift(name,len);
 			ctor->AppendComponent(*aDrift);
 			component=aDrift;
+		}
+		else if(type=="SPOILER") {
+			angle=prmMap->GetParameter("K0L");
+			Spoiler* aSpoiler = new Spoiler(name,len,angle); // cheat! use angle for rad length
+			ctor->AppendComponent(*aSpoiler);
+			component=aSpoiler;
 		}
 		else if(type=="QUADRUPOLE") {
 			k1=prmMap->GetParameter("K1L");

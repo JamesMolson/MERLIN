@@ -44,6 +44,7 @@
 
 //## begin module%3AE7DE2600BE.includes preserve=yes
 #include <map>
+#include <set>
 //## end module%3AE7DE2600BE.includes
 
 // ParticleBunchProcess
@@ -145,6 +146,11 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
       //## Operation: GetMaxAllowedStepSize%935667565
       //	Returns the current maximum step length for this process.
       virtual double GetMaxAllowedStepSize () const;
+
+	  // If set to true, the process scatters the particles in
+	  // energy and angle at a Spoiler element, if the particle is
+	  // outside the aperture.
+	  void ScatterAtSpoiler(bool tf);
 
       //## Operation: CreateParticleLossFiles%951318005
       //	If flg is true, then files are generated containing the
@@ -279,6 +285,10 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
       std::list< size_t >* pindex;
       //## end CollimateParticleProcess::pindex%3AE7E5570079.role
 
+	  bool scatter;
+	  bool is_spoiler;
+	  double Xr;
+	  bool DoScatter(Particle&);
 };
 
 // Class ExcessiveParticleLoss 
@@ -306,6 +316,10 @@ inline const list<size_t>& CollimateParticleProcess::GetIndecies() const
 	return *pindex;
 }
 
+inline void CollimateParticleProcess::ScatterAtSpoiler(bool tf)
+{
+	scatter=tf;
+}
 //## begin module%3AE7DE2600BE.epilog preserve=yes
 //## end module%3AE7DE2600BE.epilog
 

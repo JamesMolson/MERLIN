@@ -47,11 +47,17 @@
 #include "BeamDynamics/ParticleTracking/CollimateParticleProcess.h"
 // Aperture
 #include "AcceleratorModel/Aperture.h"
+// Spoiler
+#include "AcceleratorModel/StdComponent/Spoiler.h"
+
 //## begin module%3AE7DE350082.declarations preserve=no
 //## end module%3AE7DE350082.declarations
 
 //## begin module%3AE7DE350082.additionalDeclarations preserve=yes
 using namespace std;
+
+extern void ScatterParticle(PSvector&, double t, double E0);
+
 namespace {
 
 	void OutputIndexParticles(const PSvectorArray lost_p, const list<size_t>& lost_i, ostream& os)
@@ -91,7 +97,7 @@ namespace {
 CollimateParticleProcess::CollimateParticleProcess (int priority, int mode, std::ostream* osp)
   //## begin CollimateParticleProcess::CollimateParticleProcess%935667561.initialization preserve=yes
   : ParticleBunchProcess("PARTICLE COLLIMATION",priority),cmode(mode),os(osp),
-  createLossFiles(false),file_prefix(""),nstart(0),pindex(0),lossThreshold(1)
+  createLossFiles(false),file_prefix(""),nstart(0),pindex(0),lossThreshold(1),scatter(false)
   //## end CollimateParticleProcess::CollimateParticleProcess%935667561.initialization
 {
   //## begin CollimateParticleProcess::CollimateParticleProcess%935667561.body preserve=yes
@@ -138,10 +144,21 @@ void CollimateParticleProcess::SetCurrentComponent (AcceleratorComponent& compon
 	if(active) {
 		currentComponent = &component;
 		s=0;
-		at_entr = (COLL_AT_ENTRANCE & cmode)!=0;
-		at_cent = (COLL_AT_CENTER & cmode)!=0;
-		at_exit = (COLL_AT_EXIT & cmode)!=0;
-		SetNextS();
+		Spoiler* aSpoiler = dynamic_cast<Spoiler*>(&component);
+		is_spoiler = scatter && aSpoiler;
+
+		if(!is_spoiler) { // not a spoiler so set up for normal hard-edge collimation
+			at_entr = (COLL_AT_ENTRANCE & cmode)!=0;
+			at_cent = (COLL_AT_CENTER & cmode)!=0;
+			at_exit = (COLL_AT_EXIT & cmode)!=0;
+			SetNextS();
+		}
+		else {
+			at_entr=at_cent=false;
+			at_exit = true;
+			SetNextS();
+			Xr = aSpoiler->GetNumRadLengths();
+		}
 	}
 	else {
 		s_total += component.GetLength();
@@ -155,6 +172,7 @@ void CollimateParticleProcess::DoProcess (double ds)
 {
   //## begin CollimateParticleProcess::DoProcess%935667564.body preserve=yes
 	s+=ds;
+	
 	if(fequal(s,next_s)) {
 		DoCollimation();
 		SetNextS();
@@ -204,6 +222,7 @@ void CollimateParticleProcess::SetLossThreshold (double losspc)
   //## end CollimateParticleProcess::SetLossThreshold%988274692.body
 }
 
+
 //## Operation: DoCollimation%935667566
 void CollimateParticleProcess::DoCollimation ()
 {
@@ -219,14 +238,18 @@ void CollimateParticleProcess::DoCollimation ()
 
 	for(PSvectorArray::iterator p = currentBunch->begin(); p!=currentBunch->end(); p++) {
 		if(!ap->PointInside((*p).x(),(*p).y(),s)) {
-			lost.push_back(*p);
-			p=currentBunch->erase(p);
-			--p;
-			if(pindex!=0) {
-				lost_i.push_back(*ip);
-				ip = pindex->erase(ip);
-				--ip;
+			
+			if(!is_spoiler || DoScatter(*p)) {
+				lost.push_back(*p);
+				p=currentBunch->erase(p);
+				--p;
+				if(pindex!=0) {
+					lost_i.push_back(*ip);
+					ip = pindex->erase(ip);
+					--ip;
+				}
 			}
+
 		}
 		if(pindex!=0)
 			++ip;
@@ -290,6 +313,13 @@ void CollimateParticleProcess::DoOutput (const PSvectorArray& lostb, const list<
 		}
 	}
   //## end CollimateParticleProcess::DoOutput%936004767.body
+}
+
+bool CollimateParticleProcess::DoScatter (Particle& p)
+{
+	double E0=currentBunch->GetReferenceMomentum();
+	ScatterParticle(p,Xr,E0);
+	return p.dp()<=-0.99; // return true if E below 1% cut-off
 }
 
 // Class ExcessiveParticleLoss 
