@@ -47,7 +47,7 @@ namespace PhysicalUnits {
 	const double radian=1.0;
 	const double milliradian=1.0e-3*radian;
 	const double microradian=1.0e-6*radian;
-	const double degree=(pi/180.0)*radian;
+	const double degree=0.0174532925199*radian;
 
 	// magnetic field
 	double Tesla=1.0;
