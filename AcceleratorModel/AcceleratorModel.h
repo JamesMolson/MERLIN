@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\AcceleratorModel.h
- * last modified 04/04/02 12:16:53
+ * last modified 03/06/02 12:34:26
  */
 //## end module%375C20240154.cm
 
@@ -58,17 +58,16 @@
 #include "AcceleratorModel/AcceleratorComponent.h"
 // ModelElement
 #include "AcceleratorModel/ModelElement.h"
-// ChannelServer
-#include "AcceleratorModel/Implementation/ChannelServer.h"
 // ElementRepository
 #include "AcceleratorModel/Implementation/ElementRepository.h"
 // LatticeFrame
 #include "AcceleratorModel/Frames/LatticeFrame.h"
-// ring_iterator
-#include "stdext/ring_iterator.h"
 // StringPattern
 #include "utility/StringPattern.h"
+// ring_iterator
+#include "stdext/ring_iterator.h"
 
+class ChannelServer;
 class ComponentFrame;
 template <class T> class TComponentFrame;
 class RWChannel;
@@ -473,6 +472,20 @@ class AcceleratorModel
       //	Returns the number of channels found.
       size_t GetRWChannels (const string& chID, std::vector<RWChannel*>& channels);
 
+      //## Operation: GetROChannels%3CFB412C014E
+      //	Returns read-only channels matching chid for all
+      //	matching components in aBeamline. Note that only
+      //	channels associated with AcceleratorComponents can be
+      //	extracted using this method.
+      size_t GetROChannels (Beamline& aBeamline, const std::string& chid, std::vector<ROChannel*>& channels);
+
+      //## Operation: GetRWChannels%3CFB40D000C9
+      //	Returns read-write channels matching chid for all
+      //	matching components in aBeamline. Note that only
+      //	channels associated with AcceleratorComponents can be
+      //	extracted using this method.
+      size_t GetRWChannels (Beamline& aBeamline, const std::string& chid, std::vector<RWChannel*>& channels);
+
       //## Operation: GetGlobalFrame%3AC2E29501B8
       //	Returns the top-level LatticeFrame (global frame) for
       //	the model. The global frame is the root object of the
@@ -529,7 +542,7 @@ class AcceleratorModel
 
       //## Association: Merlin::AcceleratorModel::Implementation::<unnamed>%3AC4DEC90028
       //## Role: AcceleratorModel::chServer%3AC4DEC903CA
-      //## begin AcceleratorModel::chServer%3AC4DEC903CA.role preserve=no  private: ChannelServer { -> 0..1VHgAN}
+      //## begin AcceleratorModel::chServer%3AC4DEC903CA.role preserve=no  private: ChannelServer { -> 0..1VFHgAN}
       ChannelServer* chServer;
       //## end AcceleratorModel::chServer%3AC4DEC903CA.role
 

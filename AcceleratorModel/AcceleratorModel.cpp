@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\AcceleratorModel.cpp
- * last modified 04/04/02 12:16:53
+ * last modified 03/06/02 12:34:27
  */
 //## end module%375C202C0276.cm
 
@@ -54,6 +54,8 @@
 #include "Channels/Channels.h"
 // ring_iterator
 #include "stdext/ring_iterator.h"
+// ChannelServer
+#include "AcceleratorModel/Implementation/ChannelServer.h"
 // deleters
 #include "stdext/deleters.h"
 // AcceleratorModel
@@ -232,6 +234,22 @@ size_t AcceleratorModel::GetRWChannels (const string& chID, std::vector<RWChanne
   //## begin AcceleratorModel::GetRWChannels%3A9BCC6000DC.body preserve=yes
 	return chServer->GetRWChannels(chID,channels);
   //## end AcceleratorModel::GetRWChannels%3A9BCC6000DC.body
+}
+
+//## Operation: GetROChannels%3CFB412C014E
+size_t AcceleratorModel::GetROChannels (AcceleratorModel::Beamline& aBeamline, const std::string& chid, std::vector<ROChannel*>& channels)
+{
+  //## begin AcceleratorModel::GetROChannels%3CFB412C014E.body preserve=yes
+	return chServer->GetROChannels(aBeamline,chid,channels);
+  //## end AcceleratorModel::GetROChannels%3CFB412C014E.body
+}
+
+//## Operation: GetRWChannels%3CFB40D000C9
+size_t AcceleratorModel::GetRWChannels (AcceleratorModel::Beamline& aBeamline, const std::string& chid, std::vector<RWChannel*>& channels)
+{
+  //## begin AcceleratorModel::GetRWChannels%3CFB40D000C9.body preserve=yes
+	return chServer->GetRWChannels(aBeamline,chid,channels);
+  //## end AcceleratorModel::GetRWChannels%3CFB40D000C9.body
 }
 
 //## Operation: AddModelElement%3AE843E400BE
