@@ -183,7 +183,7 @@ void WakeFieldProcess::Init()
 		// Even though we have truncated particles, we still keep the
 		// the bunch charge constant
 		currentBunch->SetMacroParticleCharge(Qt/(currentBunch->size()));
-		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
+//		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
 	}
 
 	// Calculate the long. bunch wake.
