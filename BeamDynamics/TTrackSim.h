@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.2 $
+// $Date: 2004-12-17 00:57:20 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -210,7 +210,7 @@ TTrackSim<T>::bunch_type* TTrackSim<T>::Track(bunch_type* aBunch)
 
     bunch=aBunch;
     try {
-        Run(false);
+        Continue();
     }
     catch(...) {
         bunch=0;
