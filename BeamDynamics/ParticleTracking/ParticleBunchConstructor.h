@@ -150,7 +150,10 @@ class ParticleBunchConstructor : public BunchConstructor  //## Inherits: <unname
       //	Sets the distribution cut-off in standard deviations.
       //	Passing 0 indicates that no cut-off be applied
       //	(default). Only applies to normal distributions.
+	  //    The second form allows individual cutoffs for each
+	  //    of the six phase-space coordinates.
       void SetDistributionCutoff (double cut);
+	  void SetDistributionCutoff (const PSvector&);
 
       //## Operation: ConstructBunch%3729CF89015E
       //	Constructs a new ParticleBunch based on the current
@@ -191,7 +194,7 @@ class ParticleBunchConstructor : public BunchConstructor  //## Inherits: <unname
 
       //## Attribute: cutOff%391BDBD00048
       //## begin ParticleBunchConstructor::cutOff%391BDBD00048.attr preserve=no  private: double {UA} 
-      double cutOff;
+      PSvector cutoffs;
       //## end ParticleBunchConstructor::cutOff%391BDBD00048.attr
 
       //## Attribute: force_c%3C0B9C99018E

@@ -135,13 +135,12 @@ void WakeFieldProcess::DoProcess (double ds)
 			double ddp = -ds*(wake_z[nslice]+gz*zz)/p0;
 			p->dp() += ddp;
 			bload += ddp;
-
-			if(inc_tw) {
-				double dxp =  ds*(wake_y[nslice]+gy*zz)/p0;
-				double dyp =  ds*(wake_y[nslice]+gy*zz)/p0;
-				p->xp() = (p->xp()+dxp)/(1+ddp);
-				p->yp() = (p->yp()+dyp)/(1+ddp);
-			}
+			
+			double dxp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
+			double dyp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
+			
+			p->xp() = (p->xp()+dxp)/(1+ddp);
+			p->yp() = (p->yp()+dyp)/(1+ddp);
 		}
 		z+=dz;
 	}
@@ -156,10 +155,12 @@ double WakeFieldProcess::GetMaxAllowedStepSize () const
 void WakeFieldProcess::Init()
 {
 	double Qt  = currentBunch->GetTotalCharge();
-	if(CalculateQdist()!=0) {
+	size_t nloss = CalculateQdist();
+	if(nloss!=0) {
 		// Even though we have truncated particles, we still keep the
 		// the bunch charge constant
 		currentBunch->SetMacroParticleCharge(Qt/(currentBunch->size()));
+		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated";
 	}
 
 	// Calculate the long. bunch wake.
