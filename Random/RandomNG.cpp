@@ -74,7 +74,7 @@ RandGenerator* RandomNG::generator;
 //## Operation: RandGenerator%35D2B3980038
 RandGenerator::RandGenerator (unsigned iseed)
   //## begin RandGenerator::RandGenerator%35D2B3980038.hasinit preserve=no
-      : nseed(0),
+      : nseed(iseed),
   //## end RandGenerator::RandGenerator%35D2B3980038.hasinit
   //## begin RandGenerator::RandGenerator%35D2B3980038.initialization preserve=yes
   gen(0),gaussGen(0),uniformGen(0),poissonGen(0)
