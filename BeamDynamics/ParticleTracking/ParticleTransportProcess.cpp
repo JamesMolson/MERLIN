@@ -97,7 +97,7 @@ void ParticleTransportProcess::InitialiseProcess (Bunch& bunch)
 
 	if(itsTracker) {
 		itsTracker->UseExactChromaticity(exact_chrom);
-		itsTracker->UseExactChromaticity(exact_sb);
+		itsTracker->UseExactSectorBend(exact_sb);
 		itsTracker->LinearTrackingOnly(first_order);
 		itsTracker->UseFullAcceleration(full_acc);
 	}
