@@ -167,6 +167,8 @@ class CollimateParticleProcess : public ParticleBunchProcess  //## Inherits: <un
 
 	  void IndexParticles (list<size_t>& anIndex);
 
+	  const list<size_t>& GetIndecies() const;
+
       //## Operation: SetLossThreshold%988274692
       //	Sets the threshold for particle loss before the process
       //	throws ParticleLossThreshold exception. The value is in
@@ -297,6 +299,11 @@ inline void CollimateParticleProcess::CreateParticleLossFiles (bool flg, string 
 inline void CollimateParticleProcess::SetLogStream(std::ostream* anOs)
 {
 	os=anOs;
+}
+
+inline const list<size_t>& CollimateParticleProcess::GetIndecies() const
+{
+	return *pindex;
 }
 
 //## begin module%3AE7DE2600BE.epilog preserve=yes
