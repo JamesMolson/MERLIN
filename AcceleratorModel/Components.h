@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.4 $
+// $Date: 2005-03-29 08:25:16 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +32,8 @@
 #include "AcceleratorModel/StdComponent/TWRFStructure.h"
 // SWRFStructure
 #include "AcceleratorModel/StdComponent/SWRFStructure.h"
+// TransverseRFStructure
+#include "AcceleratorModel/StdComponent/TransverseRFStructure.h"
 // CorrectorDipoles
 #include "AcceleratorModel/StdComponent/CorrectorDipoles.h"
 // RMSProfileMonitor
