@@ -92,6 +92,7 @@ ParticleBunchTracker::ParticleBunchTracker (ParticleBunch& bunch)
 	_REGI(SWRFStructurePI);
 	_REGI(ParticleMapPI);
 	_REGI(SolenoidPI);
+	_REGI(MarkerPI);
   //## end ParticleBunchTracker::ParticleBunchTracker%36EE50EB026F.body
 }
 

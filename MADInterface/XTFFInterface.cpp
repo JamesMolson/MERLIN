@@ -60,6 +60,8 @@ namespace {
 	using XTFFInterface::XTFF_Data;
 	
 	double energy;      // current energy
+	double beamload;	// energy loss due to beamloading
+
 	double z_total; // current total length
 	double Qt;      // charge for beamloading
 
@@ -251,6 +253,7 @@ namespace {
 		cout<<setw(10)<<fixed<<setprecision(3)<<bloading/MV<<endl;
 */
 		energy += (dE-bloading)/GeV;
+		beamload += bloading/GeV;
 		return new TWRFStructure(data.label,len,freq,volt/len,phase);
 	}
 	
@@ -332,10 +335,16 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 		c = mc->AppendComponent(ConstructDrift(dat));
 	}
 
-	if(logos)
-		(*logos)<<c->GetQualifiedName()<<endl;
-
-	z_total = c->GetLength();
+	z_total += c->GetLength();
+	if(logos) {
+		(*logos)<<setw(10)<<left<<(*c).GetName().c_str();
+		(*logos)<<setw(16)<<left<<(*c).GetType().c_str();
+		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<z_total;
+		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<energy;
+		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<beamload;
+		(*logos)<<setw(10)<<right<<fixed<<setprecision(3)<<dat[ENERGY];
+		(*logos)<<endl;
+	}
 }
 
 XTFFInterface::XTFFInterface(const string& fname, double Nb, ostream* logstream)
@@ -372,6 +381,7 @@ pair<AcceleratorModel*,BeamData*> XTFFInterface::Parse()
 
 	mc->NewModel();
 	z_total=0;
+	beamload=0;
 
 	while(ifs && nelm--) {
 		XTFF_Data dat;

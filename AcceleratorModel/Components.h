@@ -26,6 +26,8 @@
 #include "AcceleratorModel/StdComponent/SectorBend.h"
 // Drift
 #include "AcceleratorModel/StdComponent/Drift.h"
+// Marker
+#include "AcceleratorModel/StdComponent/Marker.h"
 // TWRFStructure
 #include "AcceleratorModel/StdComponent/TWRFStructure.h"
 // SWRFStructure

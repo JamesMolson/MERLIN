@@ -59,6 +59,8 @@
 #include "AcceleratorModel/StdComponent/TWRFStructure.h"
 // Drift
 #include "AcceleratorModel/StdComponent/Drift.h"
+// Marker
+#include "AcceleratorModel/StdComponent/Marker.h"
 // MatrixMaps
 #include "BasicTransport/MatrixMaps.h"
 // TransportMatrix
@@ -341,6 +343,11 @@ inline SWRFStructurePI::SWRFStructurePI (bool full_acc)
 // Class SolenoidPI 
 
 //## begin module%3AE02F8102BC.epilog preserve=yes
+class MarkerPI : public TParticleI< Marker  > {
+public:
+	virtual double TrackStep (double ds) { return 0; }
+};
+
 //## end module%3AE02F8102BC.epilog
 
 
