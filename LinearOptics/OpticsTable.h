@@ -21,7 +21,7 @@
 //## end module%399BE03801BF.additionalIncludes
 
 //## begin module%399BE03801BF.includes preserve=yes
-#include "BeamModel/PStypes.h"
+#include "BeamModel/PSTypes.h"
 //## end module%399BE03801BF.includes
 
 #include <list>

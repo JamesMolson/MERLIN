@@ -57,7 +57,7 @@ struct XTFFInterface::XTFF_Data {
 
 namespace {
 	
-	using XTFFInterface::XTFF_Data;
+	typedef XTFFInterface::XTFF_Data Data;
 	
 	double energy;      // current energy
 	double beamload;	// energy loss due to beamloading
@@ -89,7 +89,7 @@ namespace {
 	
 	
 	// Parse single element record 
-	void ParseXTFF(istream& is, XTFF_Data& data)
+	void ParseXTFF(istream& is, Data& data)
 	{
 		string ipline;
 		
@@ -143,12 +143,12 @@ namespace {
 #define VKICK  7
 	
 	
-	Drift* ConstructDrift(const XTFF_Data& data)
+	Drift* ConstructDrift(const Data& data)
 	{
 		return new Drift(data.label,data[L]);
 	}
 	
-	SectorBend* ConstructSectorBend(const XTFF_Data& data)
+	SectorBend* ConstructSectorBend(const Data& data)
 	{
 		double len   = data[L];
 		double angle = data[ANGLE];
@@ -177,7 +177,7 @@ namespace {
 		return bend;
 	}
 	
-	Quadrupole* ConstructQuadrupole(const XTFF_Data& data)
+	Quadrupole* ConstructQuadrupole(const Data& data)
 	{
 		double len   = data[L];
 		double k1    = data[K1];
@@ -187,7 +187,7 @@ namespace {
 		return new Quadrupole(data.label,len,brho*k1);
 	}
 	
-	SkewQuadrupole* ConstructSkewQuadrupole(const XTFF_Data& data)
+	SkewQuadrupole* ConstructSkewQuadrupole(const Data& data)
 	{
 		double len   = data[L];
 		double k1    = data[K1];
@@ -196,7 +196,7 @@ namespace {
 		return new SkewQuadrupole(data.label,len,brho*k1);
 	}
 	
-	Sextupole* ConstructSextupole(const XTFF_Data& data)
+	Sextupole* ConstructSextupole(const Data& data)
 	{
 		double len   = data[L];
 		double k2    = data[K2];
@@ -206,7 +206,7 @@ namespace {
 		return new Sextupole(data.label,len,brho*k2);
 	}
 	
-	SkewSextupole* ConstructSkewSextupole(const XTFF_Data& data)
+	SkewSextupole* ConstructSkewSextupole(const Data& data)
 	{
 		double len   = data[L];
 		double k2    = data[K2];
@@ -215,7 +215,7 @@ namespace {
 		return new SkewSextupole(data.label,len,brho*k2);
 	}
 	
-	Octupole* ConstructOctupole(const XTFF_Data& data)
+	Octupole* ConstructOctupole(const Data& data)
 	{
 		double len   = data[L];
 		double k3    = data[K3];
@@ -225,17 +225,17 @@ namespace {
 		return new Octupole(data.label,len,brho*k3);
 	}
 	
-	XCor* ConstructXCor(const XTFF_Data& data)
+	XCor* ConstructXCor(const Data& data)
 	{
 		return new XCor(data.label,data[L]);
 	}
 	
-	YCor* ConstructYCor(const XTFF_Data& data)
+	YCor* ConstructYCor(const Data& data)
 	{
 		return new YCor(data.label,data[L]);
 	}
 	
-	TWRFStructure* ConstructCavity(const XTFF_Data& data)
+	TWRFStructure* ConstructCavity(const Data& data)
 	{
 		double len = data[L];
 		double volt = data[VOLT]*MV;
@@ -257,23 +257,23 @@ namespace {
 		return new TWRFStructure(data.label,len,freq,volt/len,phase);
 	}
 	
-	BPM* ConstructBPM(const XTFF_Data& data)
+	BPM* ConstructBPM(const Data& data)
 	{
 		return new BPM(data.label,data[L]);
 	}
 	
-	RMSProfileMonitor* ConstructProfileMonitor(const XTFF_Data& data)
+	RMSProfileMonitor* ConstructProfileMonitor(const Data& data)
 	{
 		return new RMSProfileMonitor(data.label,data[L]);
 	}
 	
-	Solenoid* ConstructSolenoid(const XTFF_Data& data)
+	Solenoid* ConstructSolenoid(const Data& data)
 	{
 		double brho = energy/eV/SpeedOfLight;
 		return new Solenoid(data.label,data[L],brho*data[KS]);
 	}
 
-	Marker* ConstructMarker(const XTFF_Data& data)
+	Marker* ConstructMarker(const Data& data)
 	{
 		return new Marker(data.label);
 	}
@@ -428,24 +428,23 @@ int XTFFInterface::ParseHeader()
 
 	double dummy; // used for mux,muy
 
-#define _RB(v) ifs>>(beam0->##v)
 
-	_RB(alpha_x);
-	_RB(beta_x);
+	ifs>>beam0->alpha_x;
+	ifs>>beam0->beta_x;
 	ifs>>dummy; // mux
-	_RB(Dx);
-	_RB(Dxp);
+	ifs>>beam0->Dx;
+	ifs>>beam0->Dxp;
 
-	_RB(alpha_y);
-	_RB(beta_y);
+	ifs>>beam0->alpha_y;
+	ifs>>beam0->beta_y;
 	ifs>>dummy; // muy
-	_RB(Dy);
-	_RB(Dyp);
+	ifs>>beam0->Dy;
+	ifs>>beam0->Dyp;
 
-	_RB(x0);
-	_RB(xp0);
-	_RB(y0);
-	_RB(yp0);
+	ifs>>beam0->x0;
+	ifs>>beam0->xp0;
+	ifs>>beam0->y0;
+	ifs>>beam0->yp0;
 
 	// remove remainder of this line (suml)
 	getline(ifs,ipline);

@@ -33,7 +33,7 @@
 
 namespace {
 	
-	using Interpolation::Data;
+	typedef Interpolation::Data Data;
 	using namespace std;
 
 	inline bool sort_x(const Data& d1, const Data& d2)
