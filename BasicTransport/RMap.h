@@ -290,10 +290,13 @@ struct ApplySimpleDrift {
 struct ApplyDriftWithPathLength {
     double s;
     explicit ApplyDriftWithPathLength(double len):s(len) {}
-    void operator()(PSvector& x) const {
+    void Apply(PSvector& x) const {
         x.x()+=s*x.xp();
         x.y()+=s*x.yp();
         x.ct()-=s*(x.xp()*x.xp()+x.yp()*x.yp())/2.0;
+    }
+    void operator()(PSvector& x) const {
+        Apply(x);
     }
 };
 
