@@ -157,7 +157,14 @@ ParticleBunch* ParticleTracker::Track(ParticleBunch* aBunch)
 		delete bunch;
 
 	bunch=aBunch;
-	Run(false);
+	try {
+		Run(false);
+	}
+	catch(...) {
+		bunch=0;
+		throw;
+	}
+
 	bunch=0;
 	return aBunch;
 }
