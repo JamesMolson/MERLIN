@@ -1,11 +1,16 @@
+//## begin module%1.4%.codegen_version preserve=yes
+//   Read the documentation to learn more about C++ code generator
+//   versioning.
+//## end module%1.4%.codegen_version
+
 //## begin module%37135540032A.cm preserve=no
 /*
  * Merlin C++ Class Library for Charged Particle Accelerator Simulations
  * 
- * Class library version 2.0 (2000)
+ * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\AcceleratorComponent.cpp
- * last modified 03/04/01 14:32:34
+ * last modified 04/04/02 12:05:59
  */
 //## end module%37135540032A.cm
 
@@ -16,9 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -33,25 +37,22 @@
 
 //## Module: AcceleratorComponent%37135540032A; Package body
 //## Subsystem: Merlin::AcceleratorModel%371355260226
-//## Source file: D:\dev\Merlin\AcceleratorModel\AcceleratorComponent.cpp
+//## Source file: C:\C++\Merlin\AcceleratorModel\AcceleratorComponent.cpp
 
 //## begin module%37135540032A.includes preserve=yes
 //## end module%37135540032A.includes
 
-// Aperture
-#include "AcceleratorModel/Aperture.h"
-// AcceleratorGeometry
-#include "AcceleratorModel/AcceleratorGeometry.h"
-// EMField
-#include "AcceleratorModel/EMField.h"
 // ComponentTracker
 #include "AcceleratorModel/TrackingInterface/ComponentTracker.h"
+// EMField
+#include "AcceleratorModel/EMField.h"
+// AcceleratorGeometry
+#include "AcceleratorModel/AcceleratorGeometry.h"
+// Aperture
+#include "AcceleratorModel/Aperture.h"
 // AcceleratorComponent
 #include "AcceleratorModel/AcceleratorComponent.h"
 
-
-//## begin module%37135540032A.declarations preserve=no
-//## end module%37135540032A.declarations
 
 //## begin module%37135540032A.additionalDeclarations preserve=yes
 //## end module%37135540032A.additionalDeclarations
@@ -63,52 +64,52 @@
 const int AcceleratorComponent::ID = UniqueIndex();
 //## end AcceleratorComponent::ID%371463CE019A.attr
 
-//## Operation: UniqueIndex%924072845
-int AcceleratorComponent::UniqueIndex ()
-{
-  //## begin AcceleratorComponent::UniqueIndex%924072845.body preserve=yes
-	static int ID_count = 0;
-	return ID_count++;
-  //## end AcceleratorComponent::UniqueIndex%924072845.body
-}
-
-//## Operation: ~AcceleratorComponent%924014182
+//## Operation: ~AcceleratorComponent%36EFCCA703BE
 AcceleratorComponent::~AcceleratorComponent ()
 {
-  //## begin AcceleratorComponent::~AcceleratorComponent%924014182.body preserve=yes
+  //## begin AcceleratorComponent::~AcceleratorComponent%36EFCCA703BE.body preserve=yes
   if(itsGeometry) delete itsGeometry;
   if(itsField) delete itsField;
-  //## end AcceleratorComponent::~AcceleratorComponent%924014182.body
+  //## end AcceleratorComponent::~AcceleratorComponent%36EFCCA703BE.body
 }
 
 
 
 //## Other Operations (implementation)
-//## Operation: GetIndex%924072843
+//## Operation: GetIndex%3714655B0352
 int AcceleratorComponent::GetIndex () const
 {
-  //## begin AcceleratorComponent::GetIndex%924072843.body preserve=yes
+  //## begin AcceleratorComponent::GetIndex%3714655B0352.body preserve=yes
 	return ID;
-  //## end AcceleratorComponent::GetIndex%924072843.body
+  //## end AcceleratorComponent::GetIndex%3714655B0352.body
 }
 
-//## Operation: GetLength%924014184
+//## Operation: GetLength%36E7C8E500C4
 //## Semantics:
 //	return itsGeometry!=0 ? itsGeometry->GetLength() : 0.0;
 double AcceleratorComponent::GetLength () const
 {
-  //## begin AcceleratorComponent::GetLength%924014184.body preserve=yes
+  //## begin AcceleratorComponent::GetLength%36E7C8E500C4.body preserve=yes
 	return itsGeometry ? itsGeometry->GetGeometryLength() : 0;
-  //## end AcceleratorComponent::GetLength%924014184.body
+  //## end AcceleratorComponent::GetLength%36E7C8E500C4.body
 }
 
-//## Operation: PrepareTracker%924014185
+//## Operation: PrepareTracker%36EE2EB503DE
 void AcceleratorComponent::PrepareTracker (ComponentTracker& aTracker)
 {
-  //## begin AcceleratorComponent::PrepareTracker%924014185.body preserve=yes
+  //## begin AcceleratorComponent::PrepareTracker%36EE2EB503DE.body preserve=yes
 	if(!aTracker.SelectIntegrator(AcceleratorComponent::ID,*this))
 		throw ComponentTracker::UnknownComponent();
-  //## end AcceleratorComponent::PrepareTracker%924014185.body
+  //## end AcceleratorComponent::PrepareTracker%36EE2EB503DE.body
+}
+
+//## Operation: UniqueIndex%3714646C01AE
+int AcceleratorComponent::UniqueIndex ()
+{
+  //## begin AcceleratorComponent::UniqueIndex%3714646C01AE.body preserve=yes
+	static int ID_count = 0;
+	return ID_count++;
+  //## end AcceleratorComponent::UniqueIndex%3714646C01AE.body
 }
 
 //## begin module%37135540032A.epilog preserve=yes

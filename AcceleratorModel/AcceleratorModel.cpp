@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%375C202C0276.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\AcceleratorModel.cpp
- * last modified 07/31/01 02:01:33 PM
+ * last modified 04/04/02 12:16:53
  */
 //## end module%375C202C0276.cm
 
@@ -21,7 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -39,21 +40,24 @@
 //## Source file: C:\C++\Merlin\AcceleratorModel\AcceleratorModel.cpp
 
 //## begin module%375C202C0276.includes preserve=yes
+#include <iomanip>
 #include <iterator>
 #include <cassert>
 #include "stdext/algorithm.h"
 //## end module%375C202C0276.includes
 
-// AcceleratorModel
-#include "AcceleratorModel/AcceleratorModel.h"
 // ComponentFrame
 #include "AcceleratorModel/Frames/ComponentFrame.h"
 // TComponentFrame
 #include "AcceleratorModel/Frames/TComponentFrame.h"
 // Channels
 #include "Channels/Channels.h"
+// ring_iterator
+#include "stdext/ring_iterator.h"
 // deleters
 #include "stdext/deleters.h"
+// AcceleratorModel
+#include "AcceleratorModel/AcceleratorModel.h"
 
 
 //## begin module%375C202C0276.additionalDeclarations preserve=yes
@@ -69,6 +73,14 @@ namespace {
 		}
 	};
 
+	struct ModelStats {
+		map<string,int>& s;
+		ModelStats(map<string,int>& stats) :s(stats) {}
+		void operator()(const ModelElement* element) {
+			s[element->GetType()]++;
+		}
+	};
+
 }
 
 extern ChannelServer* ConstructChannelServer();
@@ -78,20 +90,11 @@ extern ChannelServer* ConstructChannelServer();
 
 // Parameterized Class AcceleratorModel::Beamline::TRK 
 
-
 // Class AcceleratorModel::Beamline 
-
-
 
 // Class AcceleratorModel::BadRange 
 
 // Class AcceleratorModel 
-
-
-
-
-
-
 
 //## Operation: AcceleratorModel%39081B120388
 AcceleratorModel::AcceleratorModel ()
@@ -133,7 +136,7 @@ AcceleratorModel::Beamline AcceleratorModel::GetBeamline ()
 
 //## Operation: GetBeamline%3908076E00CB
 //## Exceptions: BadRange
-AcceleratorModel::Beamline AcceleratorModel::GetBeamline (Index n1, Index n2) throw (BadRange)
+AcceleratorModel::Beamline AcceleratorModel::GetBeamline (AcceleratorModel::Index n1, AcceleratorModel::Index n2) throw (BadRange)
 {
   //## begin AcceleratorModel::GetBeamline%3908076E00CB.body preserve=yes
 	if(n1<0 || n2>=lattice.size())
@@ -238,6 +241,31 @@ void AcceleratorModel::AddModelElement (ModelElement* element)
 	if(element!=0)
 		theElements->Add(element);
   //## end AcceleratorModel::AddModelElement%3AE843E400BE.body
+}
+
+//## Operation: ReportModelStatistics%3CAC27C9039A
+void AcceleratorModel::ReportModelStatistics (std::ostream& os) const
+{
+  //## begin AcceleratorModel::ReportModelStatistics%3CAC27C9039A.body preserve=yes
+	using std::map;
+
+	os<<"Arc length of beamline:     "<<globalFrame->GetGeometryLength()<<" meter"<<endl;
+	os<<"Total number of components: "<<lattice.size()<<endl;
+	os<<"Total numner of elements:   "<<theElements->Size()<<endl;
+	os<<endl;
+	os<<"Model Element statistics\n";
+	os<<"------------------------\n\n";
+
+	map<string,int> stats;
+	for_each(theElements->begin(),theElements->end(),ModelStats(stats));
+	for(map<string,int>::iterator si=stats.begin(); si!=stats.end(); si++) {
+		string atype = (*si).first;
+		int count = (*si).second;
+		os<<std::setw(20)<<left<<atype.c_str();
+		os<<std::setw(4)<<count<<endl;
+	}
+	os<<endl;
+  //## end AcceleratorModel::ReportModelStatistics%3CAC27C9039A.body
 }
 
 //## begin module%375C202C0276.epilog preserve=yes

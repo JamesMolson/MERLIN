@@ -1,7 +1,7 @@
-//## begin module%1.2%.codegen_version preserve=yes
+//## begin module%1.4%.codegen_version preserve=yes
 //   Read the documentation to learn more about C++ code generator
 //   versioning.
-//## end module%1.2%.codegen_version
+//## end module%1.4%.codegen_version
 
 //## begin module%375C20240154.cm preserve=no
 /*
@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\AcceleratorModel\AcceleratorModel.h
- * last modified 07/31/01 02:01:32 PM
+ * last modified 04/04/02 12:16:53
  */
 //## end module%375C20240154.cm
 
@@ -21,7 +21,8 @@
  *
  * MERLIN C++ class library for 
  * Charge Particle Accelerator Simulations
- * Copyright (c) 1999 by N.J.Walker.  ALL RIGHTS RESERVED. 
+ * Copyright (c) 2001 by The Merlin Collaboration.
+ * - ALL RIGHTS RESERVED - 
  *
  * Permission to use, copy, modify, distribute and sell this
  * software and its documentation for any purpose is hereby
@@ -63,13 +64,13 @@
 #include "AcceleratorModel/Implementation/ElementRepository.h"
 // LatticeFrame
 #include "AcceleratorModel/Frames/LatticeFrame.h"
-// StringPattern
-#include "utility/StringPattern.h"
 // ring_iterator
 #include "stdext/ring_iterator.h"
+// StringPattern
+#include "utility/StringPattern.h"
 
-template <class T> class TComponentFrame;
 class ComponentFrame;
+template <class T> class TComponentFrame;
 class RWChannel;
 class ROChannel;
 
@@ -85,6 +86,8 @@ using std::vector;
 //## Subsystem: Merlin::AcceleratorModel%371355260226
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
+
+
 
 //## Uses: <unnamed>%39080ABE01A7;StringPattern { -> }
 //## Uses: <unnamed>%39080B040111;AcceleratorModel::BadRange { -> F}
@@ -107,6 +110,8 @@ class AcceleratorModel
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
+
+
     typedef std::vector<ComponentFrame*> FlatLattice;
 
     //## Class: BeamlineIterator%390802BF00BD
@@ -115,6 +120,8 @@ class AcceleratorModel
     //## Subsystem: Merlin::AcceleratorModel%371355260226
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
+
+
 
     //## Uses: <unnamed>%39081832038A;FlatLattice { -> }
     //## Uses: <unnamed>%3AC4903200A0;ComponentFrame { -> F}
@@ -127,6 +134,8 @@ class AcceleratorModel
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
+
+
     //## Uses: <unnamed>%3908183501A3;FlatLattice { -> }
 
     typedef FlatLattice::const_iterator ConstBeamlineIterator;
@@ -138,6 +147,8 @@ class AcceleratorModel
     //## Subsystem: Merlin::AcceleratorModel%371355260226
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
+
+
 
     //## Uses: <unnamed>%3908041003A7;BeamlineIterator { -> }
     //## Uses: <unnamed>%390806A500D6;ConstBeamlineIterator { -> }
@@ -152,6 +163,8 @@ class AcceleratorModel
         //## Subsystem: Merlin::AcceleratorModel%371355260226
         //## Persistence: Transient
         //## Cardinality/Multiplicity: n
+
+
 
         template <class T>
         class TRK 
@@ -308,12 +321,12 @@ class AcceleratorModel
         // Data Members for Class Attributes
 
           //## Attribute: first%39080413013E
-          //## begin AcceleratorModel::Beamline::first%39080413013E.attr preserve=no  private: BeamlineIterator {UA} 
+          //## begin AcceleratorModel::Beamline::first%39080413013E.attr preserve=no  private: AcceleratorModel::BeamlineIterator {UA} 
           BeamlineIterator first;
           //## end AcceleratorModel::Beamline::first%39080413013E.attr
 
           //## Attribute: last%3908041A022F
-          //## begin AcceleratorModel::Beamline::last%3908041A022F.attr preserve=no  private: BeamlineIterator {UA} 
+          //## begin AcceleratorModel::Beamline::last%3908041A022F.attr preserve=no  private: AcceleratorModel::BeamlineIterator {UA} 
           BeamlineIterator last;
           //## end AcceleratorModel::Beamline::last%3908041A022F.attr
 
@@ -325,6 +338,8 @@ class AcceleratorModel
     //## Subsystem: Merlin::AcceleratorModel%371355260226
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
+
+
 
     class BadRange 
     {
@@ -340,6 +355,8 @@ class AcceleratorModel
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
 
+
+
     typedef size_t Index;
 
     //## Class: RingIterator%3B6695C800F0
@@ -347,6 +364,8 @@ class AcceleratorModel
     //## Subsystem: Merlin::AcceleratorModel%371355260226
     //## Persistence: Transient
     //## Cardinality/Multiplicity: n
+
+
 
     //## Uses: <unnamed>%3B66962D022C;FlatLattice { -> }
     //## Uses: <unnamed>%3B6696420074;ring_iterator { -> }
@@ -478,12 +497,12 @@ class AcceleratorModel
       //	objects to the AcceleratorModel.
       void AddModelElement (ModelElement* element);
 
-    // Data Members for Associations
+      //## Operation: ReportModelStatistics%3CAC27C9039A
+      //	Prints to the specified stream statistics about the
+      //	model.
+      void ReportModelStatistics (std::ostream& os) const;
 
-      //## Association: Merlin::AcceleratorModel::<unnamed>%3AC48CED0280
-      //## Role: AcceleratorModel::<the_ModelElement>%3AC48CEF01CC
-      //## begin AcceleratorModel::<the_ModelElement>%3AC48CEF01CC.role preserve=no  public: ModelElement { -> nVHgAN}
-      //## end AcceleratorModel::<the_ModelElement>%3AC48CEF01CC.role
+    // Data Members for Associations
 
   public:
   protected:
@@ -515,7 +534,9 @@ class AcceleratorModel
       //## end AcceleratorModel::chServer%3AC4DEC903CA.role
 
   private: //## implementation
+  //## begin AcceleratorModel%3906CBD901A5.friends preserve=no
     friend class AcceleratorModelConstructor;
+  //## end AcceleratorModel%3906CBD901A5.friends
 };
 
 //## begin module%375C20240154.epilog preserve=yes

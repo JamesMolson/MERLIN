@@ -9,8 +9,8 @@
  * 
  * Class library version 2.0 (1999)
  * 
- * file Merlin\AcceleratorModel\StdField\WakePotentials.h
- * last modified 24/01/02 15:36:47
+ * file Merlin\AcceleratorModel\WakePotentials.h
+ * last modified 04/04/02 11:52:10
  */
 //## end module%3C5018DF03BA.cm
 
@@ -36,8 +36,8 @@
 //## end module%3C5018DF03BA.cp
 
 //## Module: WakePotentials%3C5018DF03BA; Pseudo Package specification
-//## Subsystem: Merlin::AcceleratorModel::StdField%371DC93C0118
-//## Source file: C:\C++\Merlin\AcceleratorModel\StdField\WakePotentials.h
+//## Subsystem: Merlin::AcceleratorModel%371355260226
+//## Source file: C:\C++\Merlin\AcceleratorModel\WakePotentials.h
 
 #ifndef WakePotentials_h
 #define WakePotentials_h 1
@@ -57,8 +57,8 @@
 //	Abstract class for calculating the longitudinal and
 //	transverse single-bunch wakefield potentials (Greens
 //	functions).
-//## Category: Merlin::AcceleratorModel::StdField%371DC8870244
-//## Subsystem: Merlin::AcceleratorModel::StdField%371DC93C0118
+//## Category: Merlin::AcceleratorModel%370B943B0384
+//## Subsystem: Merlin::AcceleratorModel%371355260226
 //## Persistence: Transient
 //## Cardinality/Multiplicity: n
 
