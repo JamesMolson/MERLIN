@@ -74,6 +74,10 @@ double erfc(double x);
 inline double erf(double x) { return 1-erfc(x); }
 double NormalBin(double x1, double x2);
 
+// Modified Bessel function
+double BesselI0(double x);
+double BesselI1(double x);
+double BesselIn(int n, double x);
 
 //## end module%37C40288015E.additionalDeclarations
 
