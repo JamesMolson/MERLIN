@@ -40,6 +40,9 @@ using namespace PhysicalUnits;
 
 namespace {
 	
+	// tolerance for bend scaling
+#define REL_ENGY_TOL 1.0-06
+
 	struct MultipoleKick {
 		const MultipoleField& field;
 		Complex scale;
@@ -203,9 +206,9 @@ namespace TRANSPORT {
 		if(GetIntegratedLength()==0)
 			ApplyPoleFaceRotation(h,K1.real(),pfi.entrance);
 
-		if(fequal(P0,Pref))
+		if(fequal(P0,Pref,REL_ENGY_TOL))
 			ApplyMapToBunch(GetBunch(),M);
-		else
+		else 
 			ApplyMapToBunch(GetBunch(),M,P0/Pref);	
 		
 		// Now if we have split the magnet, we need to
@@ -224,7 +227,7 @@ namespace TRANSPORT {
 			// through the linear second half
 			for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,ds,P0,q));
 
-			if(fequal(P0,Pref))
+			if(fequal(P0,Pref,REL_ENGY_TOL))
 				ApplyMapToBunch(GetBunch(),M);
 			else
 				ApplyMapToBunch(GetBunch(),M,P0/Pref);
