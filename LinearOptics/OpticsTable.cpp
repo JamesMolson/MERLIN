@@ -256,6 +256,9 @@ void OpticsTable::Calculate ()
 			z+=l/2;
 		}
 	}
+	// Output final
+	OutputRow("MARKER.END",z,0);
+
   //## end OpticsTable::Calculate%399BE61202BD.body
 }
 
