@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\MADInterface\MADInterface.cpp
- * last modified 30/11/01 13:27:24
+ * last modified 04/12/01 10:41:01
  */
 //## end module%39576D6500C8.cm
 
@@ -176,6 +176,13 @@ inc_sr(false)
 	string s;
 	getline(ifs,s);
 	prmMap = new MADKeyMap(s);
+
+	// By default, we currently treat the following MAD
+	// types as drifts
+	TreatTypeAsDrift("MARKER"); // merlin bug!
+	TreatTypeAsDrift("RCOLLIMATOR"); 
+	TreatTypeAsDrift("ECOLLIMATOR"); 
+
   //## end MADInterface::MADInterface%39576D8603D4.body
 }
 
@@ -219,6 +226,14 @@ void MADInterface::IgnoreZeroLengthType (const string& madType)
   //## begin MADInterface::IgnoreZeroLengthType%3965E6CE03D5.body preserve=yes
 	zeroLengths.insert(madType);
   //## end MADInterface::IgnoreZeroLengthType%3965E6CE03D5.body
+}
+
+//## Operation: TreatTypeAsDrift%3C0C99F103E2
+void MADInterface::TreatTypeAsDrift (const std::string& typestr)
+{
+  //## begin MADInterface::TreatTypeAsDrift%3C0C99F103E2.body preserve=yes
+	driftTypes.insert(typestr);
+  //## end MADInterface::TreatTypeAsDrift%3C0C99F103E2.body
 }
 
 //## Operation: ConstructNewFrame%3965BAAA0119
@@ -314,29 +329,27 @@ double MADInterface::ReadComponent ()
 	double brho = energy/eV/SpeedOfLight;
 
 	try {
+
+		if(driftTypes.find(type)!=driftTypes.end()) {
+			MerlinIO::warning()<<"Treating "<<type<<" as Drift"<<endl;
+			type="DRIFT";
+		}
+
 		// get the 'standard' parameters
 		len = prmMap->GetParameter("L");
 		tilt = prmMap->GetParameter("TILT",false);
 
-		if(len==0 && zeroLengths.find(type)!=zeroLengths.end())
+		if(len==0 && zeroLengths.find(type)!=zeroLengths.end()) {
+			MerlinIO::warning()<<"Ignoring zero length "<<type<<endl;
 			return 0;
-		
-		// MERLIN-II bug: doesn't like Markers!
-		if(type=="MARKER") type="DRIFT";
-		
-		//		if(type=="SKEWSEXT" || type=="OCTUPOLE")
-		//			type="DRIFT";
-		
-		if(type=="MARKER" || 
-			type=="RCOLLIMATOR" || 
-			type=="ECOLLIMATOR") {
-			MerlinIO::warning()<<"Treating "<<type<<" as Drift"<<endl;
-			type="Drift";
 		}
-		else if(type=="VKICKER")
+		
+		if(type=="VKICKER")
 			type="XCOR";
 		else if(type=="HKICKER") 
 			type="YCOR";
+		else if(type=="LCAV")
+			type="RFCAVITY";
 		
 		if(type=="DRIFT") {
 			Drift* aDrift = new Drift(name,len);
@@ -439,8 +452,10 @@ double MADInterface::ReadComponent ()
 				component=ws;
 			}
 			else {
-				MERLIN_ERR<<"ERROR: unknown monitor type: "<<name<<endl;
-				abort();
+				MERLIN_WARN<<"unknown monitor type: "<<name<<" defaulting to BPM"<<endl;
+				BPM* bpm = new BPM(name);
+				ctor->AppendComponent(*bpm);
+				component=bpm;
 			}
 		}
 		else if(type=="LINE") {

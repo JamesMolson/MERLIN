@@ -10,7 +10,7 @@
  * Class library version 2.0 (1999)
  * 
  * file Merlin\MADInterface\MADInterface.h
- * last modified 30/11/01 13:27:24
+ * last modified 04/12/01 10:41:00
  */
 //## end module%39576D6500C8.cm
 
@@ -140,6 +140,10 @@ class MADInterface
       //	this case, the beam energy is the initial energy.
       void ScaleForSynchRad (bool scaleSR);
 
+      //## Operation: TreatTypeAsDrift%3C0C99F103E2
+      //	Treats the mad type typestr as a drift.
+      void TreatTypeAsDrift (const std::string& typestr);
+
   protected:
   private:
     // Data Members for Class Attributes
@@ -180,14 +184,19 @@ class MADInterface
       //## end MADInterface::incApertures%3965D79F0082.attr
 
       //## Attribute: zeroLengths%3965E74000AE
-      //## begin MADInterface::zeroLengths%3965E74000AE.attr preserve=no  private: std::set<string> {UA} 
-      std::set<string> zeroLengths;
+      //## begin MADInterface::zeroLengths%3965E74000AE.attr preserve=no  private: std::set<std::string> {UA} 
+      std::set<std::string> zeroLengths;
       //## end MADInterface::zeroLengths%3965E74000AE.attr
 
       //## Attribute: inc_sr%3C076B3F00AE
       //## begin MADInterface::inc_sr%3C076B3F00AE.attr preserve=no  private: bool {UA} 
       bool inc_sr;
       //## end MADInterface::inc_sr%3C076B3F00AE.attr
+
+      //## Attribute: driftTypes%3C0C99C701B1
+      //## begin MADInterface::driftTypes%3C0C99C701B1.attr preserve=no  private: std::set<std::string> {UA} 
+      std::set<std::string> driftTypes;
+      //## end MADInterface::driftTypes%3C0C99C701B1.attr
 
   private: //## implementation
 
