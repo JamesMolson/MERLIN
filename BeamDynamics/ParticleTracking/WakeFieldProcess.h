@@ -20,11 +20,14 @@ public:
 	WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0);
 	~WakeFieldProcess();
 	
+	virtual void InitialiseProcess (Bunch& bunch);
 	virtual void SetCurrentComponent (AcceleratorComponent& component);
 	virtual void DoProcess (double ds);
 	virtual double GetMaxAllowedStepSize () const;
 	
 	void IncludeTransverseWake(bool flg) { inc_tw = flg; }
+
+	void DumpSliceCentroids(ostream&) const;
 
 private:
 	

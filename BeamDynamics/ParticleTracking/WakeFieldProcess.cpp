@@ -19,6 +19,8 @@
 
 namespace {
 
+#define COUT(x) cout<<std::setw(12)<<scientific<<std::setprecision(4)<<(x);
+
 	using namespace std;
 	using namespace PhysicalConstants;
 	using namespace PhysicalUnits;
@@ -36,6 +38,23 @@ namespace {
 		}
 		return n>1 ? c/n : c;
 	}
+
+	PSvector GetSliceCentroid6D(ParticleBunch::const_iterator first, 
+								ParticleBunch::const_iterator last)
+	{
+		PSvector c(0);
+		double n=0;
+		while(first!=last) {
+			c += *first;
+			first++;
+			n++;
+		}
+		if(n>1)
+			c/=n;
+
+		return c;
+	}
+
 };
 
 
@@ -59,10 +78,12 @@ size_t WakeFieldProcess::CalculateQdist()
 	zmax =  nsig*sigz+z0;
 	dz = (zmax-zmin)/nbins;
 
-	size_t lost = ParticleBinList(*currentBunch,zmin,zmax,dz,bunchSlices,Qd);
+	bunchSlices.clear();
+	Qd.clear();
+	size_t lost = ParticleBinList(*currentBunch,zmin,zmax,nbins,bunchSlices,Qd);
 	
 #ifndef NDEBUG
-	ofstream os("data/qdist.dat");
+	ofstream os("qdist.dat");
 	os<<zmin<<' '<<zmax<<' '<<dz<<endl;
 	copy(Qd.begin(),Qd.end(),ostream_iterator<double>(os,"\n"));
 #endif
@@ -129,14 +150,16 @@ void WakeFieldProcess::DoProcess (double ds)
 		double gx = WAKE_GRADIENT(wake_x);
 		double gy = WAKE_GRADIENT(wake_y);
 
+
+//		cout<<nslice<<" ("<<flush<<distance(bunchSlices[nslice],bunchSlices[nslice+1])<<") ";
+
 		for(ParticleBunch::iterator p=bunchSlices[nslice]; p!=bunchSlices[nslice+1]; p++) {
-			
 			double zz = p->ct()-z;
 			double ddp = -ds*(wake_z[nslice]+gz*zz)/p0;
 			p->dp() += ddp;
 			bload += ddp;
 			
-			double dxp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
+			double dxp =  inc_tw? ds*(wake_x[nslice]+gx*zz)/p0 : 0;
 			double dyp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
 			
 			p->xp() = (p->xp()+dxp)/(1+ddp);
@@ -145,6 +168,7 @@ void WakeFieldProcess::DoProcess (double ds)
 		z+=dz;
 	}
 	currentBunch->AdjustRefMomentum(bload/currentBunch->size());
+//	currentBunch->AdjustRefMomentumToMean();
 }
 
 double WakeFieldProcess::GetMaxAllowedStepSize () const
@@ -160,7 +184,7 @@ void WakeFieldProcess::Init()
 		// Even though we have truncated particles, we still keep the
 		// the bunch charge constant
 		currentBunch->SetMacroParticleCharge(Qt/(currentBunch->size()));
-		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated";
+		MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
 	}
 
 	// Calculate the long. bunch wake.
@@ -188,6 +212,13 @@ void WakeFieldProcess::CalculateWakeL()
 		}
 		wake_z[i]*=a0;
 	}
+
+#ifndef NDEBUG
+	ofstream os("bunchWake.dat");
+	os<<zmin<<' '<<zmax<<' '<<dz<<endl;
+	copy(wake_z.begin(),wake_z.end(),ostream_iterator<double>(os,"\n"));
+#endif
+
 }
 
 void WakeFieldProcess::CalculateWakeT()
@@ -214,7 +245,24 @@ void WakeFieldProcess::CalculateWakeT()
 			wake_x[i] += wxy*xyc[j].x;
 			wake_y[i] += wxy*xyc[j].y;
 		}
+		wake_x[i]*=a0;
 		wake_y[i]*=a0;
 	}
+}
+
+void WakeFieldProcess::DumpSliceCentroids(ostream& os) const
+{
+	for(size_t i=0; i<nbins; i++) {
+		os<<std::setw(4)<<i;
+		os<<GetSliceCentroid6D(bunchSlices[i],bunchSlices[i+1]);
+	}
+}
+		
+
+void WakeFieldProcess::InitialiseProcess (Bunch& bunch)
+{
+	ParticleBunchProcess::InitialiseProcess(bunch);
+	currentWake = 0;
+	recalc = true;
 }
 
