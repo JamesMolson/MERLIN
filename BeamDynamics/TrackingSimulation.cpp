@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-14 13:52:16 $
-// $Revision: 1.5 $
+// $Date: 2004-12-20 16:58:59 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -85,12 +85,12 @@ TrackingSimulation::~TrackingSimulation ()
         delete ibunchCtor;
 }
 
-Bunch& TrackingSimulation::DoRun (bool do_init)
+Bunch& TrackingSimulation::DoRun (bool new_bunch, bool do_init)
 {
     // force initialisation if there is no bunch
-    do_init = do_init || (bunch==0);
+    do_init = new_bunch || do_init || (bunch==0);
 
-    if(do_init) {
+    if(new_bunch) {
         assert(ibunchCtor!=0);
         if(bunch!=0)
             delete bunch;
@@ -124,12 +124,12 @@ Bunch& TrackingSimulation::DoRun (bool do_init)
 
 Bunch& TrackingSimulation::Run()
 {
-    return DoRun(true);
+    return DoRun(true,true);
 }
 
 Bunch& TrackingSimulation::Continue()
 {
-    return DoRun(false);
+    return DoRun(false,false);
 }
 
 

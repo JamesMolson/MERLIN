@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-14 13:52:16 $
-// $Revision: 1.5 $
+// $Date: 2004-12-20 16:58:59 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -184,6 +184,7 @@ public:
 protected:
 
     Bunch* bunch;
+    Bunch& DoRun(bool new_bunch, bool do_init);
 
 private:
 
@@ -199,8 +200,6 @@ private:
     AcceleratorModel::Beamline theBeamline;
     Stepper* cstepper;
     SimulationOutput* simOp;
-
-    Bunch& DoRun(bool);
 };
 
 //	A template class which is used to implement a bunch
