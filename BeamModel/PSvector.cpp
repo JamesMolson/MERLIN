@@ -7,20 +7,24 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2004-12-22 09:28:00 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
-#include <iterator>
-#include <algorithm>
+//#include <iterator>
+//#include <algorithm>
+#include <iomanip>
 #include "BeamModel/PSvector.h"
 
 using namespace std;
 
 ostream& operator<<(ostream& os, const PSvector& v)
 {
-    copy(v.v,v.v+6,ostream_iterator<double>(os," "));
+    for(size_t i=0; i<6; i++)
+        os<<setw(14)<<scientific<<setprecision(5)<<v[i];
+
+//    copy(v.v,v.v+6,ostream_iterator<double>(os," "));
     return os<<'\n';
 }
 

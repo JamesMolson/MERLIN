@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.7 $
+// $Date: 2004-12-22 09:28:00 $
+// $Revision: 1.8 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ void OutputIndexParticles(const PSvectorArray lost_p, const list<size_t>& lost_i
     list<size_t>::const_iterator ip = lost_i.begin();
 
     while(p!=lost_p.end()) {
-        os<<std::setw(8)<<right<<*ip;
+        os<<std::setw(12)<<right<<*ip;
         os<<*p;
         ++p;
         ++ip;
