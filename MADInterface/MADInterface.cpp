@@ -345,9 +345,9 @@ double MADInterface::ReadComponent ()
 		}
 		
 		if(type=="VKICKER")
-			type="XCOR";
-		else if(type=="HKICKER") 
 			type="YCOR";
+		else if(type=="HKICKER") 
+			type="XCOR";
 		else if(type=="LCAV")
 			type="RFCAVITY";
 		

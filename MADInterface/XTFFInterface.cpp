@@ -34,10 +34,11 @@
 #include <fstream>
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 
 #include "AcceleratorModel/Components.h"
 #include "AcceleratorModel/Construction/AcceleratorModelConstructor.h"
-
+#include "AcceleratorModel/Apertures/SimpleApertures.h"
 #include "NumericalUtils/PhysicalConstants.h"
 
 using namespace PhysicalConstants;
@@ -141,7 +142,9 @@ namespace {
 #define H2    10
 #define HKICK  6
 #define VKICK  7
-	
+#define XGAP   6
+#define YGAP   7
+
 	
 	Drift* ConstructDrift(const Data& data)
 	{
@@ -296,6 +299,11 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 //	else if(TYPEIS(MARK))
 //		dat.keywrd = "DRIF";
 
+	if(driftTypes.find(dat.keywrd)!=driftTypes.end()) {
+		cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
+		dat.keywrd = "DRIF";
+	}
+
 	AcceleratorComponent* c;
 
 	if(dat.keywrd=="DRIF")
@@ -330,9 +338,19 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 		c = mc->AppendComponent(ConstructProfileMonitor(dat));
 	else if(dat.keywrd=="MARK")
 		c = mc->AppendComponent(ConstructMarker(dat));
+	else if(dat.keywrd=="RCOL") {
+		// construct a drift with a rectangular aperture
+		c = mc->AppendComponent(ConstructDrift(dat));
+		if(incApertures)
+			c->SetAperture(new RectangularAperture(2*dat[XGAP],2*dat[YGAP]));
+	}
 	else {
 		cerr<<"WARNING: treating "<<dat.keywrd<<" as DRIFT"<<endl;
 		c = mc->AppendComponent(ConstructDrift(dat));
+	}
+
+	if(incApertures && dat[APER]!=0) {
+		c->SetAperture(new CircularAperture(dat[APER]));
 	}
 
 	z_total += c->GetLength();
@@ -348,11 +366,11 @@ void XTFFInterface::ConstructComponent(XTFF_Data& dat)
 }
 
 XTFFInterface::XTFFInterface(const string& fname, double Nb, ostream* logstream)
-: ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream)
+: ifs(fname.c_str()),mc(0),beam0(0),nb(Nb),logos(logstream),incApertures(true)
 {
 	if(!ifs) {
-		cerr<<"Error opening input file "<<fname<<endl;
-		exit(1);
+		string msg = "cannot open file "+fname;
+		throw runtime_error(msg);
 	}
 }
 
@@ -450,4 +468,11 @@ int XTFFInterface::ParseHeader()
 	getline(ifs,ipline);
 	
 	return n-1;
+}
+
+void XTFFInterface::TreatTypeAsDrift(const string& dt)
+{
+	string dt1(4,' ');
+	transform(dt.begin(),dt.begin()+4,dt1.begin(),toupper);
+	driftTypes.insert(dt1);
 }

@@ -62,20 +62,28 @@ public:
 
 	pair<AcceleratorModel*,BeamData*> Parse();
 	
+	// Construct apertures if flag is true (default)
+	void IncludeApertures(bool flag) { incApertures = flag; }
+
+	// Treat MAD type as DRIFT
+	void TreatTypeAsDrift(const string&);
+
 	// data structure for XTFF data
 	struct XTFF_Data;
 	
-private:
-	
+private:	
 
 	void ConstructComponent(XTFF_Data&);
 	int ParseHeader();
+
+	std::set<string> driftTypes;
 
 	std::ifstream ifs;
 	AcceleratorModelConstructor* mc;
 	BeamData* beam0;
 	double nb;
 	ostream* logos;
+	bool incApertures;
 };
 
 
