@@ -274,14 +274,24 @@ namespace TRANSPORT {
 		// including any dipole term.
 		using namespace TLAS;
 		
-		CHK_ZERO(ds);
+
 		
 		double P0 = GetBunch().GetReferenceMomentum();
 		double q = GetBunch().GetChargeSign();
 		double brho = P0/eV/SpeedOfLight;
-		
 		MultipoleField& field = Component().GetField();
-		
+
+		// we now support thin-lens kicks (this has been added to support
+		// thin-lens corrector dipoles)
+
+		if(Component().GetLength()==0 && ds==0 && !field.IsNullField()) {
+			// treat field as integrated strength
+			for_each(GetBunch().begin(),GetBunch().end(),MultipoleKick(field,1.0,P0,q));
+			return 0;
+		}
+
+		CHK_ZERO(ds);
+	
 		const Complex ch  = q*field.GetKn(0,brho);
 		const Complex cK1 = q*field.GetKn(1,brho);
 		const Complex cK2 = q*field.GetKn(2,brho);

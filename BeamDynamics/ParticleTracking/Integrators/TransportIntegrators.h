@@ -39,6 +39,7 @@
 #include "AcceleratorModel/StdComponent/Drift.h"
 // SWRFStructure
 #include "AcceleratorModel/StdComponent/SWRFStructure.h"
+
 // ParticleBunchIntegrator
 #include "BeamDynamics/ParticleTracking/ParticleBunchIntegrator.h"
 
