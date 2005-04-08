@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-22 09:26:47 $
-// $Revision: 1.5 $
+// $Date: 2005-04-08 15:22:17 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -209,7 +209,7 @@ void TTrackSim<T>::SetInitialParticle (const particle_type& p, double Pref)
 }
 
 template<class T>
-TTrackSim<T>::bunch_type* TTrackSim<T>::Track(bunch_type* aBunch)
+__TYPENAME__ TTrackSim<T>::bunch_type* TTrackSim<T>::Track(bunch_type* aBunch)
 {
     if(bunch!=0)
         delete bunch;
