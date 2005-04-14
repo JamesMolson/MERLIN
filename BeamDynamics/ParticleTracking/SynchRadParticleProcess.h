@@ -78,14 +78,7 @@ class SynchRadParticleProcess : public ParticleBunchProcess
 {
 public:
 
-
-
-
-
-
     typedef double (*PhotonGenerator)(double);
-
-
 
     //	Constructor taking the process priority (>=0), the
     //	number of equal steps to take through a component
@@ -93,36 +86,26 @@ public:
     //	modelled.
     SynchRadParticleProcess (int prio, bool q = false);
 
-
-
-
     //	Sets the current accelerator component. If component is
     //	a SectorBend, then the process becomes active.
     virtual void SetCurrentComponent (AcceleratorComponent& component);
 
-
     //	Preform the process for the specified step ds.
     virtual void DoProcess (double ds);
 
-
     //	Returns the current maximum step length for this process.
     virtual double GetMaxAllowedStepSize () const;
-
 
     //	Include radiation effects in Quadrupoles and Skew
     //	Quadrupoles.
     void IncludeQuadRadiation (bool quadsr);
 
-
     //	Sets the function to be called to generate the photon
     //	spectrum.
     static void SetPhotonGenerator (PhotonGenerator pg)
     {
-
         pgen = pg;
-
     }
-
 
     //	Sets the minimum number of equal steps to take through
     //	the component.
@@ -132,24 +115,31 @@ public:
     //	the component.
     void SetMaxComponentStepSize (double ds_max);
 
-
     //	If gp==true, include quantum excitation effects via
     //	photon generation.
     void GeneratePhotons (bool gp);
-
 
     //	If flg==true, the reference energy (momentum) of the
     //	ParticleBunch is adjusted to the mean of the particle
     //	energies. If false, then only the dp/p are adjusted.
     void AdjustBunchReferenceEnergy (bool flg)
     {
-
         adjustEref = flg;
-
     }
 
-    // Data Members for Associations
+	//  If flg==true, changes to phase space variables are
+	//  calculated appropriately for symplectic variables,
+	//  i.e. xp and yp are the momenta canonical to
+	//  the co-ordinates x and y.
+	//  If flg==false, changes to phase space variables are
+	//  calculated appropriately for xp and yp being the angles
+	//  of the particle trajectory to the reference trajectory.
+	static void UseSymplecticVariables (bool flg)
+	{
+		sympVars = flg;
+	}
 
+    // Data Members for Associations
 
 
     //	Pointer to the function which generates the random
@@ -162,69 +152,40 @@ public:
 
     static PhotonGenerator pgen;
 
+	static bool sympVars;	// Flag to indicate whether tracking uses symplectic variables
 
 public:
 protected:
 private:
     // Data Members for Class Attributes
 
-
-
     int ns;
-
-
-
 
     PhotonGenerator quantum;
 
-
-
-
     bool incQ;
 
-
-
-
     bool adjustEref;
-
 
 private:
     // Data Members for Class Attributes
 
-
     //	The rms momentum addition per unit length.
-
     double ds2;
 
-
-
     //	The mean energy loss per unit length.
-
     double ds1;
-
-
-
 
     double dL;
 
-
-
-
     int nk1;
-
-
-
 
     double intS;
 
 
     // Data Members for Associations
 
-
-
-
     MultipoleField* currentField;
-
 
     double dsMax;
 };

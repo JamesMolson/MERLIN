@@ -62,13 +62,14 @@ struct ApplySR {
     const MultipoleField& Bf;
     double dL;
     double P0;
+	bool symp;
     spec_gen photgen;
 
     double meanU;
     size_t n;
 
-    ApplySR(const MultipoleField& field, double dl, double p0, spec_gen sg =0)
-            : Bf(field),dL(dl),P0(p0),photgen(sg),meanU(0),n(0) {};
+    ApplySR(const MultipoleField& field, double dl, double p0, bool sV, spec_gen sg =0)
+            : Bf(field),dL(dl),P0(p0),symp(sV),photgen(sg),meanU(0),n(0) {};
 
     double MeanEnergyLoss() const { return meanU/n; }
 
@@ -88,9 +89,32 @@ struct ApplySR {
             u = PHOTCONST2 * B * dL * uc;
 
         meanU += u;
-        v.dp() -= u / P0;
-        v.xp() /= (1. + u/P0);
-        v.yp() /= (1. + u/P0);
+
+		double& px = v.xp();
+		double& py = v.yp();
+		double& dp = v.dp();
+
+		if(symp) {
+
+			double ks  = sqrt((1.0+dp)*(1.0+dp) - px*px - py*py);
+			double kx  = px/ks;
+			double ky  = py/ks;
+
+			dp -= u / P0;
+
+			double kz = (1.0 + dp)/sqrt(1.0 + kx*kx + ky*ky);
+
+			px = kx*kz;
+			py = ky*kz;
+
+		} else {
+
+			dp -= u / P0;
+			px /= (1.0 + u/P0);
+			py /= (1.0 + u/P0);
+
+		};
+
         n++;
     }
 
@@ -105,7 +129,7 @@ namespace ParticleTracking {
 
 SynchRadParticleProcess::PhotonGenerator SynchRadParticleProcess::pgen = HBSpectrumGen;
 
-
+bool SynchRadParticleProcess::sympVars = false;
 
 SynchRadParticleProcess::SynchRadParticleProcess (int prio, bool q)
 
@@ -151,7 +175,7 @@ void SynchRadParticleProcess::DoProcess (double ds)
         double meanU = for_each(
                            currentBunch->begin(),
                            currentBunch->end(),
-                           ApplySR(*currentField,dL,E0,quantum)).MeanEnergyLoss();
+                           ApplySR(*currentField,dL,E0,sympVars,quantum)).MeanEnergyLoss();
 
         // Finally we adjust the reference of the
         // bunch to reflect the mean energy loss
