@@ -340,6 +340,14 @@ void WakeFieldProcess::InitialiseProcess (Bunch& bunch)
 // Adapted from Numerical Recipes in C
 // This routine need only be executed once,
 // when the WakeFieldProcess is initialized.
+int powi(int i, int j)
+{
+	int p = 1;
+	for(int m=0; m<j; m++)
+		p *= i;
+	return p;
+};
+
 void savgol(vector<double>& c, int nl, int nr, int ld, int m)
 {
     Matrix<double> a(m+1,m+1);
@@ -350,7 +358,7 @@ void savgol(vector<double>& c, int nl, int nr, int ld, int m)
             double sum = 0.0;
 
             for(int k=-nl; k<=nr; k++)
-                sum += pow( k, i) * pow( k, j);
+                sum += powi(k, i) * powi(k, j);
 
             a(i,j) = sum;
             a(j,i) = sum;
