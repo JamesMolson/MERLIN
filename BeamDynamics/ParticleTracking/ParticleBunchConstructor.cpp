@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.8 $
+// $Date: 2005-04-14 16:01:43 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -78,7 +78,7 @@ Bunch* ParticleBunchConstructor::ConstructBunch (int bunchIndex) const
     p.y()=beamdat.y0;
     p.yp()=beamdat.yp0;
     p.dp()=0;
-    p.ct()=0;
+    p.ct()=beamdat.ct0;
     pbunch.push_back(p);
 
     size_t i;
