@@ -76,7 +76,7 @@ void RotateMoments(const R2Map& R, PSmoments4D& S)
 namespace SMPTracking {
 
 SMPTransform3D::SMPTransform3D (const Transform3D& t)
-        : bNoRot(t.R().isIdentity())
+        : bNoRot(t.R().isIdentity()),nullRotation(false)
 {
     if(!bNoRot) {
 
@@ -89,6 +89,8 @@ SMPTransform3D::SMPTransform3D (const Transform3D& t)
         R.r22=RR(1,1);
         theta_x = RR(0,2);
         theta_y = RR(1,2);
+
+        nullRotation = R.IsIdentity();
     }
     delta_x = t.X().x;
     delta_y = t.X().y;
@@ -102,7 +104,8 @@ SliceMacroParticle& SMPTransform3D::Apply(SliceMacroParticle& p) const
     p.y()-=delta_y;
 
     if(!bNoRot) {
-        RotateMoments(R,p);
+        if(!nullRotation)
+            RotateMoments(R,p);
         p.xp()+=theta_x;
         p.yp()+=theta_y;
     }

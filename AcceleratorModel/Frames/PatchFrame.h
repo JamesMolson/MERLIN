@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:17:37 $
-// $Revision: 1.1 $
+// $Date: 2005-04-26 20:02:47 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -53,6 +53,12 @@ public:
 
     virtual const Transform3D* GetEntranceGeometryPatch() const {
         return itsPatch->GetTransformation();
+    }
+
+    void SetGeometryPatch(GeometryPatch* gp) {
+        if(itsPatch)
+            delete itsPatch;
+        itsPatch = gp;
     }
 
 private:

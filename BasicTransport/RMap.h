@@ -13,6 +13,7 @@
 #include <vector>
 #include "BeamModel/PSTypes.h"
 #include "TLAS/LinearAlgebra.h"
+#include "NumericalUtils/utils.h"
 
 // class RMap
 // A linear phase space map. RMap represents a 6x6 matrixs (R matrix) which
@@ -147,6 +148,8 @@ struct R2Map {
     // array subscript operators (i={1,2})
     double* operator[](int n) { return &r11+2*n-3; }
     const double* operator[](int n) const { return &r11+2*n-3; }
+
+    bool IsIdentity() const { return fequal(r11,1.0,1.0e-6) && fequal(r22,1.0,1.0e-6); }
 
     // matrix elements
     double r11,r12,r21,r22;

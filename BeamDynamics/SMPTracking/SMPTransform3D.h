@@ -51,6 +51,7 @@ private:
     R2Map R;
     double delta_x,delta_y,theta_x,theta_y;
     bool bNoRot;
+    bool nullRotation;
 };
 
 }; // end namespace SMPTracking

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2005-04-26 20:02:47 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -171,6 +171,9 @@ Histogram& SMPBunch::ProjectDistribution (PScoord axis, Histogram& hist) const
 
 bool SMPBunch::ApplyTransformation (const Transform3D& t)
 {
+    if(t.isIdentity())
+        return true;
+
     SMPTransform3D xf(t);
     for(iterator p=begin(); p!=end(); p++)
         xf.Apply(*p);

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:24:22 $
-// $Revision: 1.8 $
+// $Date: 2005-04-26 20:02:47 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +102,7 @@ AcceleratorModel::Beamline AcceleratorModel::GetBeamline (const string& pat1, co
     int ni=0, ni1, ni2;
 
     for(BeamlineIterator i = lattice.begin(); i!=lattice.end() && (nn1!=n1 || nn2!=n2); i++,ni++) {
-        string id = ((*i)->GetComponent()).GetQualifiedName();
+        string id = (*i)->IsComponent() ? ((*i)->GetComponent()).GetQualifiedName() : (*i)->GetQualifiedName();
         if(nn1<n1 && p1(id) && ++nn1 == n1) {
             i1=i;
             ni1=ni;
@@ -213,12 +213,14 @@ size_t AcceleratorModel::GetIndecies(const AcceleratorModel::Beamline& bline,
 {
     vector<Index> iarray1;
     StringPattern pattern(pat);
-
+    
     Index n0 = distance(lattice.begin(),bline.begin());
     for(ConstBeamlineIterator fi = bline.begin(); fi!=bline.end(); fi++,n0++) {
-        string id = (*(*fi)).GetComponent().GetQualifiedName();
-        if(pattern(id))
-            iarray1.push_back(n0);
+        if((*fi)->IsComponent()) {
+            string id = (*(*fi)).GetComponent().GetQualifiedName();
+            if(pattern(id))
+                iarray1.push_back(n0);
+        }
     }
     iarray.swap(iarray1);
     return iarray.size();
