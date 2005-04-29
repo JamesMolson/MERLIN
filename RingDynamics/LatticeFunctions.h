@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.2 $
+// $Date: 2005-04-29 21:33:49 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +46,7 @@ public:
     void UseOrbitFunctions();
     void RemoveFunction(int i, int j, int k);
     void RemoveAllFunctions();
-    void Calculate();
+	void Calculate(PSvector* p=0, RealMatrix* M=0);
     void CalculateEnergyDerivative();
     double Value(int i, int j, int k, int ncpt);
     void PrintTable(ostream& os, int n1=0, int n2=-1);
@@ -69,8 +69,8 @@ private:
 
     vectorlfn lfnlist;
 
-    double DoCalculate(double cscale = 0);
-    double DoCalculateOrbitOnly(double cscale = 0);
+    double DoCalculate(double cscale=0, PSvector* pInit=0, RealMatrix* MInit=0);
+    double DoCalculateOrbitOnly(double cscale=0, PSvector* pInit=0);
     vectorlfn::iterator GetColumn(int i, int j, int k);
 };
 

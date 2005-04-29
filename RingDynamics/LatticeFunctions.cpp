@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-20 21:49:08 $
-// $Revision: 1.4 $
+// $Date: 2005-04-29 21:33:49 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -218,12 +218,12 @@ public:
     };
 };
 
-void LatticeFunctionTable::Calculate()
+void LatticeFunctionTable::Calculate(PSvector* p, RealMatrix* M)
 {
     if(orbitonly)
-        DoCalculateOrbitOnly(bendscale);
+        DoCalculateOrbitOnly(bendscale, p);
     else
-        DoCalculate(bendscale);
+        DoCalculate(bendscale, p, M);
 }
 
 struct CopyLatticeFunction
@@ -261,17 +261,30 @@ void LatticeFunctionTable::CalculateEnergyDerivative()
 
 }
 
-double LatticeFunctionTable::DoCalculate(double cscale)
+double LatticeFunctionTable::DoCalculate(double cscale, PSvector* pInit, RealMatrix* MInit)
 {
     for_each(lfnlist.begin(),lfnlist.end(),ClearLatticeFunction());
 
     PSvector p(0);
-    RealMatrix M(6);
-    TransferMatrix tm(theModel, p0);
-    tm.SetDelta(delta);
-    tm.ScaleBendPathLength(cscale);
-    tm.FindClosedOrbitTM(M,p);
+	if(pInit) {
+		p = *pInit;
+	} else {
+		ClosedOrbit co(theModel, p0);
+		co.SetDelta(delta);
+		co.ScaleBendPathLength(cscale);
+		co.FindClosedOrbit(p);
+	}
 
+    RealMatrix M(6);
+	if(MInit) {
+		M = *MInit;
+	} else {
+		TransferMatrix tm(theModel, p0);
+		tm.SetDelta(delta);
+		tm.ScaleBendPathLength(cscale);
+		tm.FindTM(M,p);
+	}
+	
     ComplexVector eigenvalues(3);
     ComplexMatrix eigenvectors(3,6);
     if(symplectify)
@@ -326,7 +339,13 @@ double LatticeFunctionTable::DoCalculate(double cscale)
     bool loop = true;
     tracker.InitStepper();
 
-    RealMatrix N1(6);
+    RealMatrix M1 = IdentityMatrix(6);
+	RealMatrix M2(6);
+	RealMatrix M21(6);
+	RealMatrix EScale = IdentityMatrix(6);
+
+	double e0 = particle->GetReferenceMomentum();
+	double e1 = e0;
     double s = 0;
 
     do {
@@ -336,35 +355,51 @@ double LatticeFunctionTable::DoCalculate(double cscale)
 
         for(int col=0; col<6; col++,ip++) {
             for(int row=0; row<6; row++) {
-                M(row,col) = ((*ip)[row] - pref[row]) / delta;
+                M2(row,col) = ((*ip)[row] - pref[row]) / delta;
             }
         }
 
-        if(symplectify)
-            Symplectify(M);
+		M21 = M2*M1;
+		M1  = M2;
+		Invert(M1);
 
-        N1 = M*N;
-        for_each(lfnlist.begin(),lfnlist.end(),CalculateLatticeFunction(s,pref,N1));
+		e1 = tracker.GetTrackedBunch().GetReferenceMomentum();
+
+		if(e1!=e0) {
+			EScale(1,1) = EScale(3,3) = EScale(5,5) = e1/e0;
+			M21 = EScale*M21;
+		}
+		e0 = e1;
+
+		if(symplectify)
+			Symplectify(M21);
+
+        N = M21*N;
+        for_each(lfnlist.begin(),lfnlist.end(),CalculateLatticeFunction(s,pref,N));
         s += tracker.GetCurrentComponent().GetLength();
         loop = tracker.StepComponent();
 
     } while(loop);
 
-    ofstream mfile("DataFiles/TransferMatrix.dat");
-    MatrixForm(M,mfile,OPFormat().precision(6).fixed());
+//	ofstream mfile("DataFiles/TransferMatrix.dat");
+//	MatrixForm(M,mfile,OPFormat().precision(6).fixed());
 
     return p.dp();
 };
 
-double LatticeFunctionTable::DoCalculateOrbitOnly(double cscale)
+double LatticeFunctionTable::DoCalculateOrbitOnly(double cscale, PSvector* pInit)
 {
     for_each(lfnlist.begin(),lfnlist.end(),ClearLatticeFunction());
 
     PSvector p(0);
-    ClosedOrbit co(theModel, p0);
-    co.SetDelta(delta);
-    co.ScaleBendPathLength(cscale);
-    co.FindClosedOrbit(p);
+	if(pInit) {
+		p = *pInit;
+	} else {
+		ClosedOrbit co(theModel, p0);
+		co.SetDelta(delta);
+		co.ScaleBendPathLength(cscale);
+		co.FindClosedOrbit(p);
+	}
 
     ParticleBunch* particle = new ParticleBunch(p0, 1.0);
     particle->push_back(p);
