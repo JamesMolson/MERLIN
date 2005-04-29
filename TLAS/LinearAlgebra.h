@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:55 $
-// $Revision: 1.3 $
+// $Date: 2005-04-29 21:34:40 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +41,9 @@ template class ConstSubMatrix<Complex>;
 
 typedef Vector<Complex> ComplexVector;
 typedef Matrix<Complex> ComplexMatrix;
+
+// Matrix Inversion
+double Invert(RealMatrix& t);
 
 // Eigensystem
 void EigenSystem(RealMatrix& t, ComplexVector& eigenvalues, ComplexMatrix& eigenvectors);

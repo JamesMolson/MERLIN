@@ -97,6 +97,11 @@ template<class T> double Inverse(Matrix<T>& a)
 
 namespace TLAS {
 
+double Invert(RealMatrix& t)
+{
+	return Inverse(t);
+}
+
 void EigenSystem(RealMatrix& t, ComplexVector& eigenvalues, ComplexMatrix& eigenvectors)
 {
     ComplexMatrix m(t);
@@ -128,7 +133,7 @@ void EigenSystem(RealMatrix& t, ComplexVector& eigenvalues, ComplexMatrix& eigen
         Subscript n=0;
         Subscript row=0;
 
-        while(prox>1.0e-22 && iter<100)
+        while(prox>1.0e-16 && iter<100)
         {
             for(n=0; n<6; n++)
                 mp(n,n) = m(n,n) - lambda;
