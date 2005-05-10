@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2005-05-10 14:02:00 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,16 @@ SMPBunchConstructor::~SMPBunchConstructor ()
 Bunch* SMPBunchConstructor::ConstructBunch (int) const
 {
     SMPBunch* bunch = new SMPBunch(beamdat.p0,beamdat.charge);
-    PSmoments S = BeamDataToSigmaMtrx(beamdat);
+
+    // First, store the dispersion correlations and set them to
+    // zero.
+    BeamData bd = beamdat;
+    bd.Dx=bd.Dxp=bd.Dy=bd.Dyp=0.0;
+    double dx = beamdat.Dx;
+    double dxp = beamdat.Dxp;
+    double dy = beamdat.Dy;
+    double dyp = beamdat.Dyp;
+    PSmoments S = BeamDataToSigmaMtrx(bd);
 
     // the macroparticles are constructed to represent the
     // total charge in a bin of width 6sigma/ns
@@ -64,12 +73,20 @@ Bunch* SMPBunchConstructor::ConstructBunch (int) const
         double dp = -nSigDP*beamdat.sig_dp+ddp/2.0;
         for(size_t nPart = 0; nPart<np; nPart++,dp+=ddp) {
             double q = q0*zdist[nSlice]*dpdist[nPart];
-            bunch->AddParticle(SliceMacroParticle(S,z,dp,q));
+            SliceMacroParticle m(S,z,dp,q);
+            // Add dispersion correlations to centroid
+            m.x() += dx*dp;
+            m.xp()+= dxp*dp;
+            m.y() += dy*dp;
+            m.yp()+= dyp*dp;
+            bunch->AddParticle(m);
             qt+=q;
         }
     }
     //cout<<"total generated charge = "<<qt<<endl;
-
+    PSvector x0;
+    bunch->GetCentroid(x0);
+    cout<<1.0e+06*x0[ps_YP]<<endl<<endl;
     return bunch;
 }
 
