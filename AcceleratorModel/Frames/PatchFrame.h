@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-26 20:02:47 $
-// $Revision: 1.2 $
+// $Date: 2005-05-10 14:00:07 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -52,13 +52,14 @@ public:
     }
 
     virtual const Transform3D* GetEntranceGeometryPatch() const {
-        return itsPatch->GetTransformation();
+        return itsPatch ? itsPatch->GetTransformation() : 0;
     }
 
     void SetGeometryPatch(GeometryPatch* gp) {
         if(itsPatch)
             delete itsPatch;
         itsPatch = gp;
+        SetGeometry(itsPatch);
     }
 
 private:
@@ -81,7 +82,8 @@ inline PatchFrame::PatchFrame (const PatchFrame& rhs)
 
 inline PatchFrame::~PatchFrame()
 {
-    delete itsPatch;
+    if(itsPatch)
+        delete itsPatch;
 }
 
 #endif
