@@ -7,13 +7,15 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-29 21:33:49 $
-// $Revision: 1.3 $
+// $Date: 2005-05-13 19:05:03 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
 #ifndef LatticeFunctions_h
 #define LatticeFunctions_h 1
+
+#include "BeamModel/PSvector.h"
 
 class LatticeFunction
 {
