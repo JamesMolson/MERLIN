@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:40:54 $
-// $Revision: 1.11 $
+// $Date: 2005-06-16 19:17:02 $
+// $Revision: 1.12 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -106,8 +106,8 @@ Aperture* ConstructAperture(const string& apstr)
         ap = 0;
         break;
     default:
-        MERLIN_ERR<<"ERROR: bad aperture definition: "<<apstr<<endl;
-        abort();
+        MERLIN_ERR<<"WARNING: unknown aperture definition ("<<apstr<<") ignored"<<endl;
+		ap=0;
     };
 
     return ap;
