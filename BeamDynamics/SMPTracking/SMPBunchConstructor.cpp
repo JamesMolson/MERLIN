@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-05-10 14:02:00 $
-// $Revision: 1.3 $
+// $Date: 2005-08-02 15:16:18 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +86,6 @@ Bunch* SMPBunchConstructor::ConstructBunch (int) const
     //cout<<"total generated charge = "<<qt<<endl;
     PSvector x0;
     bunch->GetCentroid(x0);
-    cout<<1.0e+06*x0[ps_YP]<<endl<<endl;
     return bunch;
 }
 
