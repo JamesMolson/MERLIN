@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-29 21:33:49 $
-// $Revision: 1.5 $
+// $Date: 2005-09-27 15:41:58 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -287,8 +287,8 @@ double LatticeFunctionTable::DoCalculate(double cscale, PSvector* pInit, RealMat
 	
     ComplexVector eigenvalues(3);
     ComplexMatrix eigenvectors(3,6);
-    if(symplectify)
-        Symplectify(M);
+	if(symplectify)
+		Symplectify(M);
     EigenSystem(M, eigenvalues, eigenvectors);
 
 	int row, col;
@@ -321,6 +321,7 @@ double LatticeFunctionTable::DoCalculate(double cscale, PSvector* pInit, RealMat
 
     ParticleBunch* particle = new ParticleBunch(p0, 1.0);
     particle->push_back(p);
+    particle->push_back(p);
 
     for(row=0; row<6; row++) {
         Particle q = p;
@@ -337,52 +338,66 @@ double LatticeFunctionTable::DoCalculate(double cscale, PSvector* pInit, RealMat
     }
 
     bool loop = true;
+	bool isMore = true;
     tracker.InitStepper();
 
     RealMatrix M1 = IdentityMatrix(6);
 	RealMatrix M2(6);
 	RealMatrix M21(6);
-	RealMatrix EScale = IdentityMatrix(6);
 
 	double e0 = particle->GetReferenceMomentum();
 	double e1 = e0;
-    double s = 0;
+    double s  = 0;
 
-    do {
+	do {
 
-        ParticleBunch::const_iterator ip = tracker.GetTrackedBunch().begin();
-        const Particle& pref = *ip++;
+		ParticleBunch::iterator ip = tracker.GetTrackedBunch().begin();
+		Particle pref1 = *ip++;
+		Particle pref2 = *ip++;
 
-        for(int col=0; col<6; col++,ip++) {
-            for(int row=0; row<6; row++) {
-                M2(row,col) = ((*ip)[row] - pref[row]) / delta;
-            }
-        }
+		e1 = tracker.GetTrackedBunch().GetReferenceMomentum();
+
+		if(e1!=e0)
+//			for(int row=0; row<3; row++)
+//				pref2[2*row+1] *= e1/e0;
+			for(int row=0; row<6; row++)
+				pref2[row] *= sqrt(e1/e0);
+			
+		for(int col=0; col<6; col++,ip++) {
+
+			if(e1!=e0)
+//				for(int row=0; row<3; row++)
+//					(*ip)[2*row+1] *= e1/e0;
+				for(int row=0; row<6; row++)
+					(*ip)[row] *= sqrt(e1/e0);
+
+			for(int row=0; row<6; row++) {
+				M2(row,col) = ((*ip)[row] - pref2[row]) / delta;
+			}
+		}
+
+		e0 = e1;
 
 		M21 = M2*M1;
 		M1  = M2;
 		Invert(M1);
 
-		e1 = tracker.GetTrackedBunch().GetReferenceMomentum();
-
-		if(e1!=e0) {
-			EScale(1,1) = EScale(3,3) = EScale(5,5) = e1/e0;
-			M21 = EScale*M21;
-		}
-		e0 = e1;
-
 		if(symplectify)
 			Symplectify(M21);
 
-        N = M21*N;
-        for_each(lfnlist.begin(),lfnlist.end(),CalculateLatticeFunction(s,pref,N));
-        s += tracker.GetCurrentComponent().GetLength();
-        loop = tracker.StepComponent();
+		N  = M21*N;
+
+		for_each(lfnlist.begin(),lfnlist.end(),CalculateLatticeFunction(s,pref1,N));
+		if(isMore){
+			s += tracker.GetCurrentComponent().GetLength();
+			isMore = tracker.StepComponent();
+		}else
+			loop = false;
 
     } while(loop);
 
-//	ofstream mfile("DataFiles/TransferMatrix.dat");
-//	MatrixForm(M,mfile,OPFormat().precision(6).fixed());
+//	ofstream mfile("TransferMatrix.dat");
+//	MatrixForm(M2,mfile,OPFormat().precision(6).fixed());
 
     return p.dp();
 };
