@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-14 13:52:16 $
-// $Revision: 1.5 $
+// $Date: 2005-09-27 15:42:32 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -17,6 +17,7 @@
 
 #include "BeamDynamics/ParticleTracking/ParticleBunch.h"
 #include "BeamDynamics/ParticleTracking/ParticleTracker.h"
+#include "BeamDynamics/ParticleTracking/CollimateParticleProcess.h"
 #include "NumericalUtils/NumericalConstants.h"
 
 #include "BetatronTunes.h"
@@ -44,7 +45,11 @@ void BetatronTunes::FindTunes(PSvector& particle, int ntrack, bool diffusion)
     ParticleBunch bunch(p0,1.0);
     bunch.push_back(particle);
 
-    ParticleTracker tracker(theModel->GetBeamline(), &bunch, true);
+    ParticleTracker tracker(theModel->GetBeamline(), &bunch, false);
+
+	CollimateParticleProcess collimate(1,COLL_AT_EXIT);
+	collimate.SetLossThreshold(-1);
+	tracker.AddProcess(&collimate);
 
     vector<double>* xData = &xData1;
     vector<double>* yData = &yData1;
@@ -57,8 +62,11 @@ void BetatronTunes::FindTunes(PSvector& particle, int ntrack, bool diffusion)
             tracker.Run();
         else
             tracker.Continue();
-        
         ParticleBunch& tracked_bunch = tracker.GetTrackedBunch();
+		if(tracked_bunch.size()==0){
+			stable = false;
+			break;
+		}
         ParticleBunch::iterator pp = tracked_bunch.begin();
         Particle& p1 = *pp;
 #ifdef _MSV_VER
