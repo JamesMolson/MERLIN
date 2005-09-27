@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-06-16 19:17:02 $
-// $Revision: 1.12 $
+// $Date: 2005-09-27 18:57:14 $
+// $Revision: 1.13 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -310,7 +310,7 @@ double MADInterface::ReadComponent ()
 #define  _READ(value) if(!((*ifs)>>value)) return 0;
 
     string name,type,aptype;
-    double len,angle,e1,e2,k1,k2,k3,h,tilt;
+    double len,ks,angle,e1,e2,k1,k2,k3,h,tilt;
 
     _READ(name);
     _READ(type);
@@ -379,6 +379,12 @@ double MADInterface::ReadComponent ()
             ctor->AppendComponent(*quad);
             component=quad;
         }
+		else if(type=="SOLENOID") {
+			ks=prmMap->GetParameter("KS");
+			Solenoid* aSolenoid = new Solenoid(name,len,brho*ks/len);
+			ctor->AppendComponent(*aSolenoid);
+			component=aSolenoid;
+		}
 
         else if(type=="SBEND") {
             angle=prmMap->GetParameter("K0L");
