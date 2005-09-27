@@ -41,6 +41,7 @@ public:
     virtual void SortByCT();
     SpinVectorArray::iterator beginSpinArray();
     SpinVectorArray::iterator endSpinArray();
+	virtual void Output (std::ostream& os) const;
 
 private:
     SpinVectorArray spinArray;

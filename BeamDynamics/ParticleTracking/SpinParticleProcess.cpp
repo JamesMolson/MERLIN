@@ -87,6 +87,25 @@ void SpinParticleBunch::SortByCT()
     ParticleBunch::SortByCT();
 }
 
+void SpinParticleBunch::Output (std::ostream& os) const
+{
+    int oldp=os.precision(10);
+    ios_base::fmtflags oflg = os.setf(ios::scientific,ios::floatfield);
+	vector<SpinVector>::const_iterator sp = spinArray.begin();
+    for(PSvectorArray::const_iterator p = begin(); p!=end(); p++,sp++) {
+        os<<std::setw(24)<<GetReferenceTime();
+        os<<std::setw(24)<<GetReferenceMomentum();
+        for(size_t k=0; k<6; k++)
+            os<<std::setw(20)<<(*p)[k];
+		os<<std::setw(20)<<sp->x();
+		os<<std::setw(20)<<sp->y();
+		os<<std::setw(20)<<sp->z();
+        os<<endl;
+    }
+    os.precision(oldp);
+    os.flags(oflg);
+}
+
 ParticleBunch::iterator SpinParticleBunch::erase(ParticleBunch::iterator p)
 {
     // find the 'offset' of p from the start of the particle bunch
