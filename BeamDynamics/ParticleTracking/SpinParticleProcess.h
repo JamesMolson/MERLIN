@@ -42,6 +42,7 @@ public:
     SpinVectorArray::iterator beginSpinArray();
     SpinVectorArray::iterator endSpinArray();
 	virtual void Output (std::ostream& os) const;
+	SpinVector GetAverageSpin() const;
 
 private:
     SpinVectorArray spinArray;

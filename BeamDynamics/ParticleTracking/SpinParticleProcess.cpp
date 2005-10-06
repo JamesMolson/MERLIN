@@ -106,6 +106,22 @@ void SpinParticleBunch::Output (std::ostream& os) const
     os.flags(oflg);
 }
 
+SpinVector SpinParticleBunch::GetAverageSpin() const
+{
+	SpinVector pa(0,0,0);
+
+    for(vector<SpinVector>::const_iterator sp = spinArray.begin(); sp!=spinArray.end(); sp++) {
+		pa.x() += sp->x();
+		pa.y() += sp->y();
+		pa.z() += sp->z();
+    }
+	pa.x() /= spinArray.size();
+	pa.y() /= spinArray.size();
+	pa.z() /= spinArray.size();
+
+	return pa;
+}
+
 ParticleBunch::iterator SpinParticleBunch::erase(ParticleBunch::iterator p)
 {
     // find the 'offset' of p from the start of the particle bunch
