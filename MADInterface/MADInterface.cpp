@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-09-27 18:57:14 $
-// $Revision: 1.13 $
+// $Date: 2005-10-06 08:51:41 $
+// $Revision: 1.14 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -134,8 +134,7 @@ MADInterface::MADInterface (const std::string& madFileName, double P0)
 {
     if(ifs) {
         if(!(*ifs)) {
-            MERLIN_ERR<<"ERROR opening file "<<madFileName<<endl;
-            abort();
+            throw MerlinException(string("ERROR opening file ")+string(madFileName));
         }
         Initialise();
     }
