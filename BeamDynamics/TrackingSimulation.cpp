@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-26 20:02:47 $
-// $Revision: 1.8 $
+// $Date: 2005-10-06 08:53:09 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +44,7 @@ void PerformTracking(ProcessStepManager& aStepper, Bunch& aBunch, bool includeX,
         if(includeX)
             aBunch.ApplyTransformation(frame->GetExitPlaneTransform());
         if(simop)
-            simop->Record(frame,&aBunch);
+            simop->DoRecord(frame,&aBunch);
     } while(++first != last);
 }
 
@@ -109,7 +109,7 @@ Bunch& TrackingSimulation::DoRun (bool new_bunch, bool do_init)
     }
 
     if(simOp)
-        simOp->RecordInitialBunch(bunch);
+        simOp->DoRecordInitialBunch(bunch);
 
     try {
         if(do_init)
@@ -128,7 +128,7 @@ Bunch& TrackingSimulation::DoRun (bool new_bunch, bool do_init)
     }
 
     if(simOp)
-        simOp->RecordFinalBunch(bunch);
+        simOp->DoRecordFinalBunch(bunch);
 
     return *bunch;
 }
@@ -217,7 +217,7 @@ bool TrackingSimulation::StepComponent ()
         bunch->ApplyTransformation(frame->GetExitPlaneTransform());
 
     if(simOp)
-        simOp->Record(frame,bunch);
+        simOp->DoRecord(frame,bunch);
 
     return cstepper->NextFrame() != 0;
 }
@@ -227,3 +227,45 @@ void TrackingSimulation::SetOutput(SimulationOutput *simout)
 {
     simOp = simout;
 }
+
+// SimulationOutput definitions
+
+bool SimulationOutput::IsMember(const string& key)
+	{
+		for(vector<StringPattern>::const_iterator p=ids.begin();p!=ids.end();p++) {
+			if(p->Match(key))
+				return true;
+		}
+		return false;
+	}
+
+void SimulationOutput::AddIdentifier(const string& pattern, size_t nocc)
+{
+	ids.push_back(pattern);
+}
+
+void SimulationOutput::DoRecord(const ComponentFrame* frame, const Bunch* bunch)
+{
+    if(frame->IsComponent()) {
+        string id = (*frame).GetComponent().GetQualifiedName();
+        
+        if(output_all || IsMember(id))
+            Record(frame,bunch);
+    }
+}
+
+void SimulationOutput::DoRecordInitialBunch(const Bunch* bunch)
+{
+	if(output_initial)
+		RecordInitialBunch(bunch);
+}
+
+void SimulationOutput::DoRecordFinalBunch(const Bunch* bunch)
+{
+	if(output_final)
+		RecordFinalBunch(bunch);
+}
+
+void DoRecordFinalBunch(const Bunch* bunch);
+
+

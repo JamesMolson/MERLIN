@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-20 16:58:59 $
-// $Revision: 1.6 $
+// $Date: 2005-10-06 08:53:09 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -37,9 +37,29 @@
 class SimulationOutput {
 public:
     virtual ~SimulationOutput() {}
-    virtual void Record(const ComponentFrame* frame, const Bunch* bunch) =0;
-    virtual void RecordInitialBunch(const Bunch* bunch) =0;
-    virtual void RecordFinalBunch(const Bunch* bunch) =0;
+
+    void DoRecord(const ComponentFrame* frame, const Bunch* bunch);
+    void DoRecordInitialBunch(const Bunch* bunch);
+    void DoRecordFinalBunch(const Bunch* bunch);
+
+	// Output control
+	void AddIdentifier(const std::string& pattern, size_t nocc =1);
+
+	// Public output flags
+	bool output_all;
+	bool output_initial;
+	bool output_final;
+
+protected:
+
+	virtual void Record(const ComponentFrame* frame, const Bunch* bunch) =0;
+    virtual void RecordInitialBunch(const Bunch* bunch)=0;
+    virtual void RecordFinalBunch(const Bunch* bunch)=0;
+
+private:
+
+	bool IsMember(const std::string&);
+	std::vector<StringPattern> ids;
 };
 
 //	A beam dynamics simulation. TrackingSimulation tracks a
