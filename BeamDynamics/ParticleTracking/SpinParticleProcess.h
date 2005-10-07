@@ -43,6 +43,7 @@ public:
     SpinVectorArray::iterator endSpinArray();
 	virtual void Output (std::ostream& os) const;
 	SpinVector GetAverageSpin() const;
+    virtual bool ApplyTransformation (const Transform3D& t);
 
 private:
     SpinVectorArray spinArray;

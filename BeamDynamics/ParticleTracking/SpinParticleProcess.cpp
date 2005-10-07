@@ -136,6 +136,28 @@ ParticleBunch::iterator SpinParticleBunch::erase(ParticleBunch::iterator p)
     return ParticleBunch::erase(p);
 }
 
+bool SpinParticleBunch::ApplyTransformation (const Transform3D& t)
+{
+	// First apply the transformation to the particle coordinates
+	ParticleBunch::ApplyTransformation(t);
+
+	// If the transformation represents a rotation, then we must also
+	// rotate the spin vectors. (Note that we must now iterate twice
+	// through the particles which is a little inefficient.)
+	if(!t.R().isIdentity()) {
+		const Rotation3D& R(t.R());
+		for(vector<SpinVector>::iterator sp = spinArray.begin(); sp!=spinArray.end(); sp++) {
+			Vector3D S(sp->x(),sp->y(),sp->z());
+			S=R(S);
+			sp->x()=S.x;
+			sp->y()=S.y;
+			sp->z()=S.z;
+		}
+	}
+	return true;
+}
+
+
 vector<SpinVector>::iterator SpinParticleBunch::beginSpinArray()
 {
     return spinArray.begin();
