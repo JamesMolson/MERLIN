@@ -72,6 +72,7 @@ private:
     double dL;
     double intS;
     const SectorBend* sbend;
+	const Solenoid* solnd;
     const EMField* currentField;
     double clength;
     double pspin;

@@ -5,6 +5,7 @@
 
 #include "BeamDynamics/ParticleTracking/SpinParticleProcess.h"
 #include "AcceleratorModel/StdComponent/SectorBend.h"
+#include "AcceleratorModel/StdComponent/Solenoid.h"
 #include "EuclideanGeometry/Space3D.h"
 #include "NumericalUtils/PhysicalConstants.h"
 #include "NumericalUtils/utils.h"
@@ -185,6 +186,9 @@ void SpinParticleProcess::SetCurrentComponent(AcceleratorComponent& component){
     //Determine if the component is a SectorBend
     sbend = dynamic_cast<SectorBend*>(&component);
 
+    //Determine if the component is a Solenoid
+    solnd = dynamic_cast<Solenoid*>(&component);
+
     //Determine if the present bunch has any spin information
     SpinParticleBunch* spinbunch = dynamic_cast<SpinParticleBunch*>(currentBunch);
 
@@ -259,6 +263,7 @@ void SpinParticleProcess::DoProcess(double ds)
     double P0   = currentBunch->GetReferenceMomentum();
     double brho = P0/eV/SpeedOfLight;
     bool isBend = sbend ? true : false;
+	bool isSolenoid = solnd ? true : false;
 
     if(pspin != 0)
         P0 = pspin;
@@ -273,17 +278,33 @@ void SpinParticleProcess::DoProcess(double ds)
         double norm  = SpeedOfLight/brho/(1.0+p->dp());
         double gamma = P0*(1.0+p->dp())/(ElectronMassMeV*MeV);
 
-        // Apply spin rotation from dipole entrance fringe field
-        if (sbend && intS==0) {
-            SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().entrance;
-            double theta = pf ? pf->rot : 0;
-            double intbz = 0.5*sbend->GetB0()*p->y()*norm;
-            b.x = sin(theta)*intbz;
-            b.y = 0;
-            b.z = cos(theta)*intbz;
-            if ( b.x!=0 || b.z!=0 )
-                rot.RotateSpin(b, 1.0, *spin, gamma);
-        };
+		if (intS==0) {
+
+			// Apply spin rotation from dipole entrance fringe field
+			if (isBend) {
+				SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().entrance;
+				double theta = pf ? pf->rot : 0;
+				double intbz = 0.5*sbend->GetB0()*p->y()*norm;
+				b.x = sin(theta)*intbz;
+				b.y = 0;
+				b.z = cos(theta)*intbz;
+				if ( b.x!=0 || b.z!=0 )
+					rot.RotateSpin(b, 1.0, *spin, gamma);
+			}
+
+			// Apply spin rotation from solenoid entrance fringe field
+			// We use a hard-edged model for the fringe field;
+			// a positive value for the solenoid field means the field
+			// is pointing in the direction of the beam.
+			if (isSolenoid) {
+				double bz = solnd->GetBz();
+				b.x = -bz*p->x();
+				b.y = -bz*p->y();
+				b.z = 0.0;
+				if ( b.x!=0 || b.y!=0 )
+					rot.RotateSpin(b, 1.0, *spin, gamma);
+			}
+		}
 
         // Apply spin rotation from body of magnet
         b = currentField->GetBFieldAt(Point3D(p->x(),p->y(),0));
@@ -293,19 +314,33 @@ void SpinParticleProcess::DoProcess(double ds)
             b.y *= norm;
             b.z *= norm;
             rot.RotateSpin(b, ds, *spin, gamma);
-        };
+        }
 
-        // Apply spin rotation from dipole exit fringe field
-        if (sbend && fequal(intS+ds,clength)) {
-            SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().exit;
-            double theta = pf ? pf->rot : 0;
-            double intbz = 0.5*sbend->GetB0()*p->y()*norm;
-            b.x = sin(theta)*intbz;
-            b.y = 0;
-            b.z =-cos(theta)*intbz;
-            if ( b.x!=0 || b.z!=0 )
-                rot.RotateSpin(b, 1.0, *spin, gamma);
-        };
+		if (fequal(intS+ds,clength)) {
+
+			// Apply spin rotation from dipole exit fringe field
+			if (isBend) {
+				SectorBend::PoleFace* pf = sbend->GetPoleFaceInfo().exit;
+				double theta = pf ? pf->rot : 0;
+				double intbz = 0.5*sbend->GetB0()*p->y()*norm;
+				b.x = sin(theta)*intbz;
+				b.y = 0;
+				b.z =-cos(theta)*intbz;
+				if ( b.x!=0 || b.z!=0 )
+					rot.RotateSpin(b, 1.0, *spin, gamma);
+			}
+
+			// Apply spin rotation from solenoid exit fringe field
+			// We use a hard-edged model for the fringe field
+			if (isSolenoid) {
+				double bz = solnd->GetBz();
+				b.x = bz*p->x();
+				b.y = bz*p->y();
+				b.z = 0.0;
+				if ( b.x!=0 || b.y!=0 )
+					rot.RotateSpin(b, 1.0, *spin, gamma);
+			}
+		}
 
     };
 
