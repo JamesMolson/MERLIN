@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-01 15:21:48 $
-// $Revision: 1.6 $
+// $Date: 2005-10-18 11:42:48 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -442,6 +442,7 @@ void MonitorCI::TrackStep (double ds)
 
 void SolenoidCI::TrackStep (double ds)
 {
+	const bool linear_map_only = false;
 
     CHK_ZERO(ds);
     double P0 = currentBunch->GetReferenceMomentum();
@@ -453,9 +454,19 @@ void SolenoidCI::TrackStep (double ds)
     if(fequal(Bz,0))
         ApplyDrift(currentBunch->GetParticles(),ds);
     else {
-        RMtrx M(2);
-        TransportMatrix::Solenoid(ds,q*Bz/brho,0,true,true,M.R);
-        M.Apply(currentBunch->GetParticles());
+		if(linear_map_only) {
+			RMtrx M(2);
+			TransportMatrix::Solenoid(ds,q*Bz/brho,0,true,true,M.R);
+			M.Apply(currentBunch->GetParticles());
+		}
+		else {
+			// We use the exact momentum map for each particle energy.
+			for(ParticleBunch::iterator p=currentBunch->begin(); p!=currentBunch->end(); p++) {
+			RMtrx M(2);
+			TransportMatrix::Solenoid(ds,q*Bz/brho/(1+p->dp()),0,true,true,M.R);
+			M.Apply(*p);
+			}
+		}
     }
     return;
 }
