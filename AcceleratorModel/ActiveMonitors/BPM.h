@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2005-11-14 09:57:11 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +64,16 @@ public:
         virtual void Record (const BPM& aBPM, const Data& data) = 0;
     };
 
+	// BPM::Response objects are used to modify the (x,y) measurement
+	// obtained from the Bunch object. They are intended to mimic the
+	// electrical (spacial) response of the monitor.
+
+	class Response {
+	public:
+		virtual ~Response() {};
+		virtual void Apply(Data*);
+	};
+
     typedef AMBufferManager<BPM,Buffer,Data> BufferManager;
 
     //	BPM constructing taking the id, the length and
@@ -79,6 +89,10 @@ public:
     //	Sets the scale factor for x and y planes (default scale
     //	=1).
     void SetScale (double xs, double ys);
+
+	// Sets the response for the BPM. Returns the
+	// original Response object (or NULL).
+	Response* SetResponse(Response*);
 
     //	Measure the beam centroid of bunch.
     virtual void MakeMeasurement (const Bunch& aBunch);
@@ -118,6 +132,8 @@ private:
     double scale_x;
     double scale_y;
 
+	Response* itsResponse;
+
     BufferManager buffers;
 
     bool TakeData () const;
@@ -128,7 +144,7 @@ inline BPM::Buffer::~Buffer ()
 
 inline BPM::BPM (const string& id, double len, double mpos)
         : Monitor(id,len,mpos),res_x(0),res_y(0),
-        scale_x(1),scale_y(1),buffers()
+        scale_x(1),scale_y(1),itsResponse(0),buffers()
 {}
 
 inline void BPM::SetResolution (double xr, double yr)
@@ -161,5 +177,13 @@ inline bool BPM::TakeData () const
 {
     return IsActive() && !buffers.empty();
 }
+
+inline BPM::Response* BPM::SetResponse(BPM::Response* r)
+{
+	Response* oldr = itsResponse;
+	itsResponse = r;
+	return oldr;
+}
+
 
 #endif

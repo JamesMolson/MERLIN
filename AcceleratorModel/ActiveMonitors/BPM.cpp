@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2005-11-14 09:57:11 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -54,6 +54,9 @@ void BPM::MakeMeasurement (const Bunch& aBunch)
         //		mdat.q.value = aBunch.GetTotalCharge();
         //		mdat.q.error = res_q;
         mdat.ct = aBunch.GetReferenceTime();
+
+		if(itsResponse)
+			itsResponse->Apply(&mdat);
 
         buffers.SendToBuffers(*this,mdat);
     }
