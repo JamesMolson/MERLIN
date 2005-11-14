@@ -212,6 +212,11 @@ public:
     //	Unique index for an Accelerator component.
     static const int ID;
 
+	// The followind field access function added for
+	// compatability with other magnets
+	void SetFieldStrength(double b) { SetB0(b); }
+	double GetFieldStrength() const { return GetB0(); }
+
 protected:
 private:
     // Data Members for Associations

@@ -73,6 +73,11 @@ public:
     //	Tracker object for tracking this component.
     virtual void PrepareTracker (ComponentTracker& aTracker);
 
+	// The followind field access function added for
+	// compatability with other magnets
+	void SetFieldStrength(double b) { SetBz(b); }
+	double GetFieldStrength() const { return GetBz(); }
+
     // Data Members for Class Attributes
 
     static const int ID;
