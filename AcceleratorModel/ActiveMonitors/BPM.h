@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-11-14 09:57:11 $
-// $Revision: 1.4 $
+// $Date: 2005-11-23 10:16:11 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -71,7 +71,7 @@ public:
 	class Response {
 	public:
 		virtual ~Response() {};
-		virtual void Apply(Data*);
+		virtual void Apply(Data*) =0;
 	};
 
     typedef AMBufferManager<BPM,Buffer,Data> BufferManager;
