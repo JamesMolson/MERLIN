@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-10-06 08:51:41 $
-// $Revision: 1.14 $
+// $Date: 2006-01-31 16:20:21 $
+// $Revision: 1.15 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -361,8 +361,8 @@ double MADInterface::ReadComponent ()
             component=aDrift;
         }
         else if(type=="SPOILER") {
-            angle=prmMap->GetParameter("K0L");
-            Spoiler* aSpoiler = new Spoiler(name,len,angle); // cheat! use angle for rad length
+            double X0 =prmMap->GetParameter("K0L"); // cheat! use K0L column for radiation length
+            Spoiler* aSpoiler = new Spoiler(name,len,X0);
             ctor->AppendComponent(*aSpoiler);
             component=aSpoiler;
         }

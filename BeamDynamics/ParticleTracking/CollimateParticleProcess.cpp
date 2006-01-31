@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-01-12 12:08:50 $
-// $Revision: 1.9 $
+// $Date: 2006-01-31 16:20:21 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@
 
 using namespace std;
 
-extern void ScatterParticle(PSvector&, double t, double l, double E0);
+extern void ScatterParticle(PSvector& p, double X0, double x, double E0);
 
 namespace {
 
@@ -92,11 +92,11 @@ void CollimateParticleProcess::SetCurrentComponent (AcceleratorComponent& compon
             SetNextS();
         }
         else {
-            at_entr=at_cent=false;
+            at_entr=at_cent=false; // currently scatter only at exit
             at_exit = true;
             SetNextS();
-            Xr = aSpoiler->GetNumRadLengths();
-	    len = aSpoiler->GetLength();
+            Xr = aSpoiler->GetMaterialRadiationLength();
+			len = aSpoiler->GetLength();
         }
     }
     else {
@@ -163,6 +163,8 @@ void CollimateParticleProcess::DoCollimation ()
     for(PSvectorArray::iterator p = currentBunch->begin(); p!=currentBunch->end(); p++) {
         if(!ap->PointInside((*p).x(),(*p).y(),s)) {
 
+			// If the 'aperture' is a spoiler, then we the particle is lost
+			// if the DoScatter(*p) returns true (energy cut)
             if(!is_spoiler || DoScatter(*p)) {
                 lost.push_back(*p);
                 p=currentBunch->erase(p);

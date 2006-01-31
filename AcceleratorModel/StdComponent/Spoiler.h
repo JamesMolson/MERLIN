@@ -50,6 +50,11 @@ public:
     double GetNumRadLengths() const {
         return GetLength()/Xr;
     }
+	
+	// Returns the material radiation length (meter)
+	double GetMaterialRadiationLength() const {
+		return Xr;
+	}
 
     //	Returns the type string for this component.
     virtual const string& GetType () const;
