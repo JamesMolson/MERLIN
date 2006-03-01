@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:55 $
-// $Revision: 1.2 $
+// $Date: 2006-03-01 12:34:18 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -28,6 +28,7 @@ using std::ostream;
 //	of the standard UNIX regular expression syntax.
 //	Currently supported is the single wild-card '*', which
 //	matches any number (including zero) of any character.
+//  StringPatter also supports OR: pat1|pat2|pat3 etc.
 
 class StringPattern
 {
@@ -59,6 +60,9 @@ private:
     //	A vector of literal strings. The pattern is split into
     //	literals by the presence of a '*' character.
     std::vector<string> patterns;
+
+	// list of sub-patters for an OR'd pattern:
+	std::vector<StringPattern> orpatterns;
 
     //	Used to indicate if the first/last character of the
     //	string pattern were wildcards.

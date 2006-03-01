@@ -47,14 +47,33 @@ char StringPattern::wcchar = '*';
 StringPattern::StringPattern (const std::string& s)
         : str(s)
 {
-    wcterm = DelimitString(s,wcchar,patterns);
-    isLiteral = !wcterm.first && !wcterm.second && patterns.size()==1;
+	// First check if the string contains ORed patterns:
+	DelimitString(s,'|',patterns);
+	if(patterns.size()>1) {
+		orpatterns.reserve(patterns.size());
+		for(size_t i=0; i<patterns.size(); i++)
+			orpatterns.push_back(StringPattern(patterns[i]));
+	}
+	else {
+		patterns.clear();
+		wcterm = DelimitString(s,wcchar,patterns);
+		isLiteral = !wcterm.first && !wcterm.second && patterns.size()==1;
+	}
 }
 
 
 
 bool StringPattern::Match (const std::string& s) const
 {
+	// First check if this is an ORd pattern
+	if(!orpatterns.empty()) {
+		for(size_t i=0; i<orpatterns.size(); i++) {
+			if(orpatterns[i].Match(s))
+				return true;
+		}
+		return false;
+	}
+
     // deal with trivial cases first
     using namespace std;
 
@@ -104,7 +123,7 @@ ostream& operator << (ostream& os, const StringPattern& pattern)
 {
     if(pattern.wcterm.first)
         os<<StringPattern::wcchar;
-    for(int n=0; n<pattern.patterns.size(); n++) {
+    for(size_t n=0; n<pattern.patterns.size(); n++) {
         if(n!=0)
             os<<StringPattern::wcchar;
         os<<pattern.patterns[n];
