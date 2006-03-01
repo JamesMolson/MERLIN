@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-26 20:02:47 $
-// $Revision: 1.3 $
+// $Date: 2006-03-01 12:36:35 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -33,8 +33,8 @@ SMPBunch::SMPBunch (const std::string& fname)
         abort();
     }
 
-    double p0,ct0,nmp;
-
+    double p0,ct0;
+	size_t nmp;
     if(ifs>>p0>>ct0>>nmp) {
         SetReferenceMomentum(p0);
         SetReferenceTime(ct0);
