@@ -113,7 +113,8 @@ inline bool NumericalRange<T,C>::operator != (const NumericalRange& rhs) const
 template <class T, class C>
 inline RangeBase::Result NumericalRange<T,C>::Check (const T& x) const
 {
-    if(isUnbounded())
+//dk    if(isUnbounded())
+    if(IsUnbounded())
         return ok;
     else if(x<lower)
         return belowlower;

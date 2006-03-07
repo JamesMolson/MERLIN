@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-01 15:21:48 $
-// $Revision: 1.9 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,8 @@ END_INTG_SET;
 }; // end namespace TRANSPORT
 }; // end namespace ParticleTracking
 
-MAKE_DEF_INTG_SET(ParticleTracking::ParticleComponentTracker,ParticleTracking::TRANSPORT::StdISet);
+
+template<> MAKE_DEF_INTG_SET(ParticleTracking::ParticleComponentTracker,ParticleTracking::TRANSPORT::StdISet);
 
 #define CHK_ZERO(s) if(s==0) return;
 

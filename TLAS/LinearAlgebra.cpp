@@ -307,7 +307,7 @@ void tred2(RealMatrix& a, RealVector& d, RealVector& e)
             {
                 double g = 0.0;
                 for(int k=0; k<i; k++) g += a(i,k) * a(k,j);
-                for(    k=0; k<i; k++) a(k,j) -= g * a(k,i);
+                for(int k=0; k<i; k++) a(k,j) -= g * a(k,i);
             }
 
         d(i) = a(i,i);
@@ -331,7 +331,7 @@ void tqli(RealVector& d, RealVector& e, RealMatrix& z)
 {
     int m = 0;
     int n = d.size();
-    int i,j,k,l;
+    int i,k,l;
 
     for(i=1; i<n; i++) e(i-1) = e(i);
     e(n-1) = 0.0;

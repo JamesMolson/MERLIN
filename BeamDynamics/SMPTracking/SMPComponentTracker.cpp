@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,7 @@ END_INTG_SET
 
 }; //end namespace SMPTracking
 
-MAKE_DEF_INTG_SET(SMPTracking::SMPComponentTracker,SMPTracking::StdISet);
+template<> MAKE_DEF_INTG_SET(SMPTracking::SMPComponentTracker,SMPTracking::StdISet);
 
 
 

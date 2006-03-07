@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.4 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +22,7 @@
 // RectangularGeometry
 #include "AcceleratorModel/StdGeometry/RectangularGeometry.h"
 
-#define _FIELD static_cast<F*>(itsField)
+#define _FIELD static_cast<F*>(this->itsField)
 
 
 //	Takes a field which is derived from RFAcceleratingField.
@@ -138,7 +138,7 @@ RFStructure<F>::RFStructure (const string& id, double len, F* aField)
 template <class F>
 double RFStructure<F>::GetVoltage () const
 {
-    return GetAmplitude()*cos(GetPhase())*GetLength();
+    return GetAmplitude()*cos(GetPhase())*this->GetLength();
 }
 
 #endif

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -94,9 +94,9 @@ void TPSMoments<N>::printFormatted (std::ostream& os, bool normalised) const
             else {
                 os<<right;
                 if(normalised)
-                    os<<setw(8)<<fixed<<r_ij(i,j);
+                    os<<setw(8)<<fixed<<this->r_ij(i,j);
                 else
-                    os<<setw(12)<<scientific<<sig(i,j);
+                    os<<setw(12)<<scientific<<this->sig(i,j);
             }
         }
         os<<endl;

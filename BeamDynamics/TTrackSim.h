@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-08 15:22:17 $
-// $Revision: 1.6 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -47,28 +47,28 @@ public:
 
     void InitialiseProcess (Bunch& bunch) {
         TBunchProc<bunch_type>::InitialiseProcess(bunch);
-        if(currentBunch!=0) {
-            active=true;
-            ctracker.SetBunch(*currentBunch);
+        if(this->currentBunch!=0) {
+            this->active=true;
+            ctracker.SetBunch(*this->currentBunch);
         }
     }
 
     void SetCurrentComponent (AcceleratorComponent& component) {
-        if(active) {
+        if(this->active) {
             component.PrepareTracker(ctracker);
-            currentComponent = &component;
+            this->currentComponent = &component;
         }
         else
-            currentComponent=0;
+            this->currentComponent=0;
     }
 
     void DoProcess(double ds) {
-        if(active)
+        if(this->active)
             ctracker.TrackStep(ds);
     }
 
     double GetMaxAllowedStepSize() const {
-        return active ? ctracker.GetRemainingLength() : 0;
+        return this->active ? ctracker.GetRemainingLength() : 0;
     }
 
 private:

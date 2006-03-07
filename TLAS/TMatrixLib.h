@@ -7,18 +7,15 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:55 $
-// $Revision: 1.2 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
 #ifndef _h_TMatrixLib
-#define _h_TMatrixLib
+#define _h_TMatrixLib 1
 
-#ifdef  _MSC_VER
-#pragma warning(disable: 4804 4800)
-#endif  /* _MSC_VER */
-
+#include "merlin_config.h"
 #include <cstdlib>
 #include <utility>
 #include <cassert>
@@ -126,7 +123,6 @@ inline void valid_dimension(Dimension d1)
 // because of a bug in GCC 3.1
 
 #define VEC_TYPE_DEFS \
-		typedef T value_type;\
 		typedef std::valarray<T> array_type;\
 		typedef std::slice slice_type;\
 		typedef std::gslice gslice_type;\
@@ -140,6 +136,7 @@ template<class T>
 class TMTRX_BASE {
 public:
     // public typedefs
+    typedef T value_type;
     VEC_TYPE_DEFS;
 };
 
@@ -149,6 +146,7 @@ class Vector /*: public TMTRX_BASE<T>*/ {
 
 public:
 
+    typedef T value_type;
     VEC_TYPE_DEFS;
 
     // construction/destruction
@@ -452,17 +450,16 @@ public:
         return sl.size();
     }
 
-private:
-
-    // Constructor only called by Matrix<T> (via friendship)
-    ConstSubVector(const array_type& ar, const slice_type& s)
-            : sl(s),array(ar) {}
-
-    // copying not allowed
+    // copying  allowed
     ConstSubVector(const ConstSubVector<T>& v)
             : sl(v.sl),array(v.array) {}
     ConstSubVector<T>& operator=(const ConstSubVector<T>&)
     {return *this;}
+private:
+    // Constructor only called by Matrix<T> (via friendship)
+    ConstSubVector(const array_type& ar, const slice_type& s)
+            : sl(s),array(ar) {}
+
 
     slice_type sl;
     const array_type& array;
@@ -477,6 +474,7 @@ template<class T>
 class SubVector /*: public TMTRX_BASE<T> */ {
 public:
 
+    typedef T value_type;
     VEC_TYPE_DEFS;
 
     // public typedefs
@@ -794,7 +792,11 @@ private:
 template<class T>
 class Matrix /* : public TMTRX_BASE<T> */ {
 
-    VEC_TYPE_DEFS;
+    typedef T value_type;
+    typedef std::valarray<T> array_type;
+    typedef std::slice slice_type;
+    typedef std::gslice gslice_type;
+    typedef std::valarray<size_t> index_array_type;
 
     // private function to calculate index
     Subscript index(Subscript i, Subscript j) const {
@@ -845,7 +847,10 @@ public:
     Matrix(const Matrix<U>& rhs)
             : nr(rhs.nrows()),nc(rhs.ncols()),array(rhs.nrows()*rhs.ncols())
     {
-        std::copy(rhs.begin(),rhs.end(),begin());
+		iterator q = begin();
+		for(typename Matrix<U>::const_iterator rhsp = rhs.begin(); rhsp!=rhs.end();rhsp++,q++)
+			*q = T(*rhsp);
+        //std::copy(rhs.begin(),rhs.end(),begin());
     }
 
     // destruction

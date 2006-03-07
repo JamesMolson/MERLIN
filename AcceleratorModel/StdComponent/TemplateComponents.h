@@ -128,13 +128,13 @@ inline TAccCompGF<G,F>::TAccCompGF (const string& id, G* geom, F* field)
 template <class G, class F>
 inline F& TAccCompGF<G,F>::GetField ()
 {
-    return static_cast<F&>(*itsField);
+    return static_cast<F&>(*this->itsField);
 }
 
 template <class G, class F>
 inline const F& TAccCompGF<G,F>::GetField () const
 {
-    return static_cast<const F&>(*itsField);
+    return static_cast<const F&>(*this->itsField);
 }
 
 // Parameterized Class TAccCompG

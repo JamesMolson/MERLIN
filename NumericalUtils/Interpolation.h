@@ -7,14 +7,15 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:54 $
-// $Revision: 1.3 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
 #ifndef Interpolation_h
 #define Interpolation_h 1
 
+#include "merlin_config.h"
 #include "Exception/MerlinException.h"
 #include "NumericalUtils/Range.h"
 #include <vector>

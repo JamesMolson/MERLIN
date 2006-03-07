@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +102,7 @@ void AMBufferManager<M,B,D>::SendToBuffers (const M& monitor, const D& data)
 {
     if(defBuffer!=0)
         defBuffer->Record(monitor,data);
-    for(std::set<B*>::iterator b=buffers.begin(); b!=buffers.end(); b++)
+    for(typename std::set<B*>::iterator b=buffers.begin(); b!=buffers.end(); b++)
             (*b)->Record(monitor,data);
 }
 

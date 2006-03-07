@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:17:37 $
-// $Revision: 1.1 $
+// $Date: 2006-03-07 09:14:12 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -21,3 +21,4 @@
 ComponentFrame* ConstructSrot(double angle, const std::string& name);
 
 #endif
+
