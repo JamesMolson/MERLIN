@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-01-31 16:20:21 $
-// $Revision: 1.10 $
+// $Date: 2006-03-18 17:52:43 $
+// $Revision: 1.11 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -160,26 +160,33 @@ void CollimateParticleProcess::DoCollimation ()
     if(pindex!=0)
         ip=pindex->begin();
 
-    for(PSvectorArray::iterator p = currentBunch->begin(); p!=currentBunch->end(); p++) {
-        if(!ap->PointInside((*p).x(),(*p).y(),s)) {
+    for(PSvectorArray::iterator p = currentBunch->begin(); p!=currentBunch->end();) {
+		if(!ap->PointInside((*p).x(),(*p).y(),s)) {
 
-			// If the 'aperture' is a spoiler, then we the particle is lost
+			// If the 'aperture' is a spoiler, then the particle is lost
 			// if the DoScatter(*p) returns true (energy cut)
-            if(!is_spoiler || DoScatter(*p)) {
-                lost.push_back(*p);
-                p=currentBunch->erase(p);
-                --p;
-                if(pindex!=0) {
-                    lost_i.push_back(*ip);
-                    ip = pindex->erase(ip);
-                    --ip;
-                }
-            }
-
-        }
-        if(pindex!=0)
-            ++ip;
-    }
+			if(!is_spoiler || DoScatter(*p)) {
+				lost.push_back(*p);
+				p=currentBunch->erase(p);
+				if(pindex!=0) {
+					lost_i.push_back(*ip);
+					ip = pindex->erase(ip);
+				}
+			}
+			else { // need to increment iterators
+				p++;
+				if(pindex!=0) {
+					ip++;
+				}
+			}
+		}
+		else {
+			p++;
+			if(pindex!=0) {
+				ip++;
+			}
+		}
+	}
 
     nlost+=lost.size();
     DoOutput(lost,lost_i);
