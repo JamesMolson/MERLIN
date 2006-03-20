@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -116,7 +116,7 @@ void LCAVIntegrator::TrackExit ()
 
 void LCAVIntegrator::ApplyEndField(double gsgn)
 {
-    const TWRFfield& field = (*currentComponent).GetField();
+    const RFAcceleratingField& field = (*currentComponent).GetField();
     double g   = field.GetAmplitude();
     double k   = field.GetK();
     double phi = field.GetPhase();
@@ -129,7 +129,7 @@ void LCAVIntegrator::TrackStep (double ds)
 {
     CHK_ZERO(ds);
 
-    const TWRFfield& field = (*currentComponent).GetField();
+    const RFAcceleratingField& field = (*currentComponent).GetField();
 
     double g   = field.GetAmplitude();
     double k   = field.GetK();

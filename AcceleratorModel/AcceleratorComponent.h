@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.5 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -82,6 +82,11 @@ public:
     //	Rotates the component 180 degrees about its local Y axis.
     virtual void RotateY180 () = 0;
 
+	//  Set/Get the uniques beamline index for this frame
+	void SetBeamlineIndex(size_t n);
+	size_t GetBeamlineIndex() const;
+	void AppendBeamlineIndecies(std::vector<size_t>&) const;
+
     //	Returns the total number of distinct component types in
     //	the system.
     static int TotalComponentNumber ();
@@ -97,6 +102,7 @@ protected:
     explicit AcceleratorComponent (const string& aName = string());
 
     AcceleratorComponent (const string& aName, AcceleratorGeometry* aGeom, EMField* aField);
+	
 
     //	Used by derived classes to generate a unique index. All
     //	derived classes should have a static member ID of type
@@ -109,6 +115,9 @@ protected:
     AcceleratorGeometry* itsGeometry;
     Aperture* itsAperture;
     WakePotentials* itsWakes;
+
+	// beamline index associated with this component
+	size_t blI; 
 };
 
 
@@ -153,6 +162,21 @@ inline void AcceleratorComponent::SetWakePotentials (WakePotentials* wp)
 inline int AcceleratorComponent::TotalComponentNumber ()
 {
     return 0;
+}
+
+inline void AcceleratorComponent::SetBeamlineIndex(size_t n)
+{
+	blI = n;
+}
+
+inline size_t AcceleratorComponent::GetBeamlineIndex() const
+{
+	return blI;
+}
+
+inline void AcceleratorComponent::AppendBeamlineIndecies(std::vector<size_t>& ivec) const
+{
+	ivec.push_back(blI);
 }
 
 #endif

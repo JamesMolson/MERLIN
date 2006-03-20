@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:19:43 $
-// $Revision: 1.1 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -16,16 +16,14 @@
 #define TransverseRFStructure_h 1
 
 #include "merlin_config.h"
-// RFStructure
 #include "AcceleratorModel/StdComponent/RFStructure.h"
-// TransverseRFfield
 #include "AcceleratorModel/StdField/TransRFfield.h"
 
 class ComponentTracker;
 
 //	A travelling wave transverse deflecting structure.
 
-class TransverseRFStructure : public RFStructure< TransverseRFfield >
+class TransverseRFStructure : public RFStructure
 {
 public:
 
@@ -57,6 +55,11 @@ public:
     virtual ModelElement* Copy () const;
 
     static const int ID;
+
+protected:
+private:
+	// Private copy constructor
+	TransverseRFStructure(const TransverseRFStructure&);
 };
 
 inline double TransverseRFStructure::GetFieldOrientation() const

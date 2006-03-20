@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +44,10 @@ public:
     //	Virtual constructor.
     virtual ModelElement* Copy () const;
 
+	//  Get the uniques beamline index for this frame
+	size_t GetBeamlineIndex() const;
+	void AppendBeamlineIndecies(std::vector<size_t>&) const;
+
 private:
 
     RectMultipole* magnet;
@@ -52,6 +56,16 @@ private:
 inline const string& CorrectorWinding::GetName () const
 {
     return magnet->GetName();
+}
+
+inline size_t CorrectorWinding::GetBeamlineIndex() const
+{
+	return magnet->GetBeamlineIndex();
+}
+
+inline void CorrectorWinding::AppendBeamlineIndecies(std::vector<size_t>& ivec) const
+{
+	magnet->AppendBeamlineIndecies(ivec);
 }
 
 #endif

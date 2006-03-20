@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.2 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -17,6 +17,8 @@
 
 #include "merlin_config.h"
 #include <list>
+#include <vector>
+
 // LatticeFrame
 #include "AcceleratorModel/Frames/LatticeFrame.h"
 
@@ -68,6 +70,12 @@ public:
 
     //	Return the type string for the element.
     virtual const string& GetType () const;
+
+	// constucting bealine index list
+	void AppendBeamlineIndecies(std::vector<size_t>&) const;
+
+protected:
+
 
 private:
 

@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.2 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -16,20 +16,13 @@
 #define TWRFStructure_h 1
 
 #include "merlin_config.h"
-// TemplateComponents
-#include "AcceleratorModel/StdComponent/TemplateComponents.h"
-// RectTWRF
-#include "AcceleratorModel/StdComponent/RectTWRF.h"
-// RectangularGeometry
-#include "AcceleratorModel/StdGeometry/RectangularGeometry.h"
-// TWRFfield
-#include "AcceleratorModel/StdField/TWRFfield.h"
+#include "AcceleratorModel/StdComponent/RFStructure.h"
 
 class ComponentTracker;
 
 //	A travelling wave accelerating structure.
 
-class TWRFStructure : public RectTWRF
+class TWRFStructure : public RFStructure
 {
 public:
 
@@ -38,6 +31,7 @@ public:
     //	and gradient (Epk) in MV/m and the phase (phi) in
     //	radians.
     TWRFStructure (const string& id, double len, double f, double Epk, double phi = 0);
+    TWRFStructure (const TWRFStructure&);
 
     //	Returns the type string "TWRFStructure".
     virtual const string& GetType () const;

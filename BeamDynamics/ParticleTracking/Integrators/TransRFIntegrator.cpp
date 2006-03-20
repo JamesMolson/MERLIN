@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:19:43 $
-// $Revision: 1.1 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +61,7 @@ void TransRFIntegrator::TrackStep (double ds)
 {
     CHK_ZERO(ds);
 
-    const TransverseRFfield& field = (*currentComponent).GetField();
+    const TransverseRFfield& field = static_cast<const TransverseRFfield&>(currentComponent->GetField());
 
     double g   = field.GetAmplitude();
     double k   = field.GetK();

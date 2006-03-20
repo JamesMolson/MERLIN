@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:33:05 $
-// $Revision: 1.3 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -71,6 +71,11 @@ public:
     //	the AcceleratorComponent itself.
     virtual ModelElement* Copy () const;
 
+	//  Set/Get the uniques beamline index for this frame
+	void SetBeamlineIndex(size_t n);
+	size_t GetBeamlineIndex() const;
+	void AppendBeamlineIndecies(std::vector<size_t>&) const;
+
 protected:
 
     ComponentFrame(AcceleratorComponent* ac, const string& id = "");
@@ -79,6 +84,10 @@ protected:
 
     //	Should  never be called.
     virtual bool IsBoundaryPlane (BoundaryPlane p, const LatticeFrame* aSubFrame) const;
+
+
+private:
+	size_t blI; // beamline index
 };
 
 inline ComponentFrame::ComponentFrame (AcceleratorComponent& ac, const string& id)
@@ -111,6 +120,23 @@ inline const string& ComponentFrame::GetName () const
 {
     const string& id = LatticeFrame::GetName();
     return (id.length()!=0)? id : (theComponent->GetName());
+}
+
+inline void ComponentFrame::SetBeamlineIndex(size_t n)
+{
+	blI = n;
+	if(theComponent)
+		theComponent->SetBeamlineIndex(n);
+}
+
+inline size_t ComponentFrame::GetBeamlineIndex() const
+{
+	return blI;
+}
+
+inline void ComponentFrame::AppendBeamlineIndecies(std::vector<size_t>& ivec) const
+{
+	ivec.push_back(blI);
 }
 
 #endif

@@ -93,6 +93,27 @@ private:
 private:
 };
 
+// This template class does provide a copy mechanism.
+template <class G, class F>
+class TAccCompGF_NC : public TAccCompG<G>
+{
+public:
+
+    typedef F field_type;
+
+public:
+    TAccCompGF_NC (const string& id, G* geom, F* field);
+	
+	// Field accessors
+    F& GetField ();
+    const F& GetField () const;
+
+protected:
+private:
+private:
+};
+
+
 // Parameterized Class TAccCompG
 
 template <class G>
@@ -122,8 +143,6 @@ inline TAccCompGF<G,F>::TAccCompGF (const string& id, G* geom, F* field)
         : TAccCompG<G>(id,geom,field)
 {
 }
-
-
 
 template <class G, class F>
 inline F& TAccCompGF<G,F>::GetField ()
@@ -177,6 +196,24 @@ TAccCompGF<G,F>& TAccCompGF<G,F>::operator = (const TAccCompGF<G,F>& rhs)
     return *this;
 }
 
+// Parameterized Class TAccCompGF_NC
+
+template <class G, class F>
+inline TAccCompGF_NC<G,F>::TAccCompGF_NC (const string& id, G* geom, F* field)
+        : TAccCompG<G>(id,geom,field)
+{}
+
+template <class G, class F>
+inline F& TAccCompGF_NC<G,F>::GetField ()
+{
+    return static_cast<F&>(*this->itsField);
+}
+
+template <class G, class F>
+inline const F& TAccCompGF_NC<G,F>::GetField () const
+{
+    return static_cast<const F&>(*this->itsField);
+}
 
 
 #endif

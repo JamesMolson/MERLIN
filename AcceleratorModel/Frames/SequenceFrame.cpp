@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -386,4 +386,13 @@ void SequenceFrame::Traverse(FrameTraverser &ft)
     for(FrameList::iterator fi = subFrames.begin(); fi!=subFrames.end(); fi++)
         (*fi)->Traverse(ft);
 }
+
+void SequenceFrame::AppendBeamlineIndecies(std::vector<size_t>& ivec) const
+{
+    for(SequenceFrame::FrameList::const_iterator fi = subFrames.begin(); 
+		fi!=subFrames.end(); fi++){
+			(*fi)->AppendBeamlineIndecies(ivec);
+	}
+}
+
 

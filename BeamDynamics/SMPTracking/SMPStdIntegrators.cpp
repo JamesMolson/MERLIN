@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -374,7 +374,7 @@ void TWRFStructureCI::TrackStep(double ds)
     if(ds==0)
         return;
 
-    const TWRFfield& field = currentComponent->GetField();
+    const RFAcceleratingField& field = currentComponent->GetField();
 
     double g   = field.GetAmplitude();
     double f   = field.GetFrequency();
@@ -394,7 +394,7 @@ void TWRFStructureCI::TrackStep(double ds)
 
 void TWRFStructureCI::ApplyEndField(double gsgn)
 {
-    const TWRFfield& field = currentComponent->GetField();
+    const RFAcceleratingField& field = currentComponent->GetField();
     double g   = gsgn*field.GetAmplitude();
     double f   = field.GetFrequency();
     double phi = field.GetPhase();

@@ -1,64 +1,34 @@
-/*
- * Merlin C++ Class Library for Charged Particle Accelerator Simulations
- * 
- * Class library version 2.0 (2000)
- * 
- * file Merlin\AcceleratorModel\StdComponent\SWRFStructure.h
- * last modified 05/04/01 17:58:10
- */
-
-/*
- * This file is derived from software bearing the following
- * restrictions:
- *
- * MERLIN C++ class library for 
- * Charge Particle Accelerator Simulations
- *
- * Copyright (c) 2000 by The Merlin Collaboration.  
- * ALL RIGHTS RESERVED. 
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * No representations about the suitability of this software for
- * any purpose is made. It is provided "as is" without express
- * or implied warranty.
- */
-
+/////////////////////////////////////////////////////////////////////////
+//
+// Merlin C++ Class Library for Charged Particle Accelerator Simulations
+//  
+// Class library version 3 (2004)
+// 
+// Copyright: see Merlin/copyright.txt
+//
+// Last CVS revision:
+// $Date: 2006-03-20 13:42:54 $
+// $Revision: 1.3 $
+// 
+/////////////////////////////////////////////////////////////////////////
 
 #ifndef SWRFStructure_h
 #define SWRFStructure_h 1
 
 #include "merlin_config.h"
-
-
-// TemplateComponents
-#include "AcceleratorModel/StdComponent/TemplateComponents.h"
-// RectSWRF
-#include "AcceleratorModel/StdComponent/RectSWRF.h"
-// RectangularGeometry
-#include "AcceleratorModel/StdGeometry/RectangularGeometry.h"
-// SWRFfield
-#include "AcceleratorModel/StdField/SWRFfield.h"
+#include "AcceleratorModel/StdComponent/RFStructure.h"
 
 class ComponentTracker;
 
-
-
-
 //	A standing wave accelerating structure.
 
-
-class SWRFStructure : public RectSWRF
+class SWRFStructure : public RFStructure
 {
 public:
     //	Constructor taking the name of the cavity, the number of
     //	cells, the frequency (f)  in MHz, and peak electric
     //	field (E0) in MV/m and the phase.
     SWRFStructure (const string& id, int ncells, double f, double E0, double phi = 0);
-
 
     //	Returns the type string for this component.
     virtual const string& GetType () const;
@@ -83,7 +53,8 @@ public:
 
 protected:
 private:
-private:
+	// Private copy constuctor
+	SWRFStructure (const SWRFStructure&);
 };
 
 // Class SWRFStructure
