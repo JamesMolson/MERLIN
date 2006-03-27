@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:34:44 $
-// $Revision: 1.1 $
+// $Date: 2006-03-27 13:58:15 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -83,7 +83,7 @@ void Klystron::SetPhase(double phi)
 {
 	switch(kmode) {
 		case balanced:
-			for_each(rf_cavs.begin(),rf_cavs.end(),set_cavity(V_k,phi));
+			for_each(rf_cavs.begin(),rf_cavs.end(),set_cavity(V_k/rf_cavs.size(),phi));
 			phi_k = phi;
 			break;
 		case vector_sum:

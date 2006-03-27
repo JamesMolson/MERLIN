@@ -41,13 +41,15 @@ using namespace ParticleTracking;
 size_t TruncateZ(ParticleBunch& particles, double zmin, double zmax)
 {
     size_t lost=0;
-    for(ParticleBunch::iterator p = particles.begin(); p!=particles.end(); p++) {
+	ParticleBunch::iterator p = particles.begin();
+    while(p!=particles.end()) {
         double z = p->ct();
         if(z<zmin || z>=zmax) {
             p = particles.erase(p);
-            p--;
             lost++;
         }
+		else
+			p++;
     }
     return lost;
 }
@@ -114,13 +116,14 @@ size_t ParticleBinList(ParticleBunch& bunch, double zmin, double zmax, int nbins
     int w = c ? (c->size()-1)/2 : 0;
     size_t m;
 
-    for(n=0; n<nbins; n++)
-    {
-        fbins[n] = hbins[n]*a;
-        if(c)
-            for(m=_MAX(0,int(n)-w); m<=_MIN(nbins,int(n)+w); m++)
-                fpbins[n] += hbins[m]*(*c)[m-n+w]*a;
-    }
+	for(n=0; n<nbins; n++)
+	{
+		fbins[n] = hbins[n]*a;
+		if(c)
+			//for(m=_MAX(0,int(n)-w); m<=_MIN(nbins,int(n)+w); m++)// ERROR! m can be set to nbins -> out of range!
+			for(m=_MAX(0,int(n)-w); m<_MIN(nbins,int(n)+w); m++)   // This needs to be checked!
+				fpbins[n] += hbins[m]*(*c)[m-n+w]*a;
+	}
 
     pbins.swap(bins);
     hd.swap(fbins);
