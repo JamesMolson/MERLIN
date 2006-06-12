@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:42:54 $
-// $Revision: 1.4 $
+// $Date: 2006-06-12 14:13:00 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -91,7 +91,7 @@ private:
 };
 
 inline ComponentFrame::ComponentFrame (AcceleratorComponent& ac, const string& id)
-        : LatticeFrame(id.empty()?ac.GetName():id),theComponent(&ac)
+        : LatticeFrame(id.empty()?ac.GetQualifiedName():id),theComponent(&ac)
 {
     SetGeometry(theComponent->GetGeometry());
 }
