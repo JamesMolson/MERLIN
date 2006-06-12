@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-27 13:58:15 $
-// $Revision: 1.2 $
+// $Date: 2006-06-12 13:55:32 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -68,29 +68,35 @@ Klystron::Klystron (const string& aName, const vector<RFStructure*>& cavs, Mode 
 
 void Klystron::SetVoltage(double v)
 {
-	switch(kmode) {
-		case balanced:
-			for_each(rf_cavs.begin(),rf_cavs.end(),set_cavity(v/rf_cavs.size(),phi_k));
-			V_k = v;
-			break;
-		case vector_sum:
-			AdjustVectorSum(v,phi_k);
-			break;
-	}
+	V_k = v;
+	AdjustCavities();
 }
 
 void Klystron::SetPhase(double phi)
 {
+	phi_k = phi;
+	AdjustCavities();
+}
+
+void Klystron::SetVoltagePhasor(const Complex& z)
+{
+	V_k = abs(z);
+	phi_k = arg(z);
+	AdjustCavities();
+}
+
+void Klystron::AdjustCavities()
+{
 	switch(kmode) {
 		case balanced:
-			for_each(rf_cavs.begin(),rf_cavs.end(),set_cavity(V_k/rf_cavs.size(),phi));
-			phi_k = phi;
+			for_each(rf_cavs.begin(),rf_cavs.end(),set_cavity(V_k/rf_cavs.size(),phi_k));
 			break;
 		case vector_sum:
-			AdjustVectorSum(V_k,phi);
+			AdjustVectorSum(V_k,phi_k);
 			break;
 	}
 }
+
 
 const string& Klystron::GetType () const
 {

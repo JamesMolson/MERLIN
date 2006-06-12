@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:34:44 $
-// $Revision: 1.1 $
+// $Date: 2006-06-12 13:55:32 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -78,6 +78,7 @@ protected:
 	double V_k;
 	double phi_k;
 
+	void AdjustCavities();
 	void AdjustVectorSum(double v, double phi);
 	void AppendBeamlineIndecies(std::vector<size_t>&) const;
 };
