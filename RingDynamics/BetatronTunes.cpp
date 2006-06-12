@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-09-27 15:42:32 $
-// $Revision: 1.6 $
+// $Date: 2006-06-12 23:03:54 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +48,7 @@ void BetatronTunes::FindTunes(PSvector& particle, int ntrack, bool diffusion)
     ParticleTracker tracker(theModel->GetBeamline(), &bunch, false);
 
 	CollimateParticleProcess collimate(1,COLL_AT_EXIT);
-	collimate.SetLossThreshold(-1);
+	collimate.SetLossThreshold(200);
 	tracker.AddProcess(&collimate);
 
     vector<double>* xData = &xData1;
