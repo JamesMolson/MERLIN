@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-09-27 15:41:58 $
-// $Revision: 1.6 $
+// $Date: 2006-08-17 08:21:59 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -454,7 +454,7 @@ private:
     int row;
 
 public:
-    PrintLatticeFunction::PrintLatticeFunction(int r, ostream& _os)
+    PrintLatticeFunction(int r, ostream& _os)
             : row(r), os(&_os) {};
 
     void operator()(LatticeFunction* lfn) {

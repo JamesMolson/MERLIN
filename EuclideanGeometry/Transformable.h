@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:17:37 $
-// $Revision: 1.1 $
+// $Date: 2006-08-17 08:21:59 $
+// $Revision: 1.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -37,10 +37,10 @@ public:
     bool IsTransformed () const;
 
     // Translate by the vector X
-    void Transformable::Translate (const Vector3D& X);
+    void Translate (const Vector3D& X);
 
     // Translate by the vector (x,y z)
-    void Transformable::Translate (double x, double y, double z);
+    void Translate (double x, double y, double z);
 
     //	Translates the frame along the current x-axis by dx.
     void TranslateX (double dx);
