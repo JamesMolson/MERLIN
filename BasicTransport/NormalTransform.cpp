@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.3 $
+// $Date: 2006-09-07 11:18:44 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -55,14 +55,16 @@ RealMatrix CouplingMatrix(double a, double b, double c, double d)
     C(1,1)=h;
     C(2,2)=h;
     C(3,3)=h;
-    C(0,2)=c;
-    C(0,3)=d;
-    C(1,2)=-a;
-    C(1,3)=-b;
-    C(2,0)=b;
-    C(2,1)=d;
-    C(3,0)=-a;
-    C(3,1)=-c;
+
+    C(0,2)=a;
+    C(0,3)=b;
+    C(1,2)=-c;
+    C(1,3)=-d;
+
+    C(2,0)=d;
+    C(2,1)=b;
+    C(3,0)=-c;
+    C(3,1)=-a;
 
     return C;
 }
@@ -97,6 +99,23 @@ RealMatrix DispersionMatrix(double Dx, double Dxp, double Dy, double Dyp)
     return D;
 }
 
+RealMatrix InverseBetaTransform(double bx, double by, double ax, double ay)
+{
+	RealMatrix R=IdentityMatrix(6);
+	double sqrtBX = sqrt(bx);
+	double sqrtBY = sqrt(by);
+
+	R(0,0)=1/sqrtBX;
+	R(1,0)=ax/sqrtBX;
+	R(1,1)=sqrtBX;
+
+	R(2,2)=1/sqrtBY;
+	R(3,2)=ay/sqrtBY;
+	R(3,3)=sqrtBY;
+
+	return R;
+}
+
 RealMatrix NormalTransform(const BeamData& t)
 {
     //  assert(t.ok());
@@ -129,12 +148,36 @@ PSmoments& BeamDataToSigmaMtrx(const BeamData& t, PSmoments& S)
     return S;
 }
 
+RealMatrix DecoupleSigma(SigmaMatrix& S)
+{
+	// This routine removes the x-y coupling from S0 and returns the 
+	// corresponding C matrix.
+	RealVector c(1.0,4); // (a,b,c,d)
+	RealMatrix R = IdentityMatrix(6);
+
+	for(int i=0; i<4; i++) {
+		for(int j=0; j<4; j++)
+			cout<<scientific<<setw(13)<<S(i,j)<<" ";
+		cout<<endl;
+	}
+
+	do{
+		double d = S(2,2)*S(3,3)-S(2,3)*S(2,3)-(S(0,0)*S(1,1)-S(0,1)*S(0,1));
+		c(0)=(S(0,1)*S(0,3)+S(0,0)*S(1,3)-S(0,3)*S(2,3)+S(0,2)*S(3,3))/d;
+		c(1)=(S(0,1)*S(0,2)-S(0,0)*S(1,2)+S(0,3)*S(2,2)-S(0,2)*S(2,3))/d;
+		c(2)=(S(0,3)*S(1,1)-S(0,1)*S(1,3)+S(1,3)*S(2,3)-S(1,2)*S(3,3))/d;
+		c(3)=(-S(0,2)*S(1,1)+S(0,1)*S(1,2)-S(1,3)*S(2,2)+S(1,2)*S(2,3))/d;
+		RealMatrix R1 = CouplingMatrix(-c(0),-c(1),-c(2),-c(3));
+		RMap(R1).Apply(S);
+		R=R1*R;
+	} while(c*c>=1.0e-10);
+
+	return R;
+}
+
+
 BeamData& SigmaMatrixToBeamData(const PSmoments& S0, BeamData& t)
 {
-    // Note that we do not pay attention to cross-plane coupling here,
-    // so the reported emittances and beta functions will correspond
-    // to the 'projected' ellipses on the respective planes
-
     PSmoments S=S0;
     t=BeamData();
 
@@ -151,18 +194,41 @@ BeamData& SigmaMatrixToBeamData(const PSmoments& S0, BeamData& t)
         D.Apply(S);
     }
 
+	// Remove the cross-plane coupling
+	// and calculate the coupling parameters
+	RealMatrix C=DecoupleSigma(S);
+	double z;
+	if(C(0,0)>1.0) {
+		double x=sqrt(C(0,0)*C(0,0)-1);
+		z=x!=0 ? log(C(0,0)+x)/x : 0;
+	}
+	else {
+		double sinPhi = sqrt(1-C(0,0));
+		double phi = atan2(sinPhi,C(0,0));
+		z= sinPhi!=0 ? phi/sinPhi : 0;
+	}
+	t.c_xy  = C(0,2)*z;
+	t.c_xyp = C(0,3)*z;
+	t.c_xpy = C(1,2)*z;
+	t.c_xpyp= C(1,3)*z;
+
     t.emit_x = ProjectedEmittance(S,ps_X,ps_XP);
     t.emit_y = ProjectedEmittance(S,ps_Y,ps_YP);
 
+	// Now calculate beta, alpha, 
     t.beta_x = S.var(ps_X)/t.emit_x;
     t.beta_y = S.var(ps_Y)/t.emit_y;
     t.alpha_x = -S(ps_X,ps_XP)/t.emit_x;
     t.alpha_y = -S(ps_Y,ps_YP)/t.emit_y;
 
-    t.sig_z  = S.std(ps_CT);
-    t.sig_dp = S.std(ps_DP);
+	// Remove the correlation
+	RealMatrix B=InverseBetaTransform(t.beta_x,t.beta_y,t.alpha_x,t.alpha_y);
+ 	RMap(B).Apply(S);
 
-    // centroid
+    t.sig_z  = S0.std(ps_CT);
+    t.sig_dp = S0.std(ps_DP);
+
+    // Centroid
     t.x0  = S0[0];
     t.xp0 = S0[1];
     t.y0  = S0[2];
@@ -171,4 +237,11 @@ BeamData& SigmaMatrixToBeamData(const PSmoments& S0, BeamData& t)
     t.p0  = S0[5]; // not actually the energy, but dp/p!
 
     return t;
+}
+
+pair<double,double> NormalModeEmittance(const PSmoments& S)
+{
+	BeamData t;
+	SigmaMatrixToBeamData(S,t);
+	return pair<double,double>(t.emit_x,t.emit_y);
 }
