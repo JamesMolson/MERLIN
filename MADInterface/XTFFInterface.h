@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:40:54 $
-// $Revision: 1.6 $
+// $Date: 2006-09-15 13:43:32 $
+// $Revision: 1.7 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -19,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <set>
+#include <stack>
 #include "AcceleratorModel/AcceleratorModel.h"
 #include "BeamModel/BeamData.h"
 
@@ -38,10 +39,20 @@ public:
     // for the cavities to calculate the reference (matched) energy for the
     // magnet strengths.
     XTFFInterface(const std::string& fname, double nb=0, ostream* log =0);
+
+	// This version should be used when multiple files are to be parsed
+	// using AppendModel().
+    XTFFInterface(double nb=0, ostream* log =0);
+
+	// Destructor
     ~XTFFInterface();
 
     pair<AcceleratorModel*,BeamData*> Parse();
     pair<AcceleratorModel*,BeamData*> Parse(double P_ref);
+
+	// Methods for constructing a model from multiple files
+	void AppendModel(const std::string& fname);
+	pair<AcceleratorModel*,BeamData*> GetModel();
 
     // Construct apertures if flag is true (default)
     void IncludeApertures(bool flag) { incApertures = flag; }
@@ -58,12 +69,12 @@ public:
 private:
 
     void ConstructComponent(XTFF_Data&);
-    int ParseHeader();
-    pair<AcceleratorModel*,BeamData*> Parse1(int);
+    int ParseHeader(BeamData*);
+    void Parse1(int,bool);
 
     std::set<string> driftTypes;
 
-    std::ifstream ifs;
+    std::ifstream* ifs;
     AcceleratorModelConstructor* mc;
     BeamData* beam0;
     double nb;
@@ -72,7 +83,8 @@ private:
 
     // used for girder construction
     bool girders;
-    bool in_g;
+	std::stack<std::string> frameStack;
+	void ConstructNewFrame(const std::string&);
 };
 
 #endif
