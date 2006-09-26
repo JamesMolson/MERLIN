@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-09-26 12:25:17 $
-// $Revision: 1.5 $
+// $Date: 2006-09-26 20:12:15 $
+// $Revision: 1.6 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ namespace ParticleTracking {
 DECL_SIMPLE_INTG(MonitorCI,Monitor);
 DECL_SIMPLE_INTG(MarkerCI,Marker);
 DECL_SIMPLE_INTG(SolenoidCI,Solenoid);
-DECL_SIMPLE_INTG(ParticleMapPI,ParticleMapComponent);
+//DECL_SIMPLE_INTG(ParticleMapCI,ParticleMapComponent);
 
 namespace THIN_LENS {
 

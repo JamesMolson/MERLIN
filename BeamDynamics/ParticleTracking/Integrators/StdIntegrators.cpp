@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:42:54 $
-// $Revision: 1.8 $
+// $Date: 2006-09-26 20:12:15 $
+// $Revision: 1.9 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -105,6 +105,7 @@ ADD_INTG(TransRFIntegrator)
 ADD_INTG(MonitorCI)
 ADD_INTG(SolenoidCI)
 ADD_INTG(MarkerCI)
+ADD_INTG(ParticleMapCI);
 END_INTG_SET;
 
 void DriftCI::TrackStep (double ds)
