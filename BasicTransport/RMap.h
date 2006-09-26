@@ -194,34 +194,34 @@ inline void ApplyR2Map(const R2Map& R, TPSMoments<2>& S, int plane)
 // Map (transform) coupled terms Rx.Sxy.Ry'
 inline void ApplyR2Map(const R2Map& Rx, TPSMoments<2>& S, const R2Map& Ry)
 {
-    double s31=0;
-    s31+=Rx.r11*Ry.r11*S(2,0);
-    s31+=Rx.r12*Ry.r11*S(3,0);
-    s31+=Rx.r11*Ry.r12*S(2,1);
-    s31+=Rx.r12*Ry.r12*S(3,1);
+    double s13=0;
+    s13+=Rx.r11*Ry.r11*S(0,2);
+    s13+=Rx.r11*Ry.r12*S(0,3);
+    s13+=Rx.r12*Ry.r11*S(1,2);
+    s13+=Rx.r12*Ry.r12*S(1,3);
 
-    double s32=0;
-    s32+=Rx.r11*Ry.r21*S(2,0);
-    s32+=Rx.r12*Ry.r21*S(3,0);
-    s32+=Rx.r11*Ry.r22*S(2,1);
-    s32+=Rx.r12*Ry.r22*S(3,1);
+    double s14=0;
+    s14+=Rx.r11*Ry.r21*S(0,2);
+    s14+=Rx.r11*Ry.r22*S(0,3);
+    s14+=Rx.r12*Ry.r21*S(1,2);
+    s14+=Rx.r12*Ry.r22*S(1,3);
 
-    double s41=0;
-    s41+=Rx.r21*Ry.r11*S(2,0);
-    s41+=Rx.r22*Ry.r11*S(3,0);
-    s41+=Rx.r21*Ry.r12*S(2,1);
-    s41+=Rx.r22*Ry.r12*S(3,1);
+    double s23=0;
+    s23+=Rx.r21*Ry.r11*S(0,2);
+    s23+=Rx.r21*Ry.r12*S(0,3);
+    s23+=Rx.r22*Ry.r11*S(1,2);
+    s23+=Rx.r22*Ry.r12*S(1,3);
 
-    double s42=0;
-    s42+=Rx.r21*Ry.r21*S(2,0);
-    s42+=Rx.r22*Ry.r21*S(3,0);
-    s42+=Rx.r21*Ry.r22*S(2,1);
-    s42+=Rx.r22*Ry.r22*S(3,1);
+    double s24=0;
+    s24+=Rx.r21*Ry.r21*S(0,2);
+    s24+=Rx.r21*Ry.r22*S(0,3);
+    s24+=Rx.r22*Ry.r21*S(1,2);
+    s24+=Rx.r22*Ry.r22*S(1,3);
 
-    S(2,0)=s31;
-    S(2,1)=s32;
-    S(3,0)=s41;
-    S(3,1)=s42;
+    S(0,2)=s13;
+    S(0,3)=s14;
+    S(1,2)=s23;
+    S(1,3)=s24;
 }
 
 
