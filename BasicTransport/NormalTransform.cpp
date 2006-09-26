@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-09-07 11:18:44 $
-// $Revision: 1.4 $
+// $Date: 2006-09-26 19:30:15 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -155,15 +155,9 @@ RealMatrix DecoupleSigma(SigmaMatrix& S)
 	RealVector c(1.0,4); // (a,b,c,d)
 	RealMatrix R = IdentityMatrix(6);
 
-	for(int i=0; i<4; i++) {
-		for(int j=0; j<4; j++)
-			cout<<scientific<<setw(13)<<S(i,j)<<" ";
-		cout<<endl;
-	}
-
 	do{
 		double d = S(2,2)*S(3,3)-S(2,3)*S(2,3)-(S(0,0)*S(1,1)-S(0,1)*S(0,1));
-		c(0)=(S(0,1)*S(0,3)+S(0,0)*S(1,3)-S(0,3)*S(2,3)+S(0,2)*S(3,3))/d;
+		c(0)=(-S(0,1)*S(0,3)+S(0,0)*S(1,3)-S(0,3)*S(2,3)+S(0,2)*S(3,3))/d;
 		c(1)=(S(0,1)*S(0,2)-S(0,0)*S(1,2)+S(0,3)*S(2,2)-S(0,2)*S(2,3))/d;
 		c(2)=(S(0,3)*S(1,1)-S(0,1)*S(1,3)+S(1,3)*S(2,3)-S(1,2)*S(3,3))/d;
 		c(3)=(-S(0,2)*S(1,1)+S(0,1)*S(1,2)-S(1,3)*S(2,2)+S(1,2)*S(2,3))/d;
