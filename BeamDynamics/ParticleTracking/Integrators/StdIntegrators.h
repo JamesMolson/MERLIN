@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.4 $
+// $Date: 2006-09-26 12:25:17 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -26,6 +26,7 @@
 #include "AcceleratorModel/StdComponent/Solenoid.h"
 
 #include "BeamDynamics/ParticleTracking/ParticleComponentTracker.h"
+#include "BeamDynamics/ParticleTracking/Integrators/ParticleMapPI.h"
 
 #define DECL_SIMPLE_INTG(I,C) class I : \
 	public ParticleComponentTracker::Integrator< C > { \
@@ -37,6 +38,7 @@ namespace ParticleTracking {
 DECL_SIMPLE_INTG(MonitorCI,Monitor);
 DECL_SIMPLE_INTG(MarkerCI,Marker);
 DECL_SIMPLE_INTG(SolenoidCI,Solenoid);
+DECL_SIMPLE_INTG(ParticleMapPI,ParticleMapComponent);
 
 namespace THIN_LENS {
 
