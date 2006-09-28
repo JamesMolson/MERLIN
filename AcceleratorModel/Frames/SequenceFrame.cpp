@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:42:54 $
-// $Revision: 1.4 $
+// $Date: 2006-09-28 19:36:24 $
+// $Revision: 1.5 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -120,7 +120,7 @@ void SequenceFrame::ConsolidateConstruction ()
     // We assume that the origin of the sequence geometry is at
     // the arc centre.
 
-    double s=0;
+	double s=0;
     switch(itsSeqGeom->omode) {
     case originAtEntrance:
         s=0;
@@ -226,6 +226,9 @@ Transform3D SequenceGeometry::GetGeometryTransform (double s0, double s) const t
     if(s<0||s>len_t||s0<0||s0>len_t)
         throw BeyondExtent();
 
+	if(fequal(s0,0) && fequal(s,len_t))
+		return GetTotalGeometryTransform();
+
     bool inv_t;
     if(inv_t=s0>s)
         std::swap(s,s0);
@@ -242,7 +245,7 @@ Transform3D SequenceGeometry::GetGeometryTransform (double s0, double s) const t
         s-=l;
     }
 
-    assert(fi!=theFrameList->end());
+	assert(fi!=theFrameList->end());
 
     // s0 is now the distance from the entrance plane of *fi
     // to the requested starting point.
@@ -263,8 +266,8 @@ Transform3D SequenceGeometry::GetGeometryTransform (double s0, double s) const t
         t=((*fi)->GetTotalGeometryTransform())*t;
         s-=l;
     }
-    if(fi==theFrameList->end())
-        assert(fi!=theFrameList->end());
+    
+	assert(fi!=theFrameList->end());
 
     // s is now the distance from the entrance plane of the *fi
 
