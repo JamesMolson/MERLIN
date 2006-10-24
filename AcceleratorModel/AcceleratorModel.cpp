@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-04-26 20:02:47 $
-// $Revision: 1.9 $
+// $Date: 2006-10-24 19:15:24 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -31,6 +31,8 @@
 #include "stdext/deleters.h"
 // AcceleratorModel
 #include "AcceleratorModel/AcceleratorModel.h"
+// SupportStructure
+#include "AcceleratorModel/Supports/SupportStructure.h"
 
 using namespace std;
 
@@ -51,6 +53,23 @@ struct ModelStats {
         s[element->GetType()]++;
     }
 };
+
+class ExtractAcceleratorSupports : public FrameTraverser {
+public:
+	explicit ExtractAcceleratorSupports(AcceleratorSupportList& asList) 
+		: asl(asList), nFound(0) {}
+	void ActOn(LatticeFrame* frame);
+	size_t nFound;
+private:
+	AcceleratorSupportList& asl;
+};
+
+void ExtractAcceleratorSupports::ActOn(LatticeFrame* aFrame)
+{
+	SupportStructure *ss = dynamic_cast<SupportStructure*>(aFrame);
+	if(ss)
+		nFound += ss->ExportSupports(asl);
+}
 
 } // end anonymous namespace
 
@@ -226,3 +245,9 @@ size_t AcceleratorModel::GetIndecies(const AcceleratorModel::Beamline& bline,
     return iarray.size();
 }
 
+size_t AcceleratorModel::GetAcceleratorSupports(AcceleratorSupportList& supports)
+{
+	ExtractAcceleratorSupports eas(supports);
+	globalFrame->Traverse(eas);
+	return eas.nFound;
+}

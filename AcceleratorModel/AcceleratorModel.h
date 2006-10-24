@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-03-29 08:23:38 $
-// $Revision: 1.7 $
+// $Date: 2006-10-24 19:15:24 $
+// $Revision: 1.8 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +36,8 @@
 #include "stdext/ring_iterator.h"
 // MerlinException
 #include "Exception/MerlinException.h"
+// AcceleratorSupports
+#include "AcceleratorModel/Supports/AcceleratorSupport.h"
 
 class ChannelServer;
 class ComponentFrame;
@@ -294,7 +296,8 @@ public:
     //	model.
     void ReportModelStatistics (std::ostream& os) const;
 
-    // Data Members for Associations
+    // Access to AcceleratorSupport objects
+	size_t GetAcceleratorSupports(AcceleratorSupportList& supports);
 
 private:
 
