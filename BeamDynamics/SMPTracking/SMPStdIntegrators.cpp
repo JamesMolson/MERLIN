@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2006-03-20 13:42:54 $
-// $Revision: 1.3 $
+// $Date: 2006-10-24 10:28:42 $
+// $Revision: 1.4 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -204,7 +204,7 @@ void ApplyDrift(double s, SMPBunch& bunch)
 // Error and Warning messages
 void WarnNonlinear(const string& id)
 {
-    MerlinIO::warning()<<"Non-linear field ignored in "<<id<<endl;
+    MerlinIO::warning()<<"Non-linear field ignored in "<<id<<endl<<endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -293,9 +293,12 @@ void RectMultipoleCI::TrackStep(double ds)
     const double q = currentBunch->GetChargeSign();
     const double brho = P0/eV/SpeedOfLight;
 
-    if(field.HighestMultipole()>1) {
+    if(field.HighestMultipole()>1)
         WarnNonlinear(currentComponent->GetQualifiedName());
+
+	if(field.LowestMultipole()>1) {
         ApplyDrift(ds,*currentBunch);
+		return;
     }
 
     // We allow a quadrupole with a thin dipole kick at its centre
