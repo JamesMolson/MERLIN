@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.2 $
+// $Date: 2006-10-24 10:26:25 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -137,6 +137,9 @@ public:
     // Return the highest non-zero multipole index.
     int HighestMultipole () const;
 
+	// Return the lowest non-zero multipole index.
+    int LowestMultipole () const;
+
 private:
 
     //	The scale of the field in Tesla. The coefficients of the
@@ -159,6 +162,13 @@ inline bool MultipoleField::IsNullField () const
 inline int MultipoleField::HighestMultipole () const
 {
     return expansion.size()-1;
+}
+
+inline int MultipoleField::LowestMultipole () const
+{
+	size_t n=0;
+	while(expansion[n++]==Complex(0.0));
+	return n-1;
 }
 
 #endif
