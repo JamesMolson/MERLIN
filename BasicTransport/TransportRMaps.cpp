@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:52 $
-// $Revision: 1.2 $
+// $Date: 2006-10-24 09:55:39 $
+// $Revision: 1.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -272,7 +272,7 @@ void SWRFCavity (int ncells, double g, double f, double phi, double E0, RMap& R)
 // functions returning R2Map objects
 void Drift (double length, R2Map& R)
 {
-    R.r11=R.r12=1.0;
+    R.r11=R.r22=1.0;
     R.r12=length;
     R.r21=0;
 }
