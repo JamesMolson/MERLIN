@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-10-06 08:53:09 $
-// $Revision: 1.9 $
+// $Date: 2007-03-23 14:58:51 $
+// $Revision: 1.10 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -22,12 +22,17 @@ namespace {
 using namespace std;
 
 template<class II>
-void PerformTracking(ProcessStepManager& aStepper, Bunch& aBunch, bool includeX,
+void PerformTracking(ProcessStepManager& aStepper, Bunch& aBunch, bool includeX, bool injOnAxis,
                      SimulationOutput* simop, II first, II last)
 {
+	bool fb=true;
     do {
         ComponentFrame* frame = *first;
-        if(includeX)
+
+		if(fb && injOnAxis)
+			cout<<"ignoring first frame transformation"<<endl;
+
+		if(includeX && !(fb&&injOnAxis))
             aBunch.ApplyTransformation(frame->GetEntrancePlaneTransform());
 
         if(const Transform3D* t=frame->GetEntranceGeometryPatch()) {
@@ -45,6 +50,8 @@ void PerformTracking(ProcessStepManager& aStepper, Bunch& aBunch, bool includeX,
             aBunch.ApplyTransformation(frame->GetExitPlaneTransform());
         if(simop)
             simop->DoRecord(frame,&aBunch);
+
+		fb=false;
     } while(++first != last);
 }
 
@@ -65,15 +72,15 @@ ComponentFrame* TrackingSimulation::TStepper<I>::NextFrame ()
 }
 
 TrackingSimulation::TrackingSimulation (const AcceleratorModel::Beamline& bline)
-        : bunch(0),incX(true),log(0),handle_me(false),type(beamline),ibunchCtor(0),stepper(),theRing(),theBeamline(bline),cstepper(0),simOp(0)
+        : bunch(0),incX(true),injOnAxis(false),log(0),handle_me(false),type(beamline),ibunchCtor(0),stepper(),theRing(),theBeamline(bline),cstepper(0),simOp(0)
 {}
 
 TrackingSimulation::TrackingSimulation (const AcceleratorModel::RingIterator& aRing)
-        : bunch(0),incX(true),log(0),handle_me(false),type(ring),ibunchCtor(0),stepper(),theRing(aRing),theBeamline(),cstepper(0),simOp(0)
+        : bunch(0),incX(true),injOnAxis(false),log(0),handle_me(false),type(ring),ibunchCtor(0),stepper(),theRing(aRing),theBeamline(),cstepper(0),simOp(0)
 {}
 
 TrackingSimulation::TrackingSimulation ()
-        : bunch(0),incX(true),log(0),handle_me(false),type(undefined),ibunchCtor(0),stepper(),theRing(),theBeamline(),cstepper(0),simOp(0)
+        : bunch(0),incX(true),injOnAxis(false),log(0),handle_me(false),type(undefined),ibunchCtor(0),stepper(),theRing(),theBeamline(),cstepper(0),simOp(0)
 {}
 
 void TrackingSimulation::SetBeamline (const AcceleratorModel::Beamline& bline)
@@ -111,14 +118,21 @@ Bunch& TrackingSimulation::DoRun (bool new_bunch, bool do_init)
     if(simOp)
         simOp->DoRecordInitialBunch(bunch);
 
+	// NOTE potential bug: if injOnAxis is true then do_init should also be true.
+	// do_init == false indicates a continuation of a previous tracking run (a ring)
+	// in which case injOnAxis==true may be an error.
+
+	if(injOnAxis && !do_init)
+		cerr<<"*** WARNING: possible tracking error - injOnAxis==true for continued tracking"<<endl;
+
     try {
         if(do_init)
             stepper.Initialise(*bunch);
 
         if(type==beamline)
-            PerformTracking(stepper,*bunch,incX,simOp,theBeamline.begin(),theBeamline.end());
+            PerformTracking(stepper,*bunch,incX,injOnAxis,simOp,theBeamline.begin(),theBeamline.end());
         else
-            PerformTracking(stepper,*bunch,incX,simOp,theRing,theRing);
+            PerformTracking(stepper,*bunch,incX,injOnAxis,simOp,theRing,theRing);
     } catch(MerlinException& me) {
         if(handle_me) {
             MERLIN_ERR<<endl<<me.Msg()<<endl;

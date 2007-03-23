@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2005-10-06 08:53:09 $
-// $Revision: 1.7 $
+// $Date: 2007-03-23 14:58:51 $
+// $Revision: 1.8 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -140,6 +140,14 @@ public:
     //	beamline.
     void AssumeFlatLattice (bool flat);
 
+	//  If onAxis is true, tracking simulation ignores any coordination 
+	//  transformation for the first component frame tracked. This effectively
+	//  injects the 'beam' on the local components axis, irrespective of its 
+	//  alignment state.
+	void InjectBeamOnAxis(bool onAxis) {
+		injOnAxis = onAxis;
+	}
+
     //	Sets the initial bunch constructor.
     void SetInitialBunchCtor (BunchConstructor* bctor);
 
@@ -209,6 +217,7 @@ protected:
 private:
 
     bool incX;
+	bool injOnAxis;
     ostream* log;
     bool handle_me;
     lattice_type type;
