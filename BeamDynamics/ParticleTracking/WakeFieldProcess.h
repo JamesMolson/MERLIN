@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.6 $
+// $Date: 2008-01-09 13:38:09 $
+// $Revision: 1.6.4.1 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -16,6 +16,7 @@
 #define _h_WakeFieldProcess
 
 #include "BeamDynamics/ParticleTracking/ParticleBunchProcess.h"
+#include "AcceleratorModel/WakePotentials.h"
 #include "utility/StringPattern.h"
 #include <vector>
 
@@ -32,6 +33,8 @@ namespace ParticleTracking {
 
 class WakeFieldProcess : public ParticleBunchProcess
 {
+  //  friend class SpoilerWakePotentials;
+
 public:
 
     enum ImpulseLocation {atCentre,atExit};
@@ -49,7 +52,8 @@ public:
     void DumpSliceCentroids(ostream&) const;
     void SetFilter(int n, int m, int d);
 
-private:
+    //private:
+ protected:
 
     ImpulseLocation imploc;
     double current_s;
@@ -61,9 +65,9 @@ private:
 
     void Init();
     size_t CalculateQdist();
-    void CalculateWakeL();
-    void CalculateWakeT();
-    void ApplyWakefield(double ds);
+    virtual void CalculateWakeL();
+    virtual void CalculateWakeT();
+    virtual void ApplyWakefield(double ds);
 
     WakePotentials* currentWake;
 

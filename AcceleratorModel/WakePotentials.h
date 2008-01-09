@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:51 $
-// $Revision: 1.3 $
+// $Date: 2008-01-09 13:38:09 $
+// $Revision: 1.3.4.1 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -25,7 +25,7 @@ class WakePotentials
 {
 public:
 
-    WakePotentials() : csr(false) {}
+    WakePotentials(double r, double s) : csr(false), radius(r), conductivity(s) {}
     virtual ~WakePotentials () {};
 
     virtual double Wlong (double z) const = 0;
@@ -36,6 +36,8 @@ public:
 
 protected:
     bool csr;
+    double radius;
+    double conductivity; 
 };
 
 #endif

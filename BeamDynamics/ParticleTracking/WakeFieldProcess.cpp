@@ -61,6 +61,8 @@ PSvector GetSliceCentroid6D(ParticleBunch::const_iterator first,
 
 };
 
+
+
 namespace ParticleTracking {
 
 WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns)
@@ -169,6 +171,7 @@ void WakeFieldProcess::DoProcess(double ds)
 
 void WakeFieldProcess::ApplyWakefield(double ds)
 {
+    cout<<"this is inside WakeFieldProcess"<<endl;
     // here we apply the wake field for
     // the step ds
     size_t n=0;
@@ -201,9 +204,9 @@ void WakeFieldProcess::ApplyWakefield(double ds)
         double gy = WAKE_GRADIENT(wake_y);
 
 
-        //		cout<<nslice<<" ("<<flush<<distance(bunchSlices[nslice],bunchSlices[nslice+1])<<") ";
+ 
 
-        for(ParticleBunch::iterator p=bunchSlices[nslice]; p!=bunchSlices[nslice+1]; p++) {
+       for(ParticleBunch::iterator p=bunchSlices[nslice]; p!=bunchSlices[nslice+1]; p++) {
             double zz = p->ct()-z;
             double ddp = -ds*(wake_z[nslice]+gz*zz)/p0;
             p->dp() += ddp;
@@ -211,7 +214,7 @@ void WakeFieldProcess::ApplyWakefield(double ds)
 
             double dxp =  inc_tw? ds*(wake_x[nslice]+gx*zz)/p0 : 0;
             double dyp =  inc_tw? ds*(wake_y[nslice]+gy*zz)/p0 : 0;
-            //			cout<<dyp<<endl;
+           
 
             p->xp() = (p->xp()+dxp)/(1+ddp);
             p->yp() = (p->yp()+dyp)/(1+ddp);
@@ -220,7 +223,7 @@ void WakeFieldProcess::ApplyWakefield(double ds)
     }
     if(!currentWake->Is_CSR())
         currentBunch->AdjustRefMomentum(bload/currentBunch->size());
-    //	currentBunch->AdjustRefMomentumToMean();
+    
 }
 
 double WakeFieldProcess::GetMaxAllowedStepSize () const
