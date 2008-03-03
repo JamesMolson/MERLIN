@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2008-01-09 13:38:09 $
-// $Revision: 1.6.4.1 $
+// $Date: 2008-03-03 13:58:26 $
+// $Revision: 1.6.4.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -30,16 +30,17 @@ namespace ParticleTracking {
 // Modified by A.Wolski 12/2/2003
 // to include the derivative of the charge distribution
 // for handling CSR wake fields.
+//
+// Modified by D.Kruecker 18.2.2008
+// to be used as base class for other wakefield types (spoiler,coupler,...)
 
-class WakeFieldProcess : public ParticleBunchProcess
-{
-  //  friend class SpoilerWakePotentials;
-
+class WakeFieldProcess : public ParticleBunchProcess {
 public:
 
     enum ImpulseLocation {atCentre,atExit};
 
-    WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0);
+    WakeFieldProcess (int prio, size_t nb =100, double ns = 3.0, string aID = "WAKEFIELD");
+
     ~WakeFieldProcess();
 
     virtual void InitialiseProcess (Bunch& bunch);
@@ -52,8 +53,8 @@ public:
     void DumpSliceCentroids(ostream&) const;
     void SetFilter(int n, int m, int d);
 
-    //private:
- protected:
+    //private: 
+    protected:
 
     ImpulseLocation imploc;
     double current_s;

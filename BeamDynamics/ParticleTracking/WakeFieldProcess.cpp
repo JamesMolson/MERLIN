@@ -1,3 +1,6 @@
+// Modified by D.Kruecker 18.2.2008
+// to be used as base class for other wakefield types (spoiler,coupler,...)
+//
 #include "BeamDynamics/ParticleTracking/WakeFieldProcess.h"
 #include "BeamDynamics/ParticleTracking/ParticleBunch.h"
 #include "BeamDynamics/ParticleTracking/ParticleBunchUtilities.h"
@@ -65,8 +68,8 @@ PSvector GetSliceCentroid6D(ParticleBunch::const_iterator first,
 
 namespace ParticleTracking {
 
-WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns)
-        : ParticleBunchProcess("WAKEFIELD",prio),imploc(atExit),nbins(nb),nsig(ns),currentWake(0),
+WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns, string aID)
+        : ParticleBunchProcess(aID,prio),imploc(atExit),nbins(nb),nsig(ns),currentWake(0),
         wake_x(0),wake_y(0),wake_z(0),Qd(),Qdp(),filter(0),recalc(true),inc_tw(true)
 {
     SetFilter(14,2,1);
@@ -130,7 +133,17 @@ void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
     //	TWRFStructure* cavity = dynamic_cast<TWRFStructure*>(&component);
     //	WakePotentials* wake = cavity!=0 ? cavity->GetWakePotentials() : 0;
 
+
     WakePotentials* wake = component.GetWakePotentials();
+    // if not initialize(=0) we assume that
+    // WakeFieldProcess is responsible - for backward compatibility
+    // in general expected process must be equal to this process
+    if( wake &&
+        wake->GetExpectedProcess()!=0 &&
+        typeid(*(wake->GetExpectedProcess()))!=typeid(*this))  
+        wake=0;
+
+    //if(wake!=0) cout<<GetID()<<endl;
 
     if(currentBunch!=0 && wake!=0) {
         clen = component.GetLength();
@@ -171,7 +184,11 @@ void WakeFieldProcess::DoProcess(double ds)
 
 void WakeFieldProcess::ApplyWakefield(double ds)
 {
-    cout<<"this is inside WakeFieldProcess"<<endl;
+    // check if we are responsible for the current wakefield
+    // a class derived from this class must 
+    // include the appropriate check for its own wake potential type!
+    if(typeid(WakePotentials*)!=typeid(currentWake)) return;
+    
     // here we apply the wake field for
     // the step ds
     size_t n=0;
@@ -239,7 +256,7 @@ void WakeFieldProcess::Init()
         // Even though we have truncated particles, we still keep the
         // the bunch charge constant
         currentBunch->SetMacroParticleCharge(Qt/(currentBunch->size()));
-        MerlinIO::warning()<<"WakefieldProcess: "<<nloss<<" particles truncated"<<endl;
+        MerlinIO::warning()<<GetID()<<" (WakefieldProcess): "<<nloss<<" particles truncated"<<endl;
     }
 
     // Calculate the long. bunch wake.

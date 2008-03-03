@@ -7,15 +7,24 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2008-01-09 13:38:09 $
-// $Revision: 1.3.4.1 $
+// $Date: 2008-03-03 13:58:26 $
+// $Revision: 1.3.4.2 $
 // 
 /////////////////////////////////////////////////////////////////////////
+//
+// Modified by D.Kruecker 18.2.2008
+// to be used as base class for other wake potentials
+// see SpoilerWakeProcess 
 
 #ifndef WakePotentials_h
 #define WakePotentials_h 1
 
 #include "merlin_config.h"
+#include <string>
+
+#include "BeamDynamics/BunchProcess.h"
+
+using namespace std;
 
 //	Abstract class for calculating the longitudinal and
 //	transverse single-bunch wakefield potentials (Greens
@@ -25,19 +34,22 @@ class WakePotentials
 {
 public:
 
-    WakePotentials(double r, double s) : csr(false), radius(r), conductivity(s) {}
+    WakePotentials() : expectedProcess(0), csr(false){}
     virtual ~WakePotentials () {};
 
-    virtual double Wlong (double z) const = 0;
-    virtual double Wtrans (double z) const = 0;
+//    virtual double Wlong (double z)  const = 0;
+//    virtual double Wtrans (double z) const = 0;
+    virtual double Wlong (double z)  { return 0;};
+    virtual double Wtrans (double z) { return 0;};
     bool Is_CSR () const {
         return csr;
     }
-
+    BunchProcess* GetExpectedProcess(){return expectedProcess;};
+    void          SetExpectedProcess(BunchProcess* p){expectedProcess=p;};
+        
 protected:
     bool csr;
-    double radius;
-    double conductivity; 
+    BunchProcess* expectedProcess;
 };
 
 #endif

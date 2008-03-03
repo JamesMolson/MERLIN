@@ -9,6 +9,12 @@
 // Created: June, 2006
 //
 /////////////////////////////////////////////////////////////////////////
+//
+// additional spoiler wakefield code thanks to Roger Barlow and Adriana Bunglau
+// see EUROTeV Report 2006-051 for the physics 
+// the present implementation is different
+// Modified by D.Kruecker 18.2.2008
+//
 
 #include "merlin_config.h"
 #include "AcceleratorModel/SpoilerWakePotentials.h"
@@ -46,9 +52,10 @@ namespace ParticleTracking{
 
 // Constructor
 
-  SpoilerWakeProcess::SpoilerWakeProcess(int modes, int prio, size_t nb, double ns)
-  : WakeFieldProcess (prio, nb, ns)
-{  nmodes = modes;}
+SpoilerWakeProcess::SpoilerWakeProcess(int modes, int prio, size_t nb, double ns)
+                   : WakeFieldProcess (prio, nb, ns,"SPOILERWAKE") {  
+                   nmodes = modes;
+}
 
 // Destructor
 
@@ -132,72 +139,72 @@ void SpoilerWakeProcess::CalculateWakeL(double dz, int currmode)
         }	
 }
 
-    void SpoilerWakeProcess::ApplyWakefield(double ds)
-        {
-            spoiler_wake=(SpoilerWakePotentials*) currentWake;
-            
-          {int m;  
-          for(m=1;m<=nmodes;m++)
-            {     
-          for (size_t  n=0;n<nbins;n++)
-                  {Cm[m][n]=CalculateCm(m,n);
-                   Sm[m][n]=CalculateSm(m,n);}
-            }
-          }
-            double wake_x,wake_y,wake_z;          
-double macrocharge=currentBunch->GetTotalCharge()/currentBunch->size();
-        
-          double a0 = macrocharge*ElectronCharge*Volt;
-          a0 *= 3E8;
+void SpoilerWakeProcess::ApplyWakefield(double ds){
 
-          double p0 = currentBunch->GetReferenceMomentum();
-           if(recalc) Init();	  
+	// down casting to its own wake potential type
+	// we are not responsible if it is a different type 
+	spoiler_wake=dynamic_cast<SpoilerWakePotentials*>(currentWake);
+	if(spoiler_wake==0) return;
+	
+	{int m;
+	for(m=1;m<=nmodes;m++){     
+	    for (size_t  n=0;n<nbins;n++){
+	    	 Cm[m][n]=CalculateCm(m,n);
+		 Sm[m][n]=CalculateSm(m,n);
+	    }
+        }}
+	double wake_x,wake_y,wake_z;          
+	double macrocharge=currentBunch->GetTotalCharge()/currentBunch->size();
+        
+	double a0 = macrocharge*ElectronCharge*Volt;
+	a0 *= 3E8;
+
+	double p0 = currentBunch->GetReferenceMomentum();
+	if(recalc) Init();
 	double bload=0;
 	       
 #define WAKE_GRADIENT(wake) ((wake[currmode][nslice+1]-wake[currmode][nslice])/dz); 
   
-            double z=zmin;
-	    
-for(int currmode=1; currmode<=nmodes; currmode++)
-  {
-	CalculateWakeT(dz, currmode);	
- 	CalculateWakeL(dz, currmode);	
-	      
-for(size_t nslice = 0; nslice<nbins; nslice++) 
-          {
-            double g_ct = WAKE_GRADIENT(wake_ct);
-            double g_st = WAKE_GRADIENT(wake_st);
-            double g_cl = WAKE_GRADIENT(wake_cl);
-            double g_sl = WAKE_GRADIENT(wake_sl);
- for(ParticleBunch::iterator p=bunchSlices[nslice]; p!=bunchSlices[nslice+1]; p++)
-   {
-     double r = sqrt (powd(p->x(),2) + powd(p->y(),2)); 
-     double theta = atan2(p->y(),p->x());
-     double zz = p->ct()-z;
-     double wxc = cos((currmode-1)*theta)*(wake_ct[currmode][nslice]+g_ct*zz); 
-     double wxs = sin((currmode-1)*theta)*(wake_st[currmode][nslice]+g_st*zz);
-     double wys = cos((currmode-1)*theta)*(wake_st[currmode][nslice]+g_st*zz);
-     double wyc = sin((currmode-1)*theta)*(wake_ct[currmode][nslice]+g_ct*zz);
-     wake_x = currmode*powd(r,currmode-1)*(wxc+wxs);
-     wake_y = currmode*powd(r,currmode-1)*(wys-wyc);
-     wake_x*=a0;
-     wake_y*=a0;
-  
-     double wzc = cos(currmode*theta)*(wake_cl[currmode][nslice]+g_cl*zz);
-     double wzs = sin(currmode*theta)*(wake_sl[currmode][nslice]+g_sl*zz);
-     wake_z = powd(r,currmode)*(wzc-wzs);
-     wake_z*= a0;
-     double ddp = -ds*wake_z/p0;
-     p->dp() += ddp;
-     bload += ddp;
-     double dxp = inc_tw? ds*wake_x/p0 : 0;
-     double dyp = inc_tw? ds*wake_y/p0 : 0;
-     p->xp() = (p->xp()+dxp)/(1+ddp);
-     p->yp() = (p->yp()+dyp)/(1+ddp);
-    }
-    z+=dz;  
-    }
-   }   
+	double z=zmin;
+	
+	for(int currmode=1; currmode<=nmodes; currmode++){
+
+		CalculateWakeT(dz, currmode);	
+		CalculateWakeL(dz, currmode);	
+
+		for(size_t nslice = 0; nslice<nbins; nslice++) {
+			double g_ct = WAKE_GRADIENT(wake_ct);
+			double g_st = WAKE_GRADIENT(wake_st);
+			double g_cl = WAKE_GRADIENT(wake_cl);
+			double g_sl = WAKE_GRADIENT(wake_sl);
+			for(ParticleBunch::iterator p=bunchSlices[nslice]; p!=bunchSlices[nslice+1]; p++)
+			{
+				double r = sqrt (powd(p->x(),2) + powd(p->y(),2)); 
+				double theta = atan2(p->y(),p->x());
+				double zz = p->ct()-z;
+				double wxc = cos((currmode-1)*theta)*(wake_ct[currmode][nslice]+g_ct*zz); 
+				double wxs = sin((currmode-1)*theta)*(wake_st[currmode][nslice]+g_st*zz);
+				double wys = cos((currmode-1)*theta)*(wake_st[currmode][nslice]+g_st*zz);
+				double wyc = sin((currmode-1)*theta)*(wake_ct[currmode][nslice]+g_ct*zz);
+				wake_x = currmode*powd(r,currmode-1)*(wxc+wxs);
+				wake_y = currmode*powd(r,currmode-1)*(wys-wyc);
+				wake_x*=a0;
+				wake_y*=a0;
+				double wzc = cos(currmode*theta)*(wake_cl[currmode][nslice]+g_cl*zz);
+				double wzs = sin(currmode*theta)*(wake_sl[currmode][nslice]+g_sl*zz);
+				wake_z = powd(r,currmode)*(wzc-wzs);
+				wake_z*= a0;
+				double ddp = -ds*wake_z/p0;
+				p->dp() += ddp;
+				bload += ddp;
+				double dxp = inc_tw? ds*wake_x/p0 : 0;
+				double dyp = inc_tw? ds*wake_y/p0 : 0;
+				p->xp() = (p->xp()+dxp)/(1+ddp);
+				p->yp() = (p->yp()+dyp)/(1+ddp);
+			}
+			z+=dz;  
+    		}
+	}   
 }
 }; //end namespace ParticleTracking
 

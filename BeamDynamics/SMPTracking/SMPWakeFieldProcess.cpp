@@ -76,8 +76,8 @@ struct AWK {
 namespace SMPTracking {
 
 
-WakeFieldProcess::WakeFieldProcess (int prio, double sw)
-        : SMPBunchProcess("SMP WAKEFIELD",prio),imploc(atExit),currentWake(0),recalc(true),inc_tw(true),dz(sw)
+WakeFieldProcess::WakeFieldProcess (int prio, double sw, string aID)
+        : SMPBunchProcess(aID,prio),imploc(atExit),currentWake(0),recalc(true),inc_tw(true),dz(sw)
 {}
 
 WakeFieldProcess::~WakeFieldProcess()
@@ -87,6 +87,14 @@ WakeFieldProcess::~WakeFieldProcess()
 void WakeFieldProcess::SetCurrentComponent (AcceleratorComponent& component)
 {
     WakePotentials* wake = component.GetWakePotentials();
+    // if not initialize(=0) we assume that
+    // WakeFieldProcess is responsible - for backward compatibility
+    // in general expected process must be equal to this process
+    if( wake &&
+        wake->GetExpectedProcess()!=0 &&
+        typeid(*(wake->GetExpectedProcess()))!=typeid(*this))
+        wake=0;
+
 
     if(currentBunch!=0 && wake!=0) {
         clen = component.GetLength();

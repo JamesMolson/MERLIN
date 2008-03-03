@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2004-12-13 08:38:53 $
-// $Revision: 1.2 $
+// $Date: 2008-03-03 13:58:26 $
+// $Revision: 1.2.4.1 $
 // 
 /////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +32,7 @@ public:
 
     enum ImpulseLocation {atCentre,atExit};
 
-    WakeFieldProcess (int prio, double slice_width =1.0e-6);
+    WakeFieldProcess (int prio, double slice_width =1.0e-6,string aID="SMP WAKEFIELD");
     ~WakeFieldProcess();
 
     virtual void InitialiseProcess (Bunch& bunch);
