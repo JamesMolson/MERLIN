@@ -7,8 +7,8 @@
 // Copyright: see Merlin/copyright.txt
 //
 // Last CVS revision:
-// $Date: 2008-03-03 13:58:26 $
-// $Revision: 1.3.4.2 $
+// $Date: 2008-05-22 21:28:17 $
+// $Revision: 1.3.4.3 $
 // 
 /////////////////////////////////////////////////////////////////////////
 //
@@ -39,8 +39,14 @@ public:
 
 //    virtual double Wlong (double z)  const = 0;
 //    virtual double Wtrans (double z) const = 0;
-    virtual double Wlong (double z)  { return 0;};
-    virtual double Wtrans (double z) { return 0;};
+    virtual double Wlong (double z) const { 
+    	cout<<"WakePotentials::Wlong: Virtual function called!"<<endl; 
+    	return 0;
+    };
+    virtual double Wtrans (double z) const { 
+    	cout<<"WakePotentials::Wtrans: Virtual function called!"<<endl; 
+    	return 0;
+    };
     bool Is_CSR () const {
         return csr;
     }
