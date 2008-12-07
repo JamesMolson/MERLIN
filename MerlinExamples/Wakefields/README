@@ -1,0 +1,39 @@
+Merlin <= 3.1 was able to take into account longitudinal and transverse 
+cavity wakefields. With version 4.0 the original scheme has been 
+extended to handle more general kinds of wakefields, e.g. higher order 
+wakefields in collimators (thanks to the work of Roger Barlow and 
+Adriana Bungau, WEPP161, EPAC08; EUROTeV-2006-051 - the implementation 
+described in that paper has been modified slightly) or coupler 
+wakefields (Dirk Kruecker et al., EUROTeV-2008-003 and 
+EUROTeV-Memo-2008-001. The coupler code also includes transverse kicks 
+due to asymmetries in the cavity RF field).
+
+The new code is only available with ParticleTracking. The new scheme is 
+backward compatible and the examples in this directory show how to use 
+it.
+
+a) ex1.cpp - collimator wakefields
+b) ex2.cpp - collimator wakefields with cavity wakefields
+c) ex3.cpp - coupler+cavity wakefields
+
+The new wakefield code consist in the following files
+Merlin/AcceleratorModel/SpoilerPotentialModels.h|cpp
+Merlin/BeamDynamics/ParticleTracking/SpoilerWakeProcess.h|cpp
+Merlin/BeamDynamics/ParticleTracking/CouplerWakeFieldProcess.h|cpp
+Merlin/AcceleratorModel/CombinedWakeRF.h
+MerlinExample/Wakefields/TeslaCoupler.h
+
+SpoilerPotentialModels implements examples of collimator wakepotentials; 
+see A.M. Toader et al., EPAC08, Genua, WEPP161 for a collection of 
+collimator wakefield formulae.
+
+CombinedWakeRF defines an interface for wakefields and RF kicks 
+depending on x,y and not just r. TeslaCoupler implements transverse 
+wakefields and RF kicks according to I. Zagordnov and M. Dohlus, 
+ILC/LCWS 07, Hamburg, talk and paper (several typos in the paper had 
+been removed). The steady state solution is given in M.Dohlus, 
+I.Zagorodnov, E.Gjonaj and T.Weiland, EPAC08, Genua, MOPP013.
+
+CouplerWakeFieldProcess calculates the wakefield and RF kick effects 
+of cavity and coupler at the same time to avoid multiple (time-comsuming) 
+integrations over the bunch distribution.

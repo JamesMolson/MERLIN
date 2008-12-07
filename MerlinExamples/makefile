@@ -17,7 +17,8 @@ CCFLAGS= -w -O3 ${INCPATH}
 LDFLAGS= -L${MERLIN_LIB_PATH} -static
 
 EGDIRS= ClosedOrbit LatticeFunctions StrayFieldClosedOrbit \
-        Tracking Trajectory HaloCollimation SpinTracking ILCML
+        Tracking Trajectory HaloCollimation SpinTracking ILCML \
+        Wakefields AcceleratorErrors
 
 merlin_eg:
 	for dirn in ${EGDIRS}; do \
