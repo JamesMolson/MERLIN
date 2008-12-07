@@ -1,0 +1,635 @@
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT3
+ SWRFStructure.RFC
+ Drift.ARCDFT3
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT3
+ SWRFStructure.RFC
+ Drift.ARCDFT3
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT3
+ SWRFStructure.RFC
+ Drift.ARCDFT3
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD1 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ1
+----| BPMQUAD1 END
+ Drift.ARCDFT1
+ Sextupole.ARCS1
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT1
+ Drift.ARCDFT2
+ Drift.ARCDFT1
+----| BPMQUAD2 BEGIN
+----| BPM.BPMARCBPM
+----| Quadrupole.ARCQ2
+----| BPMQUAD2 END
+ Drift.ARCDFT1
+ Sextupole.ARCS2
+ Drift.ARCDFT1
+ SectorBend.ARCDIP
+ Drift.ARCDFT3
+ SWRFStructure.RFC
+ Drift.ARCDFT3
+
+Arc length of beamline:     458.259 meter
+Total number of components: 504
+Total numner of elements:   1064
+
+Model Element statistics
+------------------------
+
+BPM                 56  
+ComponentFrame      504 
+Drift               276 
+MagnetMover         56  
+Quadrupole          56  
+SWRFStructure       4   
+SectorBend          56  
+Sextupole           56  
+
+
+ARC distance from MAD file: 458.259
