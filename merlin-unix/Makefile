@@ -1,5 +1,8 @@
 # Makefile for the MERLIN class library
 # -------------------------------------
+# Modified 25.11.08
+# Dirk Kruecker
+#
 # version 1.2 22.11.01
 # Nick Walker, DESY
 #
@@ -17,11 +20,11 @@
 CPP= g++
 
 # the root directory for the Merlin source code
-MERLIN_ROOT_DIR=/afs/desy.de/user/n/njwalker/public/C++/Merlin
+MERLIN_ROOT_DIR=${PWD}/../Merlin
 
 # the root build directory
 # [see README for more details]
-MERLIN_BUILD_DIR=/scratch/kruecker/work/Merlin/cvs/merlin-unix
+MERLIN_BUILD_DIR=${PWD}
 
 # the install directory where the libs will be places
 MERLIN_INSTALL_DIR=${MERLIN_BUILD_DIR}/lib
@@ -38,6 +41,7 @@ CATS= AcceleratorModel \
       AcceleratorModel/ActiveMonitors \
       AcceleratorModel/Apertures \
       AcceleratorModel/Construction \
+      AcceleratorModel/ControlElements \
       AcceleratorModel/Frames \
       AcceleratorModel/Implementation \
       AcceleratorModel/Implementation/BPMChannels \
@@ -53,6 +57,7 @@ CATS= AcceleratorModel \
       BeamDynamics/ParticleTracking/Integrators \
       BeamDynamics/ParticleTracking \
       BeamDynamics/SMPTracking \
+      BeamDynamics/CommonUtilities \
       BeamModel \
       Channels \
       TLAS \

@@ -8,8 +8,8 @@
 # the compiler to use
 CPP= g++
 # the root directory for the Merlin source code
-MERLIN_ROOT_DIR=/afs/desy.de/user/n/njwalker/public/C++/Merlin
-MERLIN_LIB_PATH=/afs/desy.de/user/n/njwalker/public/C++/merlin-unix/lib
+MERLIN_ROOT_DIR=${PWD}/../Merlin
+MERLIN_LIB_PATH=${PWD}/../merlin-unix/lib
 #---------------------------------------------------------------
 
 INCPATH= -I${MERLIN_ROOT_DIR}
@@ -17,8 +17,8 @@ CCFLAGS= -w -O3 ${INCPATH}
 LDFLAGS= -L${MERLIN_LIB_PATH} -static
 
 EGDIRS= ClosedOrbit LatticeFunctions StrayFieldClosedOrbit \
-        Tracking Trajectory HaloCollimation SpinTracking ILCML \
-        Wakefields AcceleratorErrors
+        Tracking Trajectory HaloCollimation SpinTracking ILCML ILCDFS \
+        ROOT_trackingOutput Wakefields AcceleratorErrors
 
 merlin_eg:
 	for dirn in ${EGDIRS}; do \
