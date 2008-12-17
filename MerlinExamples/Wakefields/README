@@ -1,20 +1,17 @@
-Merlin <= 3.1 was able to take into account longitudinal and transverse 
-cavity wakefields. With version 4.0 the original scheme has been 
-extended to handle more general kinds of wakefields, e.g. higher order 
-wakefields in collimators (thanks to the work of Roger Barlow and 
-Adriana Bungau, WEPP161, EPAC08; EUROTeV-2006-051 - the implementation 
-described in that paper has been modified slightly) or coupler 
-wakefields (Dirk Kruecker et al., EUROTeV-2008-003 and 
-EUROTeV-Memo-2008-001. The coupler code also includes transverse kicks 
-due to asymmetries in the cavity RF field).
+Earlier releases of Merlin did only take into account longitudinal and 
+transverse cavity wakefields. With rel-4-0 the original scheme has been extended 
+to handle more general kinds of wakefields, e.g. higher order wakefields in 
+collimators (thanks to the work of Roger Barlow and Adriana Bungau,  EUROTeV-
+2006-051 – the class structure described in that paper differs from the rel-4-0 
+implementation) and coupler wakefields (Dirk Kruecker et al., EUROTeV-2008-003 
+and LCWS/ILC Chicago 2008. The coupler code also includes transverse kicks due 
+to asymmetries in the cavity RF field). The new scheme is backward compatible 
+and only implemented for ParticleTracking. There are three examples in this 
+directory:
 
-The new code is only available with ParticleTracking. The new scheme is 
-backward compatible and the examples in this directory show how to use 
-it.
-
-a) ex1.cpp - collimator wakefields
-b) ex2.cpp - collimator wakefields with cavity wakefields
-c) ex3.cpp - coupler+cavity wakefields
+a) ex1.cpp: A simple tapered (resistive wall) collimator example.
+b) ex2.cpp: Collimator wakefields combined with cavity wakefields 
+c) ex3.cpp: A linac with coupler and cavity wakefields 
 
 The new wakefield code consist in the following files
 Merlin/AcceleratorModel/SpoilerPotentialModels.h|cpp
