@@ -13,14 +13,14 @@ endif
 
 CPP= g++
 
-MERLIN_ROOT_DIR=${PWD}/../../../Merlin
-MERLIN_LIB_PATH=${PWD}/../../../merlin-unix/lib
+MERLIN_ROOT_DIR=${PWD}/../../Merlin
+MERLIN_LIB_PATH=${PWD}/../../merlin-unix/lib
 INCPATH= -I${MERLIN_ROOT_DIR} -I${ROOTSYS}/include
-CCFLAGS= -w -O3 ${INCPATH}
-LDFLAGS= `root-config --cflags --libs` -L${MERLIN_LIB_PATH}
+CCFLAGS2= -w -O3 ${INCPATH}
+LDFLAGS2= `root-config --cflags --libs` -L${MERLIN_LIB_PATH}
 
 MerlinROOT : MerlinROOT_main.o TeslaWakePotential.o TrackingOutputROOT.o 
-	${CPP} ${LDFLAGS} -o $@ $^ -lmerlin -lm
+	${CPP} ${LDFLAGS2} -o $@ $^ -lmerlin -lm
 
 %.o : %.cpp
-	${CPP} ${CCFLAGS} -c  -o $@ $<
+	${CPP} ${CCFLAGS2} -c  -o $@ $<
