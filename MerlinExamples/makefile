@@ -1,5 +1,7 @@
 # Makefile for the MERLIN Examples
 # -------------------------------------
+# version 2.0
+# DK 14.1.2009
 # version 1.1 20.10.2005
 # Nick Walker, DESY
 #

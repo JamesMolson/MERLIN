@@ -2,7 +2,7 @@ Earlier releases of Merlin did only take into account longitudinal and
 transverse cavity wakefields. With rel-4-0 the original scheme has been extended 
 to handle more general kinds of wakefields, e.g. higher order wakefields in 
 collimators (thanks to the work of Roger Barlow and Adriana Bungau,  EUROTeV-
-2006-051 – the class structure described in that paper differs from the rel-4-0 
+2006-051  the class structure described in that paper differs from the rel-4-0 
 implementation) and coupler wakefields (Dirk Kruecker et al., EUROTeV-2008-003 
 and LCWS/ILC Chicago 2008. The coupler code also includes transverse kicks due 
 to asymmetries in the cavity RF field). The new scheme is backward compatible 

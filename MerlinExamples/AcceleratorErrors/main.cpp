@@ -105,7 +105,7 @@ int main() {
 	err.ApplyRotations(blineFirst,"Quadrupole.*");
 	
 	
-	// Perform tracking without errors
+	// Perform tracking with errors
         tracker->Track(bunch2);
 
 	Print("Final (with errors) ",bunch2);
@@ -126,7 +126,6 @@ pair<AcceleratorModel*,BeamData*> ConstructModel(const string& fname) {
 
 	pair<AcceleratorModel*,BeamData*> mb = mc.Parse();
 	BeamData*         beam0 = mb.second;
-	AcceleratorModel* model = mb.first;
 	
 	// The following quantities are not
 	// int the TAPE file
