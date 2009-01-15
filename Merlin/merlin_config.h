@@ -29,5 +29,8 @@
 #define _MAX std::max
 #define _MIN std::min
 #endif /* _MSC_VER */
+//dk must be defined somewhere
+#define _MAX std::max
+#define _MIN std::min
 
 #endif /* _h_merlin_config */
