@@ -135,12 +135,13 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Merlin.lib"
 				OutputFile="$(OutDir)\ClosedOrbit.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(ConfigurationName)"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
 				TargetMachine="1"
 			/>
 			<Tool
