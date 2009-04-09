@@ -43,7 +43,7 @@ int main() {
 	RandomNG::init();
 
 	// Construct model
-	pair<AcceleratorModel*,BeamData*> mb = ConstructModel("ilc_linac_15_250.xtff");  
+	pair<AcceleratorModel*,BeamData*> mb = ConstructModel("../lattices/ilc_linac_15_250.xtff");  
 
 	AcceleratorModel*          model = mb.first;
 	BeamData*                  beam  = mb.second;
