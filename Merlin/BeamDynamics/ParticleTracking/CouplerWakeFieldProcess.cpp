@@ -126,32 +126,34 @@ void CouplerWakeFieldProcess::CalculateWakeT() {
 
    for(i=0; i<bunchSlices.size(); i++) {
 	
-        // coupler wake kick (const, independent of z) at x[m],y[m]
-        // cxy [V/m]
-        Vector2D cxy  = currentWake->Wxy(xyc[i].x,xyc[i].y);
+	   Vector2D cxy(0,0);
+       if(i<bunchSlices.size()-1){
+          // coupler wake kick (const, independent of z) at x[m],y[m]
+          // cxy [V/m]
+          cxy  = currentWake->Wxy(xyc[i].x,xyc[i].y);
 
-	// RF kick independent of bunch charge
-	// x[m],y[m],V[m]=Vacc
-	// phase[rad]=phi+k*dz,  dz[m]
-	// rfxy [1/cavity], V [GeV]
-	Vector2D rfxy 
-		= currentWake->CouplerRFKick(xyc[i].x,xyc[i].y,fabs(phi)+k*(zmin+(i+0.5)*dz));
-//		= currentWake->CouplerRFKick(xyc[i].x,xyc[i].y,fabs(phi));
-	wake_x[i] += rfxy.x*V/clen/a0;  // V[GeV] -> V[V]
-	wake_y[i] += rfxy.y*V/clen/a0;
+	      // RF kick independent of bunch charge
+	      // x[m],y[m],V[m]=Vacc
+	      // phase[rad]=phi+k*dz,  dz[m]
+	      // rfxy [1/cavity], V [GeV]
+	      Vector2D rfxy 
+		  = currentWake->CouplerRFKick(xyc[i].x,xyc[i].y,fabs(phi)+k*(zmin+(i+0.5)*dz));
+//		  = currentWake->CouplerRFKick(xyc[i].x,xyc[i].y,fabs(phi));
+	      wake_x[i] += rfxy.x*V/clen/a0;  // V[GeV] -> V[V]
+	      wake_y[i] += rfxy.y*V/clen/a0;
+       }
+       for(int j=i; j<bunchSlices.size()-1; j++) {
 
-        for(int j=i; j<bunchSlices.size()-1; j++) {
+	      // cavity transverse wake
+	      // kick goes into the same direction as offset
+	      // dx>0 => dx'>0
+          double wxy = Qd[j]*(currentWake->Wtrans((j-i+0.5)*dz));
+	      wake_x[i] += wxy*xyc[j].x;
+	      wake_y[i] += wxy*xyc[j].y;
 
-	    // cavity transverse wake
-	    // kick goes into the same direction as offset
-	    // dx>0 => dx'>0
-            double wxy = Qd[j]*(currentWake->Wtrans((j-i+0.5)*dz));
-	    wake_x[i] += wxy*xyc[j].x;
-	    wake_y[i] += wxy*xyc[j].y;
-
-            // coupler kick assumed to be constant (short bunch) 
-	    wake_x[i] += Qd[j]*cxy.x/clen;
-	    wake_y[i] += Qd[j]*cxy.y/clen;  
+          // coupler kick assumed to be constant (short bunch) 
+	      wake_x[i] += Qd[j]*cxy.x/clen;
+	      wake_y[i] += Qd[j]*cxy.y/clen;  
 	    
         }
         wake_x[i]*=a0;
