@@ -52,7 +52,7 @@ int main()
 	// --------------------------------------------------------------------
 	// Construct the simulation and reference
 	// accelerator models.
-	const string modelFile = "ilc_linac_15_250.xtff";
+	const string modelFile = "../lattices/ilc_linac_15_250.xtff";
 	const bool constructCurvedLinac = true;
 
 	pair<AcceleratorModel*,BeamData*> mb;
