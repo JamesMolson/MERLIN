@@ -70,7 +70,8 @@ namespace ParticleTracking {
 
 WakeFieldProcess::WakeFieldProcess (int prio, size_t nb, double ns, string aID)
         : ParticleBunchProcess(aID,prio),imploc(atExit),nbins(nb),nsig(ns),currentWake(0),
-        wake_x(0),wake_y(0),wake_z(0),Qd(),Qdp(),filter(0),recalc(true),inc_tw(true)
+        wake_x(0),wake_y(0),wake_z(0),Qd(),Qdp(),filter(0),recalc(true),inc_tw(true),
+		oldBunchLen(0)
 {
     SetFilter(14,2,1);
 }
@@ -196,7 +197,8 @@ void WakeFieldProcess::ApplyWakefield(double ds)
 
     // If the bunch length or binning has been changed,
     // we must recalculate the wakes
-    if(recalc)
+	// dk explicit check on bunch length
+	if(recalc||oldBunchLen!=currentBunch->size())
         Init();
 
     // We always need to recalculate the transverse wake
@@ -251,6 +253,10 @@ double WakeFieldProcess::GetMaxAllowedStepSize () const
 void WakeFieldProcess::Init()
 {
     double Qt  = currentBunch->GetTotalCharge();
+	
+	//keep track of bunch length to be aware of modifications
+	oldBunchLen=currentBunch->size();
+
     size_t nloss = CalculateQdist();
     if(nloss!=0) {
         // Even though we have truncated particles, we still keep the

@@ -83,6 +83,7 @@ public:
 
     double zmin,zmax,dz;
     bool recalc;
+	size_t oldBunchLen;
 };
 
 void savgol(vector<double>& c, int nl, int nr, int ld, int m);

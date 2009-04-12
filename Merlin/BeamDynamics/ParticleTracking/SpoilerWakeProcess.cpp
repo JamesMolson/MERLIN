@@ -149,7 +149,12 @@ void SpoilerWakeProcess::ApplyWakefield(double ds){
 	// we are not responsible if it is a different type 
 	spoiler_wake=dynamic_cast<SpoilerWakePotentials*>(currentWake);
 	if(spoiler_wake==0) return;
-	
+
+	// If the bunch length or binning has been changed,
+    // we must recalculate the wakes
+    if(recalc||oldBunchLen!=currentBunch->size())
+        Init();
+
 	{int m;
 	for(m=1;m<=nmodes;m++){     
 	    for (size_t  n=0;n<nbins;n++){
