@@ -236,7 +236,7 @@ void MVCMatrix<T,N>::printFormatted (ostream& os, bool normalised) const
 template<class T, int N>
 bool MVCMatrix<T,N>::operator==(const MVCMatrix<T,N>& rhs) const
 {
-    register int i;
+    int i;
     for(i=0;i<N;i++)
         if(m1[i]!=rhs.m1[i])
             return false;

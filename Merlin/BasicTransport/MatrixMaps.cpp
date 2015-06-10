@@ -23,7 +23,7 @@ namespace {
 PSmoments& TransformMoments(PSmoments& S, const RealMatrix& R)
 {
     PSmoments result; // initialised to zero
-    register int i,j,k,l;
+    int i,j,k,l;
     const int n=R.ncols();
 
     for(i=0; i<n; i++) {
@@ -151,7 +151,7 @@ PSvector& RdpMtrx::Apply (PSvector& x) const
 {
     PSvector x1(0.0);
     int n=R.nrows();
-    register int i,j;
+    int i,j;
 
     for(i=0;i<n;i++) {
         x1[i]=0;

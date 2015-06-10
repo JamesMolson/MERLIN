@@ -84,7 +84,7 @@ bool TCovMtrx<T,N>::operator==(const TCovMtrx<T,N>& rhs) const
     for(;lp<data+(N*(N+1))/2;lp++,rp++)
         if((*lp)!=(*rp))
             return false;
-    return;
+    return true;
 }
 
 #endif

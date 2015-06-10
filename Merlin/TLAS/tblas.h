@@ -27,7 +27,7 @@ namespace tblas1 {
 template<class V1, class V2, class T>
 T tdot(const V1& v1, const V2& v2, T alpha)
 {
-    for(register size_t i=0; i<v1.size(); ++i)
+    for(size_t i=0; i<v1.size(); ++i)
         alpha+=v1(i)*v2(i);
     return alpha;
 }
@@ -42,7 +42,7 @@ void taxpy(T alpha, const V1& x, V2& y)
         y+=x;
     }
     else {
-        for(register size_t i=0; i<x.size(); ++i)
+        for(size_t i=0; i<x.size(); ++i)
             y(i)+=alpha*x(i);
     }
 }
@@ -59,18 +59,18 @@ void tgemv(bool t, const Ta& alpha, const M& A, const Vx& x, const Tb& beta, Vy&
 {
     assert(&x!=&y); // that's a no-no!
     if(beta!=1)
-        for(register size_t i=0; i<A.nrows(); i++)
+        for(size_t i=0; i<A.nrows(); i++)
             y[i]*=beta;
 
     if(alpha!=0)
         if(t) { // use transpose of A
-            for(register size_t i=0; i<A.ncols(); ++i)
-                for(register size_t j=0; j<A.nrows(); ++j)
+            for(size_t i=0; i<A.ncols(); ++i)
+                for(size_t j=0; j<A.nrows(); ++j)
                     y[i]+=alpha*A(j,i)*x[j];
         }
         else { // use normal A
-            for(register size_t i=0; i<A.nrows(); ++i)
-                for(register size_t j=0; j<A.ncols(); ++j)
+            for(size_t i=0; i<A.nrows(); ++i)
+                for(size_t j=0; j<A.ncols(); ++j)
                     y[i]+=alpha*A(i,j)*x[j];
         }
 }
@@ -84,8 +84,8 @@ void tger(const T& alpha, const Vx& x, const Vy& y, M& A)
     if(alpha==0)
         return;
 
-    for(register size_t i=0; i<A.nrows(); ++i)
-        for(register size_t j=0; j<A.ncols(); ++j)
+    for(size_t i=0; i<A.nrows(); ++i)
+        for(size_t j=0; j<A.ncols(); ++j)
             A(i,j)+=alpha*x(i)*y(j);
 }
 }
@@ -112,9 +112,9 @@ void tgemm(bool tpa, bool tpb, const Ta& alpha, const Ma& A, const Mb& B,
     // calculate the range of the k subscript
     const size_t klim = tpa ? A.nrows() : A.ncols();
 
-    for(register size_t i=0; i<C.nrows(); ++i)
-        for(register size_t j=0; j<C.ncols(); ++j)
-            for(register size_t k=0; k<klim; ++k) {
+    for(size_t i=0; i<C.nrows(); ++i)
+        for(size_t j=0; j<C.ncols(); ++j)
+            for(size_t k=0; k<klim; ++k) {
                 // 4 cases to deal with here
                 if(tpa) {
                     if(tpb)
@@ -136,11 +136,11 @@ template<class Tr, class Ta, class Tb>
 void tgemr(const Tr& R, const Ta& M, Tb& C)
 {
     const size_t n = R.nrows();
-    for(register size_t i=0; i<n; i++)
-        for(register size_t j=0; j<n; j++) {
+    for(size_t i=0; i<n; i++)
+        for(size_t j=0; j<n; j++) {
             C(i,j)=0;
-            for(register size_t k=0; k<n; k++)
-                for(register size_t l=0; l<n; l++)
+            for(size_t k=0; k<n; k++)
+                for(size_t l=0; l<n; l++)
                     C(i,j)+=R(i,k)*R(j,l)*M(k,l);
         }
 }

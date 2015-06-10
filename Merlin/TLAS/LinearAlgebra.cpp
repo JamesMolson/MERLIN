@@ -3,13 +3,13 @@
 #include <algorithm> // for std::swap
 #include <cmath>
 
-#ifndef DEBUG
+#ifndef NDEBUG
 #include "NumericalUtils/MatrixPrinter.h"
 #endif
 
 namespace {
 
-#ifndef DEBUG
+#ifndef NDEBUG
 ofstream debug_os("tlas_debug.dat");
 #endif
 

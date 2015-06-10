@@ -24,15 +24,17 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #define SEED_TABLE_SIZE 32
 
+#define I32(x) static_cast<_G_int32_t>(x)
+
 static _G_int32_t seedTable[SEED_TABLE_SIZE] = {
-            0xbdcc47e5, 0x54aea45d, 0xec0df859, 0xda84637b,
-            0xc8c6cb4f, 0x35574b01, 0x28260b7d, 0x0d07fdbf,
-            0x9faaeeb0, 0x613dd169, 0x5ce2d818, 0x85b9e706,
-            0xab2469db, 0xda02b0dc, 0x45c60d6e, 0xffe49d10,
-            0x7224fea3, 0xf9684fc9, 0xfc7ee074, 0x326ce92a,
-            0x366d13b5, 0x17aaa731, 0xeb83a675, 0x7781cb32,
-            0x4ec7c92d, 0x7f187521, 0x2cf346b4, 0xad13310f,
-            0xb89cff2b, 0x12164de1, 0xa865168d, 0x32b56cdf
+            I32(0xbdcc47e5), I32(0x54aea45d), I32(0xec0df859), I32(0xda84637b),
+            I32(0xc8c6cb4f), I32(0x35574b01), I32(0x28260b7d), I32(0x0d07fdbf),
+            I32(0x9faaeeb0), I32(0x613dd169), I32(0x5ce2d818), I32(0x85b9e706),
+            I32(0xab2469db), I32(0xda02b0dc), I32(0x45c60d6e), I32(0xffe49d10),
+            I32(0x7224fea3), I32(0xf9684fc9), I32(0xfc7ee074), I32(0x326ce92a),
+            I32(0x366d13b5), I32(0x17aaa731), I32(0xeb83a675), I32(0x7781cb32),
+            I32(0x4ec7c92d), I32(0x7f187521), I32(0x2cf346b4), I32(0xad13310f),
+            I32(0xb89cff2b), I32(0x12164de1), I32(0xa865168d), I32(0x32b56cdf)
         };
 
 MLCG::MLCG(_G_int32_t seed1, _G_int32_t seed2)
