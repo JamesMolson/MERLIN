@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
     
     //~ string directory = "/afs/cern.ch/user/h/harafiqu/public/MERLIN";	//lxplus harafiqu
 	//~ string directory = "/home/haroon/git/Merlin";				//iiaa1
-	string directory = "/home/HR/Downloads/MERLIN";					//M11x	
+	string directory = "/home/HR/Downloads/MERLIN_HRThesis/MERLIN/";					//M11x	
 	//~ string directory = "/afs/cern.ch/user/a/avalloni/private/Merlin_all";	//lxplus avalloni
 	
 	string input_dir = "/Thesis/data/SymplecticHEL/";

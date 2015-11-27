@@ -184,12 +184,14 @@ void SymplecticHollowELensProcess::DoProcess (double ds)
 					//~ (*p).yp() -= k * theta * sin(ParticleAngle);
 					
 					// Direct kick (including sine) using p_x = k sin(x')
-					(*p).xp() -= k * theta * cos(ParticleAngle);
-					(*p).yp() -= k * theta * sin(ParticleAngle);
+					(*p).xp() -= k * sin (theta * cos(ParticleAngle));
+					(*p).yp() -= k * sin (theta * sin(ParticleAngle));
 					
 					// Direct kick using p_x = sin(x')
-					//~ (*p).xp() -= k * theta * cos(ParticleAngle);
-					//~ (*p).yp() -= k * theta * sin(ParticleAngle);
+					//~ (*p).xp() -= sin (theta * cos(ParticleAngle));
+					//~ (*p).yp() -= sin (theta * sin(ParticleAngle));
+					//~ (*p).xp() = sin( asin((*p).xp()) - theta * cos(ParticleAngle) );
+					//~ (*p).yp() = sin( asin((*p).yp()) - theta * sin(ParticleAngle) );
 										
 				}
 			}
@@ -234,8 +236,8 @@ void SymplecticHollowELensProcess::DoProcess (double ds)
 						//~ (*p).yp() = k*new_yp;
 						
 						// Direct kick
-						(*p).xp() -= k * theta * cos(ParticleAngle);
-						(*p).yp() -= k * theta * sin(ParticleAngle);
+						(*p).xp() -= k * sin (theta * cos(ParticleAngle));
+						(*p).yp() -= k * sin (theta * sin(ParticleAngle));
 					}	
 				}
 			}
@@ -273,8 +275,8 @@ void SymplecticHollowELensProcess::DoProcess (double ds)
 						//~ (*p).yp() = k*new_yp;
 						
 						// Direct kick
-						(*p).xp() -= k * theta * cos(ParticleAngle);
-						(*p).yp() -= k * theta * sin(ParticleAngle);
+						(*p).xp() -= k * sin (theta * cos(ParticleAngle));
+						(*p).yp() -= k * sin (theta * sin(ParticleAngle));
 					}			
 
 				}
@@ -311,8 +313,8 @@ void SymplecticHollowELensProcess::DoProcess (double ds)
 						//~ (*p).yp() = k*new_yp;
 						
 						// Direct kick
-						(*p).xp() -= k * theta * cos(ParticleAngle);
-						(*p).yp() -= k * theta * sin(ParticleAngle);
+						(*p).xp() -= k * sin (theta * cos(ParticleAngle));
+						(*p).yp() -= k * sin (theta * sin(ParticleAngle));
 					}	
 
 				}
