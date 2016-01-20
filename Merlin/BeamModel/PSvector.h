@@ -39,134 +39,151 @@ public:
 	PSvector ()
 	{}
 
-	explicit PSvector (double x)
+	explicit PSvector (Mfloat_t x)
 	{
-		std::fill(v,v+PS_LENGTH,x);
+//		std::fill(v,v+PS_LENGTH,x);
+		for(unsigned int n=0; n < PS_LENGTH; n++)
+		{
+			for(unsigned int m=0; m < MvectorLength; m++)
+			{
+				v[n][m] = x;
+			}
+		}
 	}
 
 	//	Component accessors.
-	double x ()  const
+	Mvector_t x ()  const
 	{
 		return v[0];
 	}
-	double y ()  const
+	Mvector_t y ()  const
 	{
 		return v[2];
 	}
-	double ct () const
+	Mvector_t ct () const
 	{
 		return v[4];
 	}
-	double xp () const
+	Mvector_t xp () const
 	{
 		return v[1];
 	}
-	double yp () const
+	Mvector_t yp () const
 	{
 		return v[3];
 	}
-	double dp () const
+	Mvector_t dp () const
 	{
 		return v[5];
 	}
-	double type () const
+	Mvector_t type () const
 	{
 		return v[6];
 	}
-	double location () const
+	Mvector_t location () const
 	{
 		return v[7];
 	}
-	double id () const
+	Mvector_t id () const
 	{
 		return v[8];
 	}
-	double sd () const
+	Mvector_t sd () const
 	{
 		return v[9];
 	}
 
 	//	Array access.
-	double operator [] (PScoord coord) const
+	Mvector_t operator [] (PScoord coord) const
 	{
 		return v[coord];
 	}
 
 	//	Component mutators.
-	double& x ()
+	Mvector_t& x ()
 	{
 		return v[0];
 	}
-	double& y ()
+	Mvector_t& y ()
 	{
 		return v[2];
 	}
-	double& ct ()
+	Mvector_t& ct ()
 	{
 		return v[4];
 	}
-	double& xp ()
+	Mvector_t& xp ()
 	{
 		return v[1];
 	}
-	double& yp ()
+	Mvector_t& yp ()
 	{
 		return v[3];
 	}
-	double& dp ()
+	Mvector_t& dp ()
 	{
 		return v[5];
 	}
-	double& type ()
+	Mvector_t& type ()
 	{
 		return v[6];
 	}
-	double& location ()
+	Mvector_t& location ()
 	{
 		return v[7];
 	}
-	double& id ()
+	Mvector_t& id ()
 	{
 		return v[8];
 	}
-	double& sd ()
+	Mvector_t& sd ()
 	{
 		return v[9];
 	}
 
 	//	Array access.
-	double& operator [] (PScoord coord)
+	Mvector_t& operator [] (PScoord coord)
 	{
 		return v[coord];
 	}
 
 	//	Conversion to a RealVector.
+	/**
+	Disable for now
 	operator RealVector () const
 	{
 		return RealVector(v,PS_LENGTH);
 	}
+	*/
 
 	bool operator == (const PSvector& psv) const
 	{
-		return memcmp(v,psv.v,PS_LENGTH*sizeof(double))==0;
+		return memcmp(v,psv.v,PS_LENGTH*sizeof(Mvector_t))==0;
 	}
 
 	bool operator != (const PSvector& psv) const
 	{
-		return memcmp(v,psv.v,PS_LENGTH*sizeof(double))!=0;
+		return memcmp(v,psv.v,PS_LENGTH*sizeof(Mvector_t))!=0;
 	}
 
 	//	Sets the vector to zero.
 	void zero ()
 	{
-		std::fill(v,v+PS_LENGTH,0.0);
+//		std::fill(v,v+PS_LENGTH,0.0);
+		for(unsigned int n=0; n < PS_LENGTH; n++)
+		{
+			for(unsigned int m=0; m < MvectorLength; m++)
+			{
+				v[n][m] = 0.0;
+			}
+		}
 	}
 
 	//	Arithmetic assignment
 	PSvector& operator += (const PSvector& p)
 	{
-		double *q=v;
-		const double *r=p.v;
+		Mvector_t *q=v;
+		const Mvector_t *r=p.v;
 		while(q!=(v+PS_LENGTH))
 		{
 			*(q++) += *(r++);
@@ -176,8 +193,8 @@ public:
 
 	PSvector& operator -= (const PSvector& p)
 	{
-		double *q=v;
-		const double *r=p.v;
+		Mvector_t *q=v;
+		const Mvector_t *r=p.v;
 		while(q!=(v+PS_LENGTH))
 		{
 			*(q++) -= *(r++);
@@ -185,18 +202,18 @@ public:
 		return *this;
 	}
 
-	PSvector& operator *= (double x)
+	PSvector& operator *= (Mvector_t x)
 	{
-		for(double *q = v; q!=v+PS_LENGTH; q++)
+		for(Mvector_t *q = v; q!=v+PS_LENGTH; q++)
 		{
 			(*q)*=x;
 		}
 		return *this;
 	}
 
-	PSvector& operator /= (double x)
+	PSvector& operator /= (Mvector_t x)
 	{
-		for(double *q = v; q!=v+PS_LENGTH; q++)
+		for(Mvector_t *q = v; q!=v+PS_LENGTH; q++)
 		{
 			(*q)/=x;
 		}
@@ -225,7 +242,7 @@ public:
 	friend std::istream& operator>>(std::istream& is, PSvector& v);
 
 private:
-	double __attribute__((aligned(16))) v[PS_LENGTH];
+	Mvector_t __attribute__((aligned(16))) v[PS_LENGTH];
 };
 
 //	A linear array of PSvector objects.
